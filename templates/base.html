@@ -8,6 +8,7 @@
             html {
               margin: 0em;
               font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
               font-family: 'Libre Baskerville', serif;
               line-height: 1.45;
             }
@@ -16,6 +17,7 @@
               margin: 0 auto;
               padding: 1em;
               max-width: 50em;
+              overflow-x: hidden;
             }
 
             main {
@@ -44,17 +46,18 @@
 
             pre {
               display: flex;
-              width: 100vw;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
               position: relative;
               left: 50%;
               right: 50%;
-              margin-left: -50vw;
-              margin-right: -50vw;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
               background-color: transparent!important;
             }
 
             pre > code {
-              margin: 0em auto 1em auto;
+              margin: 0 auto;
               padding: 1em;
               max-width: 100vw;
               overflow: auto;
