@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}My Blog{% endblock title %}
+
+{% block content %}
+{% for page in section.pages %}
+  <article class="preview">
+    <header>
+      <h3>
+        <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+        <span style="float:right">{{ page.date | date(format="%Y-%m-%d") }}&nbsp;</span>
+      </h3>
+    </header>
+    {{ page.summary | safe }}
+  </article>
+{% endfor %}
+{% endblock content %}

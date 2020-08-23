@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}about the {{taxonomy.name}}{% endblock title %}
+
+{% block content %}
+<header><h2>...about {{term.name}}:</h2></header>
+{% for page in term.pages %}
+<article class="preview">
+  <header>
+    <h3>
+      <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+      <span style="float:right">{{ page.date | date(format="%Y-%m-%d") }}&nbsp;</span>
+    </h3>
+  </header>
+  {{ page.summary | safe }}
+</article>
+{% endfor %}
+{% endblock content %}
