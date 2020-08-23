@@ -1,9 +1,7 @@
 +++
-title = "Generators, Meet XPath"
+title = "Javascript Generators, Meet XPath"
 date = 2020-06-29
-[taxonomies]
-tags = ["javascript", "web"]
-categories = ["programming"]
+tags = ["javascript"]
 +++
 
 Using Generators to Modernize a Geriatric Javascript API for `$CURRENT_YEAR`
