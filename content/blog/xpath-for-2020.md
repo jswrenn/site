@@ -76,6 +76,6 @@ Document.prototype.xpath = Element.prototype.xpath =
 ```
 Because the result of this function is iterable, we can use it with [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax):
 ```javascript
-[...document.queryXPathAll("//text()[contains(., 'Hello')]")].
-  forEach(node => node.textContent = node.textContent.replace("Hello", "Greetings"))
+[...document.xpath("//text()[contains(., 'Hello')]")].
+  forEach(node => node.textContent = node.textContent.replace("Hello", "Greetings"));
 ```
