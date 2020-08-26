@@ -83,5 +83,7 @@ macro_rules! include_transmute {
 ```
 That's really all there is to it!
 
+The [`mem::transmute`](https://doc.rust-lang.org/core/mem/fn.transmute.html) intrinsic consumes its argument, copies its bits to space reserved for a value of the destination type, then forgets the original value. That space reserved for the destination type is aligned according to the needs of the destination type, *not* the needs of the source type.
+
 ## Acknowledgements
 Thanks to [/u/RustMeUP](https://www.reddit.com/user/RustMeUp) for [finding the bug](https://www.reddit.com/r/rust/comments/igi6p0/prerfc_safer_transmutation/g2wt27y/) in my motivating example!
