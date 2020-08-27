@@ -66,9 +66,9 @@ Unfortunately, Rust cannot infer the correct alignment for us—it's entirely up
 ```rust
 pub fn recognize(input: &Matrix<f64, U1, U784>) -> usize
 {
-    static WEIGHT: Matrix<f64, U784, U10> = unsafe{ include_transmute!("/weight.bin") };
+    static WEIGHT: &Matrix<f64, U784, U10> = unsafe{ include_transmute!("/weight.bin") };
 
-    static BIAS: Matrix<f64, U1, U10> = unsafe{ include_transmute!("/weight.bin") };
+    static BIAS: &Matrix<f64, U1, U10> = unsafe{ include_transmute!("/weight.bin") };
 
     network::recognize(input, &WEIGHT, &BIAS)
 }
