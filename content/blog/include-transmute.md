@@ -31,7 +31,7 @@ A `Matrix<f64, U784, U10>` has a minimum alignment of `8`, but `include_bytes!` 
 **How can we ensure the included bytes are properly aligned?**
 
 ## Prior Art: `include_bytes_align_as!`
-On the Rust Internals Forum, user ExpHP [devised an `include_bytes_align_as` macro](https://users.rust-lang.org/t/can-i-conveniently-compile-bytes-into-a-rust-program-with-a-specific-alignment/24049/2) that produces the included bytes, aligned a given type:
+On the Rust Users Forum, user ExpHP [devised an `include_bytes_align_as` macro](https://users.rust-lang.org/t/can-i-conveniently-compile-bytes-into-a-rust-program-with-a-specific-alignment/24049/2) that produces the included bytes, aligned a given type:
 ```rust
 macro_rules! include_bytes_align_as {
     ($align_ty:ty, $path:literal) => {{
