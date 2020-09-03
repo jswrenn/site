@@ -46,7 +46,7 @@ Given the hazards imposed by `auto` traits, it's reasonable to ask:
   - Do we *really* need the compiler to conjure up implementations?
   - If so, couldn't we *re-use* the opt-out mechanism of `auto` traits?
 
-Alternatives in which the compiler does *not* conjure up trait implementations automatically indeed do not suffer from this weirdness. In the approach taken by the [`FromBits` pre-RFC](https://internals.rust-lang.org/t/pre-rfc-frombits-intobits/7071), `Foo`'s author would simply declare that `Fizz` is transmutable into a type `Foo` by writing a normal `impl`:
+Alternatives in which the compiler does *not* conjur up trait implementations automatically indeed do not suffer from this weirdness. In the approach taken by the [`FromBits` pre-RFC](https://internals.rust-lang.org/t/pre-rfc-frombits-intobits/7071), `Foo`'s author would simply declare that `Fizz` is transmutable into a type `Foo` by writing a normal `impl`:
 ```rust
 impl FromBits<Fizz> for Foo {};
 ```
@@ -58,7 +58,7 @@ The existing opt-out mechanism of `auto` traits is a poor fit for addressing the
 
 Besides, it's questionable whether the opt-out mechanism of `auto` traits *actually* reduces their stability hazards. Unless a type's author is exceptionally proactive, the ability to opt-out of `auto` traits really just provides a way to clean up issues *after* they're noticed.
 
-Fortunately, whereas [safe transmutation prior art](https://github.com/jswrenn/rfcs/blob/safer-transmute/text/0000-safer-transmute.md#stability-hazards) basically ignores the hazard a transmutability trait poses, our RFC neutralizes it *almost completely*.
+Fortunately, whereas [safe transmutation prior art](https://github.com/jswrenn/rfcs/blob/safer-transmute/text/0000-safer-transmute.md#stability-hazards) basically ignores the hazard this stability weirdness poses, our RFC neutralizes it *almost completely*.
 
 ## Mitigating the Stability Weirdness
 
