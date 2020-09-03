@@ -14,13 +14,13 @@ Such a trait would be unusual in two respects:
   - The type system is reasoning about in-memory layouts. Type systems don't *typically* worry about such things.
   - You don't *ask* for this trait to be implemented for your types.
 
-In this post, we'll focus on that second point of weirdness. Most traits are implemented *by request*. If an implementation of a trait exists for a type, it's usually because somebody, *somewhere* has typed the characters `impl`.
+In this post, we'll focus on that second point of weirdness. Most traits are implemented *by request*. If an implementation of a trait exists for a type, it's usually because somebody, *somewhere* has typed the keyword `impl`.
 
 But not in this case: whether our `TransmuteFrom` trait is implemented for a `Src` and `Dst` depends *solely* on the safety of that conversion—not because `impl` was written somewhere.
 
 With traits that are manually implemented, you can trust that an `impl` you are relying on won't simply vanish. In other words, trait implementations are *stable*. Unfortunately, that won't be the case with our transmutation trait, because some of the factors which would affect transmutability are not covered by the existing stability rules.
 
-For instance, let's say `crate-a` defines:
+For instance, let's say a crate defines:
 ```rust
 #[repr(C)]
 pub struct Foo {
@@ -28,7 +28,7 @@ pub struct Foo {
   pub baz: u16,
 }
 ```
-The current stability rules permit `crate-a`'s author to reverse the definition order of the `bar` and `baz` fields in a minor version release, without breaking stability.
+The current stability rules permit this crate's author to reverse the definition order of the `bar` and `baz` fields in a minor version release, without breaking stability.
 
 Yet doing this *could* affect transmutability. The previous definition of `Foo` is `TransmuteFrom` the type `Fizz`:
 ```rust
