@@ -37,17 +37,16 @@ Yet doing this *could* affect transmutability. The previous definition of `Foo` 
 ...but it won't be if the ordering of `Foo`'s fields is reversed (since that would expose a padding byte as initialized memory).
 
 
-## Why do you posit that the compiler should *automatically* conjure up trait implementations, anyways?
-
-In the approach taken by the [`FromBits` pre-RFC](https://internals.rust-lang.org/t/pre-rfc-frombits-intobits/7071), `Foo`'s author would simply declare that `Fizz` is transmutable into a type `Foo` by writing a normal `impl`:
+## Why should the compiler should *automatically* conjure up trait implementations, anyways!?
+Alternatives in which the compiler does *not* conjur up trait implementations automatically do not suffer from this weirdness. In the approach taken by the [`FromBits` pre-RFC](https://internals.rust-lang.org/t/pre-rfc-frombits-intobits/7071), `Foo`'s author would simply declare that `Fizz` is transmutable into a type `Foo` by writing a normal `impl`:
 ```rust
 impl FromBits<Fizz> for Foo {};
 ```
-Having provided this `impl`, *removing* it would be considered a breaking change according to the established rules of stability. In other words: no stability weirdness here! However, treating transmutability as a normal trait comes at a steep cost: `Foo`'s author must foresee and write an `impl` of `FromBits` for `Foo`for *every* source type from which `Foo` should be reinterpretable.
+Having provided this `impl`, *removing* it would be considered a breaking change according to the established rules of stability. In other words: no stability weirdness here! Yet, treating transmutability as a normal trait comes at a steep cost: `Foo`'s author must foresee and write an `impl` of `FromBits` for `Foo`for *every* source type from which `Foo` should be reinterpretable.
 
-This degree of manual labor isn't satisfactory. Our RFC and [prior art]((https://github.com/jswrenn/rfcs/blob/safer-transmute/text/0000-safer-transmute.md#automatic) ) eliminate this manual labor by having the compiler automatically infer implementations of a transmutability trait on-the-fly.
+This degree of manual labor isn't satisfactory. Our RFC and [prior art]((https://github.com/jswrenn/rfcs/blob/safer-transmute/text/0000-safer-transmute.md#automatic) ) address this issue by having the compiler automatically infer implementations of a transmutability trait on-the-fly.
 
-However, whereas [prior art](https://github.com/jswrenn/rfcs/blob/safer-transmute/text/0000-safer-transmute.md#stability-hazards) mostly ignores the hazard this stability weirdness poses, our RFC neutralizes it almost completely.
+However, whereas [prior art](https://github.com/jswrenn/rfcs/blob/safer-transmute/text/0000-safer-transmute.md#stability-hazards) mostly ignores the hazard this stability weirdness poses, our RFC neutralizes it *almost completely*.
 
 ## Mitigating the Stability Weirdness
 
