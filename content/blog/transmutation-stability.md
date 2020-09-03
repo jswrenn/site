@@ -37,7 +37,7 @@ Yet doing this *could* affect transmutability. The previous definition of `Foo` 
 ...but it won't be if the ordering of `Foo`'s fields is reversed (since that would expose a padding byte as initialized memory).
 
 
-## Why should the compiler should *automatically* conjure up trait implementations, anyways!?
+## Why should the compiler *automatically* conjure up trait implementations, anyways!?
 Alternatives in which the compiler does *not* conjur up trait implementations automatically do not suffer from this weirdness. In the approach taken by the [`FromBits` pre-RFC](https://internals.rust-lang.org/t/pre-rfc-frombits-intobits/7071), `Foo`'s author would simply declare that `Fizz` is transmutable into a type `Foo` by writing a normal `impl`:
 ```rust
 impl FromBits<Fizz> for Foo {};
@@ -73,9 +73,9 @@ where
 where
     Dst: TransmuteFrom<Src>
 ```
-By default, `TransmuteFrom` is *only* implemented for `Src` and `Dst` if it *sound*, *safe* and *stable*. Neglecting any of *any* of these requires passing an additional type parameter to `TransmuteFrom`.
+By default, `TransmuteFrom` is *only* implemented for `Src` and `Dst` if it *sound*, *safe* and *stable*. Neglecting any of *any* of these requires passing an additional type parameter to `TransmuteFrom`. If you don't `NeglectStability`, then `TransmuteFrom` follows the all of the usual rules of trait stability.
 
-If you don't `NeglectStability`, the transmutability trait follows the all of the usual rules of trait stability. But how? We achieve this *without* any additional specialized compiler machinery, and *without* introducing any new stability rules. Instead, we introduce two normal traits which implemented **manually** by rustaceans to publicly signal that `impl`s of `TransmuteFrom` for their type adhere to the usual trait stability rules.
+But how? We achieve this *without* any additional specialized compiler machinery, and *without* introducing any new stability rules. Instead, we introduce two regular traits which *are* implemented **manually** to signal that `impl`s of `TransmuteFrom` on a type adhere to the usual trait stability rules.
 
 My next blog post will provide a gentle introduction to exactly how this is accomplished!
 
