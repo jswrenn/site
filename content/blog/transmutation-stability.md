@@ -46,7 +46,7 @@ Given the hazards imposed by `auto` traits, it's reasonable to ask:
   - Do we *really* need the compiler to conjure up implementations?
   - If so, couldn't we *re-use* the opt-out mechanism of `auto` traits?
 
-Alternatives in which the compiler does *not* conjur up trait implementations automatically indeed do not suffer from this weirdness. In the approach taken by the [`FromBits` pre-RFC](https://internals.rust-lang.org/t/pre-rfc-frombits-intobits/7071), `Foo`'s author would simply declare that `Fizz` is transmutable into a type `Foo` by writing a normal `impl`:
+Alternatives in which the compiler does *not* conjure up trait implementations automatically indeed do not suffer from this weirdness. In the approach taken by the [`FromBits` pre-RFC](https://internals.rust-lang.org/t/pre-rfc-frombits-intobits/7071), `Foo`'s author would simply declare that `Fizz` is transmutable into a type `Foo` by writing a normal `impl`:
 ```rust
 impl FromBits<Fizz> for Foo {};
 ```
