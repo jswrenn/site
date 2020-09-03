@@ -57,7 +57,7 @@ The Safer Transmute RFC neutralizes this stability weirdness in two ways.
 First, we make this weirdness **unmissable**. Our transmutation trait *only* behaves unstably if you write the words `NeglectStability`, like this:
 ```rust
 where
-  Dst: TransmuteFrom<Src, NeglectStability>` 
+    Dst: TransmuteFrom<Src, NeglectStability>
 ```
 (You could also imagine achieving this by naming our transmutation trait something stark like `UnstableTransmuteFrom`. However, our `TransmuteFrom` trait is going to have an extra parameter for neglecting static checks anyways, so we simply use it to indicate that stability is being neglected.)
 
@@ -66,12 +66,12 @@ where
 Second, we make this weirdness **opt-in**. Whereas this:
 ```rust
 where
-  Dst: TransmuteFrom<Src, NeglectStability>` 
+    Dst: TransmuteFrom<Src, NeglectStability>
 ```
 *doesn't* follow the usual rules of trait implementation of stability, writing *this* **will**:
 ```rust
 where
-  Dst: TransmuteFrom<Src>` 
+    Dst: TransmuteFrom<Src>
 ```
 By default, `TransmuteFrom` is *only* implemented for `Src` and `Dst` if it *sound*, *safe* and *stable*. Neglecting any of *any* of these requires passing an additional type parameter to `TransmuteFrom`.
 
