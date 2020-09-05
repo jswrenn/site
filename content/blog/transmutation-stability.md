@@ -62,9 +62,6 @@ Fortunately, whereas [safe transmutation prior art](https://github.com/jswrenn/r
 
 ## Mitigating the Stability Weirdness
 
-
-Rust's `auto` traits (
-
 The Safer Transmute RFC neutralizes this stability weirdness in two ways.
 
 ### Make the Weirdness Obvious
