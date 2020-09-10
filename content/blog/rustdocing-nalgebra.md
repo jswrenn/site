@@ -2,6 +2,7 @@
 title = "Taming nalgebra's Rustdoc"
 date = 2020-09-10
 tags = ["rust"]
+description = "Nalgebra is a powerhouse of functionality, but its documentation can be overwhelming—the documentation for Matrix lists over 600 methods. Your documentation endeavors might not be quite so overwhelming, but you still could benefit from these three tricks nalgebra uses to improve its docs."
 +++
 
 [nalgebra]: https://nalgebra.org/
