@@ -3,14 +3,15 @@
 
 {% block content %}
 {% for page in section.pages %}
-  <article class="preview">
+  <article class="preview" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting" itemprop="mainContentOfPage">
     <header>
-      <h3>
-        <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
-        <span style="float:right">{{ page.date | date(format="%Y-%m-%d") }}&nbsp;</span>
-      </h3>
+      <h3 itemprop="headline"><a itemprop="sameAs mainEntityOfPage url" href="{{ page.permalink | safe }}">{{ page.title | markdown(inline=true) }}</a></h3>
+      <time style="float:right" itemprop="datePublished" datetime="{{ page.date | date(format="%Y-%m-%d") }}">
+        {{ page.date | date(format="%Y-%m-%d") }}
+      </time>
+      <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
     </header>
-    {{ page.summary | safe }}
+    <div itemprop="description">{{ page.summary | safe }}</div>
   </article>
 {% endfor %}
 {% endblock content %}

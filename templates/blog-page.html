@@ -7,12 +7,16 @@
 {% endblock meta %}
 
 {% block content %}
-<article>
-    <header>
-      <h1>{{ page.title | markdown(inline=true) }}</h1>
-      <span>{{ page.date | date(format="%Y-%m-%d") }}&nbsp;</span>
-    </header>
-
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">{{ page.title | markdown(inline=true) }}</h1>
+    <time itemprop="datePublished" datetime="{{ page.date | date(format="%Y-%m-%d") }}">
+      {{ page.date | date(format="%Y-%m-%d") }}
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
     {{ page.content | safe }}
+  </div>
 </article>
 {% endblock content %}
