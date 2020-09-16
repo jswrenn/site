@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% block title %}My Blog{% endblock title %}
 
+{% block meta %}
+  <link rel="alternate" type="application/atom+xml" title="RSS" href="{{ get_url(path="atom.xml") | safe }}">
+{% endblock %}
+
 {% block content %}
 {% for page in section.pages %}
   <article class="preview" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting" itemprop="mainContentOfPage">
