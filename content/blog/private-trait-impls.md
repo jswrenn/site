@@ -48,7 +48,7 @@ impl CTF<Here> for u32 {}
 **That's it!**
 
 ## Ergonomics
-Okay, but doesn't this mean we need to *always* supply a scope parameter when invoking `ctf`? Not necessarily. We can simply defined a default value for `Scope`:
+Okay, but doesn't this mean we need to *always* supply a scope parameter when invoking `ctf`? Not necessarily. We can simply define a default value for `Scope`:
 ```rust
 pub trait CTF<Scope = ()> {
     fn ctf() {
