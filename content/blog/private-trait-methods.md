@@ -38,7 +38,7 @@ pub trait Foo<Arg> {
 
 The first two approaches are well-established in the Rust community, but the third might be relatively novel.
 
-## Private Super-Trait
+## Approach 1: Private Super-Trait
 Since the methods of a trait inherit the visibility of the trait itself, we can simply place our private methods in a private trait! We then make this private trait a super-trait of our public trait:
 ```rust
 pub(crate) mod private {
@@ -84,7 +84,7 @@ This pattern of making a public type *effectively* private by embedding it in a 
 
 This method is effective, albeit verbose. Of course, you must be careful to not publicly re-export `FooPrivate` from your crate. If `Foo` is a well-established trait and you intend for the addition of `foo` to be non-breaking, you may have a hard time convincing yourself that you can add a super-trait without breaking any downstream code.
 
-## Private Value Argument
+## Approach 2: Private Value Argument
 Alternatively, we can add an effectively-private type as an argument to `foo`:
 ```
 pub(crate) mod private {
@@ -113,7 +113,7 @@ And, regardless of how careful *you* are, a dash of `unsafe` renders `foo` calla
 Foo::foo(some_arg, unsafe { mem::zeroed!() })
 ```
 
-## Private Type Argument
+## Approach 3: Private Type Argument
 Fortunately, we can do better. Rather than exploiting the uninstantiability of `Local`, we exploit the *unnamability* of `Local` and make it a *type* argument of `foo`:
 ```rust
 pub(crate) mod private {
