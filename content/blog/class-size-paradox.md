@@ -11,16 +11,18 @@ Nobody is lying, *per se* — this is merely an instance of the “class size pa
 <!-- more -->
 
 To see this in action, we’ll mine data from [Courses@Brown](https://cab.brown.edu/), Brown’s course-enrollment portal. The portal’s internal API reports up to three potential indicators of class size:
-```javascript
+```json
 {
-  ...
+  /* other fields */
+
   /* 30 - 14 = 16 seats taken  */
   "seats": "<strong>Maximum Enrollment:</strong> <span class=\"seats_max\">30</span> / <strong>Seats Avail:</strong> <span class=\"seats_avail\">14</span>",
   /* 10 + 5 + 1 = 16 seats taken */
   "regdemog_json": "{\"FY\":10,\"So\":5,\"Oth\":1}",
   /* 16 seats taken */
   "regdemog_html": "<p class=\"enroll_demog\">Current enrollment: 16</p><div class=\"demogchart\"></div><div class=\"demogchartlegend\"><ul><li class=\"pieitem item_fy\">62.50% - First Year</li><li class=\"pieitem item_so\">31.25% - Sophomore</li><li class=\"pieitem item_oth\">6.25% - Other</li></ul></div>"
-  ...
+
+  /* other fields */
 }
 ```
 Since some of these indicators may be missing or disagree for a small subset of courses, we’ll simply take the maximum of these three indicators as our authoritative class size count.
