@@ -94,5 +94,25 @@ This class size paradox is not the only discrepancy between Admissions and reali
 
 Brown misses its advertised mark of 72% by a substantial margin in all years for which data is available. I suspect they reach that figure by including graduate and independent study courses.
 
-Similarly, the the statement that Brown's student-faculty ratio is 7:1 (and that "100 percent of our faculty teach undergraduates", as Admissions asserts in the same sentence) gives the misleading impression that each educator needs only mind seven students. It is flatly incorrect that 100% of faculty members teach undergrads: One does not need to strain hard to find adjunct faculty with no teaching load, and Brown’s clinical faculty are entirely excused from undergraduate teaching. Among the faculty who do teach at all, not all teach every semester: professors may take leaves, sabbaticals, and “buy out” some of their required course load.
+Similarly, the claim that Brown's student-faculty ratio is 7:1 (and that "100 percent of our faculty teach undergraduates", as Admissions asserts in the same sentence) gives the misleading impression that each educator needs only mind seven students. It is flatly incorrect that 100% of faculty members teach undergrads: One does not need to strain hard to find adjunct faculty with no teaching load, and Brown’s clinical faculty are entirely excused from undergraduate teaching. Among the faculty who do teach, not all teach every semester: professors may take leaves, sabbaticals, and “buy out” some of their required course load.
 
+## Technical Addendum
+
+The Courses@Brown API produces JSON, whose fields are often either HTML or JSON-as-a-string. Whenever I am faced with this sort of hard-to-parse mixed-representation data, I reach for two composable utilities: [`jq`](https://stedolan.github.io/jq/) and [`xidel`](http://www.videlibri.de/xidel.html). For instance, to produce the enrollment count from `.seats`, I pipe the API's JSON for a course into this bash function:
+```bash
+function enrollment_from_seats_html() {
+  jq -rc '"<parent>" + .seats + "</parent>"' \
+    | xidel - -s --xpath='
+        [
+          //span[@class="seats_max"]/text(),
+          //span[@class="seats_avail"]/text()
+        ]' \
+    | jq -c '
+        if (. | length == 2) then
+          (.[0] | tonumber) - (.[1] | tonumber)
+        else
+          null
+        end'
+}
+```
+Perhaps I’ll go into in more depth about the technical approach behind this blog post in a future entry!
