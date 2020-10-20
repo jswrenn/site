@@ -4,6 +4,7 @@ jobs:
   build:
     name: shalzz/zola-deploy-action
     runs-on: ubuntu-latest
+    timeout-minutes: 7
     steps:
     - uses: actions/checkout@master
     - name: shalzz/zola-deploy-action
