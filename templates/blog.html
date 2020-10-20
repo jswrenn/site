@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-{% for page in section.pages %}
+{% for page in section.pages | filter(attribute="draft", value=false) %}
   <article class="preview" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting" itemprop="mainContentOfPage">
     <header>
       <h3 itemprop="headline"><a itemprop="sameAs mainEntityOfPage url" href="{{ page.permalink | safe }}">{{ page.title | markdown(inline=true) }}</a></h3>
