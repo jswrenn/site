@@ -38,7 +38,7 @@ $ jq -s '
 2021
 ```
 
-**2,021 first-years are taking a course remotely this semester!**
+**2,021 first-years are taking a course remotely this semester!** (Well, not exactly...)
 
 How does this compare with the *total* number of incoming first-year students? Well, uh, *I'm not sure*. I don't think Brown has released its fall headcounts yet. ~~I'll update this post once they do.~~ (**Update 2020-10-21:**) The total number of first-year students is in the ballpark of 1,600.
 
