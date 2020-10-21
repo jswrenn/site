@@ -2,7 +2,7 @@
 title = "How Many First-Years Are Taking Their Free Course?"
 date = 2020-10-20
 tags = ["Brown University"]
-draft = true
+draft = false
 +++
 
 To de-densify campus, Brown University [moved to a three-term model](https://www.brown.edu/news/2020-07-07/healthy) in which students take courses for *two* of three possible terms. This third term will be carved out of the summer months of 2021, during which an unlucky subset of the student body will swiftly discover that Brown does *not* air-condition its dorms. So, who are these unenviable souls? Well, first-years, *obviously*, who will begin in the spring semester and continue through the summer.
