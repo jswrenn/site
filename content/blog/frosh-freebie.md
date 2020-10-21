@@ -23,7 +23,7 @@ This field tells us that the enrollment of [CSCI0190](http://cs.brown.edu/course
 
 Since each first-year is permitted to take *at-most* one course, the total number of first-years taking this opportunity is equal to the sum of first-year enrollments across all courses.
 
-As with my [last blog post](./class-size-paradox) analyzing C@B, we compute this with the help of [`jq`](https://stedolan.github.io/jq/):
+As with my [last blog post](../class-size-paradox) analyzing C@B, we compute this with the help of [`jq`](https://stedolan.github.io/jq/):
 
 ```bash
 $ jq -s '
@@ -40,6 +40,6 @@ $ jq -s '
 
 **2,021 first-years are taking a course remotely this semester!**
 
-How does this compare with the *total* number of incoming first-year students? Well, uh, *I'm not sure*. I don't think Brown has released its fall headcounts yet. I'll update this post once they do.
+How does this compare with the *total* number of incoming first-year students? Well, uh, *I'm not sure*. I don't think Brown has released its fall headcounts yet. ~~I'll update this post once they do.~~ (**Update 2020-10-21:**) The total number of first-year students is in the ballpark of 1,600.
 
-However, according to a [March press-release](https://www.brown.edu/news/2020-03-26/admitted) Brown anticipated that only 1,665 prospective students would accept their admissions offers (out of 2,533). **Did Brown grossly underestimate its yield rate?**
+However, according to a [March press-release](https://www.brown.edu/news/2020-03-26/admitted) Brown anticipated that only 1,665 prospective students would accept their admissions offers (out of 2,533). **Did Brown grossly underestimate its yield rate?** (**Update 2020-10-21:**) No, given the total number of first-years, this is almost certainly an issue with double-counting students.
