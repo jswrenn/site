@@ -109,7 +109,7 @@
           <section><header><h3>Author</h3></header>
             <dl>
               <dt><a rel=noopener href="https://github.com/jswrenn/typic">typic</a></dt>
-              <dd>Transmute memory fearlessly.</dd>
+              <dd>Transmute memory fearlessly. A prototype of language-level safe transmutation in Rust.</dd>
 
               <dt><a rel=noopener href="https://github.com/jswrenn/turnout-for-what">tfw</a></dt>
               <dd>Shell utility for conditional redirection.</dd>
@@ -195,15 +195,15 @@
         <header><h2>Publications</h2></header>
         <dl class="publication">
 
-          <dt>Error Messages Are Classifiers</dt>
+          <dt>Error Messages Are Classifiers (2017)</dt>
           <dd>
             <dl class="details">
               <dt>Co-Authors</dt>
               <dd><a href="//cs.brown.edu/~sk/">Shriram Krishnamurthi</a></dd>
               <dt>Downloads</dt>
               <dd>
-                <a href="https://jswrenn.com/Wrenn, Krishnamurthi - Error Messages Are Classifiers (Paper).pdf">Paper</a>
-                <a href="https://jswrenn.comWrenn, Krishnamurthi - Error Messages Are Classifiers (Talk).pdf">Talk</a>
+                <a href="/publications/Wrenn, Krishnamurthi - Error Messages Are Classifiers (Paper).pdf">Paper</a>
+                <a href="/publications/Wrenn, Krishnamurthi - Error Messages Are Classifiers (Talk).pdf">Talk</a>
               </dd>
               <dt>Abstract</dt>
               <dd>We take the perspective that error reports are really <em>classifiers</em> of program information. They should therefore be subjected to the same measures as other classifiers (e.g., precision and recall). We formalize this perspective as a process for assessing error reports, describe our application of this process to <a href="//pyret.org">Pyret</a>, and present a preliminary study on the utility of the resulting error reports.</dd>
@@ -212,14 +212,14 @@
             </dl>
           </dd>
 
-          <dt>Who Tests the Testers?</dt>
+          <dt>Who Tests the Testers? (2018)</dt>
           <dd>
             <dl class="details">
               <dt>Co-Authors</dt>
               <dd><a href="//cs.brown.edu/~sk/">Shriram Krishnamurthi</a>, <a href="//cs.brown.edu/~kfisler/">Kathi Fisler</a></dd>
               <dt>Downloads</dt>
               <dd>
-                <a href="https://cs.brown.edu/~sk/Publications/Papers/Published/wkf-who-tests-testers/paper.pdf">Paper</a>
+                <a href="/publications/Wrenn, Krishnamurthi, Fisler - Who Tests the Testers.pdf">Paper</a>
               </dd>
               <dt>Abstract</dt>
               <dd>Instructors routinely use automated assessment methods to evaluate the semantic qualities of student implementations and, sometimes, test suites. In this work, we distill a variety of automated assessment methods in the literature down to a pair of assessment models. We identify pathological assessment outcomes in each model that point to underlying methodological flaws. These theoretical flaws broadly threaten the validity of the techniques, and we actually observe them in multiple assignments of an introductory programming course. We propose adjustments that remedy these flaws and then demonstrate, on these same assignments, that our interventions improve the accuracy of assessment. We believe that with these adjustments, instructors can greatly improve the accuracy of automated assessment.</dd>
@@ -228,14 +228,14 @@
             </dl>
           </dd>
 
-          <dt>Executable Examples for Programming Problem Comprehension</dt>
+          <dt>Executable Examples for Programming Problem Comprehension (2019)</dt>
           <dd>
             <dl class="details">
               <dt>Co-Authors</dt>
               <dd><a href="//cs.brown.edu/~sk/">Shriram Krishnamurthi</a></dd>
               <dt>Downloads</dt>
               <dd>
-                <a href="https://jswrenn.com/Wrenn, Krishnamurthi - Executable Examples for Programming Problem Comprehension (Paper).pdf">Paper</a>
+                <a href="/publications/Wrenn, Krishnamurthi - Executable Examples for Programming Problem Comprehension (Paper).pdf">Paper</a>
               </dd>
               <dt>Abstract</dt>
               <dd>
@@ -244,6 +244,41 @@
               </dd>
               <dt>DOI</dt>
               <dd><a href="https://doi.org/10.1145/3291279.3339416">10.1145/3291279.3339416</a></dd>
+            </dl>
+          </dd>
+
+          <dt>Will Students Write Tests Early Without Coercion? (2020)</dt>
+          <dd>
+            <dl class="details">
+              <dt>Co-Authors</dt>
+              <dd><a href="//cs.brown.edu/~sk/">Shriram Krishnamurthi</a></dd>
+              <dt>Downloads</dt>
+              <dd>
+                <a href="/publications/Wrenn, Krishnamurthi - Will Students Write Tests Early Without Coercion.pdf">Paper</a>
+              </dd>
+              <dt>Abstract</dt>
+              <dd>
+                <p>Students faced with a programming task often begin their implementation without a sufficient understanding of the problem. Several prior papers suggest that formulating input–output examples <em>before</em> beginning one&rsquo;s implementation is the key to averting problem misunderstandings, but that students are loath to actually do it. Is outright <em>coercion</em> instructors&rsquo; only hope to convince students to follow this methodology and hence help themselves?</p>
+                <p>We conjecture that students&rsquo; reluctance may stem from the disaffordances of their programming environments. In this work, we augment the student&rsquo;s programming environment to encourage examples-first development, and design a novel measure to assess students&rsquo; adherence to this methodology. We apply these measures to students using our modified environment in a semester-long course, and find high <em>voluntary</em> adherence, especially relative to the literature&rsquo;s low expectations.</p>
+              </dd>
+              <dt>DOI</dt>
+              <dd><a href="https://doi.org/10.1145/3428029.3428060">10.1145/3428029.3428060</a></dd>
+            </dl>
+          </dd>
+
+          <dt>Using Relational Problems to Teach Property-Based Testing (2020)</dt>
+          <dd>
+            <dl class="details">
+              <dt>Co-Authors</dt>
+              <dd><a href="//cs.brown.edu/~tbn/">Tim Nelson</a>, <a href="//cs.brown.edu/~sk/">Shriram Krishnamurthi</a></dd>
+              <dt>Downloads</dt>
+              <dd>
+                <a href="/publications/Wrenn, Krishnamurthi - Will Students Write Tests Early Without Coercion.pdf">Paper</a>
+              </dd>
+              <dt>Abstract</dt>
+              <dd>
+                <p>The success of QuickCheck has led to the development of property-based testing (PBT) libraries for many languages and the process is getting increasing attention. However, unlike regular testing, PBT is not widespread in collegiate curricula. We find that the use of “relational” problems — those for which an input may admit multiple valid outputs — easily motivates the use of PBT. We also notice that such problems are readily available in the computer science pantheon of problems (e.g., many graph and sorting algorithms).</p>
+              </dd>
             </dl>
           </dd>
 
