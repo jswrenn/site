@@ -1,5 +1,5 @@
 +++
-title = "Private Implementations of a Public Trait"
+title = "Scoped Trait Implementations"
 date = 2020-10-18
 tags = ["rust"]
 +++
