@@ -63,16 +63,21 @@
       }
 
       a {
-        background-color: black;
-        color: white;
+        color: blue;
+        background-color: rgba(0,0,0,0.1);
         text-decoration: none;
       }
 
       a:hover {
-        outline: 1px black solid;
-        text-decoration: none;
-        color: initial;
-        background-color:initial;
+        text-decoration-line: underline;
+        text-decoration-style: dotted;
+      }
+
+      dt > a {
+        font-weight: bold;
+      }
+      dd a {
+        background-color: rgba(0,0,0,0.05);
       }
 
       .publication > dt {
@@ -141,11 +146,11 @@
           </section>
           <section><header><h3>Core Contributor</h3></header>
             <dl>
-              <dt><a rel=noopener href="https://www.pyret.org/">Pyret</a></dt>
-              <dd>A programming language designed by computer science educators, for computer science education. I prototyped Pyret's initial support for tabular data operations.</dd>
+              <dt><a rel=noopener href="https://www.pyret.org/">Pyret Programming Language</a></dt>
+              <dd>A programming language designed by computer science educators, for computer science education. I lead the initial design and implementation work of Pyret's <a href="https://www.pyret.org/docs/latest/tables.html">language-level support for tabular data</a>, and <a href="https://github.com/brownplt/pyret-lang/wiki/Error-Reporting,-July-2016">designed most of Pyret's error messages</a>.</dd>
 
-              <dt><a rel=noopener href="https://www.code.pyret.org/">Code.Pyret.Org</a></dt>
-              <dd>The best way to write Pyret programs. I overhauled Pyret's error messages.</dd>
+              <dt><a rel=noopener href="https://www.code.pyret.org/">Pyret IDE</a></dt>
+              <dd>I implemented support for <a href="https://github.com/brownplt/pyret-lang/wiki/Error-Reporting,-July-2016">rich, hypertext error messages</a>.</dd>
 
               <dt><a rel=noopener href="https://nalgebra.org/">nalgebra</a></dt>
               <dd>Linear algebra library for the Rust programming language. Contributed <a href="https://github.com/rustsim/nalgebra/pulls?q=author%3Ajswrenn">numerous</a> improvements to ergonomics and memory safety.</dd>
