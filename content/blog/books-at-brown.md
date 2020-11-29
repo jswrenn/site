@@ -83,28 +83,28 @@ We'll estimate the "GDP" of a course as its enrollment multiplied by the total c
 
 With a staggering GDP of **$82,325.00**, CHEM0360 *Organic Chemistry* trounces all competition. The top-25 courses with the highest GDP follow:
 
-| GDP       | Enrl | Cost    | Dept | Code | Title                                                          |
-| ---------:|-----:|--------:|-----:|:-----|:---------------------------------------------------------------|
-| $82325.00 | 1110 | $222.50 | CHEM | 0360 | *Organic Chemistry*                                            |
-| $41526.50 |  157 | $529.00 | ECON | 1710 | *Investments I*                                                |
-| $33861.00 |  193 | $451.48 | ECON | 1210 | *Intermediate Macroeconomics*                                  |
-| $30750.00 |  410 | $150.00 | APMA | 1650 | *Statistical Inference I*                                      |
-| $30475.50 |  495 | $184.70 | CHEM | 0330 | *Equilibrium, Rate, and Structure*                             |
-| $24163.00 |  292 | $165.50 | ECON | 1620 | *Introduction to Econometrics*                                 |
-| $21924.00 |  522 | $116.00 | PHYS | 0030 | *Basic Physics A*                                              |
-| $20790.00 |  126 | $165.00 | APMA | 1210 | *Operations Research: Deterministic Models*                    |
-| $20043.12 |  276 | $145.24 | BIOL | 0530 | *Principles of Immunology*                                     |
-| $19293.75 |  147 | $131.25 | POLS | 1120 | *Campaigns and Elections*                                      |
-| $18575.92 |  152 | $122.21 | POLS | 1010 | *Topics in American Constitutional Law*                        |
-| $18184.76 |   74 | $245.74 | ECON | 1750 | *Investments II*                                               |
-| $17737.50 |  398 |  $82.50 | NEUR | 0010 | *The Brain: An Introduction to Neuroscience*                   |
-| $15118.56 |  288 | $104.99 | MATH | 0100 | *Introductory Calculus, Part II*                               |
-| $14909.34 |  282 | $105.74 | MATH | 0180 | *Intermediate Calculus*                                        |
-| $14790.00 |  204 | $145.00 | SOC  | 1100 | *Introductory Statistics for Social Research*                  |
-| $13725.44 |  128 | $214.46 | SOC  | 1315 | *Macro-Organizational Theory*                                  |
-| $13534.00 |  134 | $101.00 | CSCI | 1410 | *Artificial Intelligence*                                      |
-| $13500.00 |   75 | $180.00 | CLPS | 0900 | *Statistical Methods*                                          |
-| $13350.00 |  178 | $150.00 | APMA | 1655 | *Statistical Inference I*                                      |
+| GDP        | Enrl | Cost    | Dept | Code | Title                                                          |
+| ----------:|-----:|--------:|-----:|:-----|:---------------------------------------------------------------|
+| $82,325.00 |  370 | $222.50 | CHEM | 0360 | *Organic Chemistry*                                            |
+| $41,526.50 |  157 | $529.00 | ECON | 1710 | *Investments I*                                                |
+| $33,861.00 |  150 | $451.48 | ECON | 1210 | *Intermediate Macroeconomics*                                  |
+| $30,750.00 |  205 | $150.00 | APMA | 1650 | *Statistical Inference I*                                      |
+| $30,475.50 |  165 | $184.70 | CHEM | 0330 | *Equilibrium, Rate, and Structure*                             |
+| $24,163.00 |  146 | $165.50 | ECON | 1620 | *Introduction to Econometrics*                                 |
+| $21,924.00 |  189 | $116.00 | PHYS | 0030 | *Basic Physics A*                                              |
+| $20,790.00 |  126 | $165.00 | APMA | 1210 | *Operations Research: Deterministic Models*                    |
+| $20,043.12 |  138 | $145.24 | BIOL | 0530 | *Principles of Immunology*                                     |
+| $19,293.75 |  147 | $131.25 | POLS | 1120 | *Campaigns and Elections*                                      |
+| $18,575.92 |  152 | $122.21 | POLS | 1010 | *Topics in American Constitutional Law*                        |
+| $18,184.76 |   74 | $245.74 | ECON | 1750 | *Investments II*                                               |
+| $17,737.50 |  215 |  $82.50 | NEUR | 0010 | *The Brain: An Introduction to Neuroscience*                   |
+| $15,118.56 |  144 | $104.99 | MATH | 0100 | *Introductory Calculus, Part II*                               |
+| $14,909.34 |  141 | $105.74 | MATH | 0180 | *Intermediate Calculus*                                        |
+| $14,790.00 |  102 | $145.00 | SOC  | 1100 | *Introductory Statistics for Social Research*                  |
+| $13,725.44 |   64 | $214.46 | SOC  | 1315 | *Macro-Organizational Theory*                                  |
+| $13,534.00 |  134 | $101.00 | CSCI | 1410 | *Artificial Intelligence*                                      |
+| $13,500.00 |   75 | $180.00 | CLPS | 0900 | *Statistical Methods*                                          |
+| $13,350.00 |   89 | $150.00 | APMA | 1655 | *Statistical Inference I*                                      |
 
 ### Department GDP
 Next, we'll estimate the "GDP" of a *department* as the combined GDP of its courses.
