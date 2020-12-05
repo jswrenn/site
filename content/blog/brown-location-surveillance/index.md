@@ -24,7 +24,7 @@ In an [interview with The Brown Daily Herald](https://www.browndailyherald.com/2
 
 The mechanics of that last indicator are pretty self-explanatory, but what about the others? [Canvas](https://it.brown.edu/services/type/canvas-learning-management-system) *doesn't* [Want To Know Your Location](https://knowyourmeme.com/memes/google-wants-to-know-your-location). **In this post, I'm going to break down the technical mechanisms behind each of these indicators.**
 
-For the most part, I do not have insider knowledge on how Brown reached its decisions. Rather, I'm going to consider each of the indicators Brian Clark named, and describe the technical mechanims to which Brown *could* have availed itself to generation location data.
+For the most part, I do not have insider knowledge on how Brown reached its decisions. Rather, I'm going to consider each of the indicators Brian Clark named, and describe the technical mechanisms to which Brown *could* have availed itself to generating location data.
 
 ## Indications of Building Access
 This is an easy one. Brown's buildings are located on Brown's campus. Brown's campus is in Providence. If you are in Brown's buildings, you are on Brown's campus, in Providence. QED.
@@ -53,7 +53,7 @@ In practice, IP addresses can be used to *roughly* geolocate a device. Batches o
 Brown probably *isn't* analyzing the access logs of its *individual* web services (like Canvas). Rather, they need only to audit the access logs of its three identity access management (IAM) systems:
 * The [Google Workplace](https://workspace.google.com/) IAM system is used to control access to your @brown.edu email, and to the various Google Drive services. [**Google Workplace** provides administrators with login audit logs that include users' IP addresses.](https://support.google.com/a/answer/4580120?hl=en)
 * The [Shibboleth](https://www.shibboleth.net) IAM system controls access to all *other* Brown web services, such as Canvas. It's what you think of as your "Brown account". Shibboleth is *very* flexible, and can be [configured to log IP addresses](https://wiki.shibboleth.net/confluence/display/IDP30/AuditLoggingConfiguration#AuditLoggingConfiguration-GenericFields).
-* [DUO](https://duo.com/) is used to provide two-factor authentication for Shibboleth logins. [It too provide administrators with detailed access logs.](https://help.duo.com/s/article/1023?language=en_US#docs-internal-guid-0aa3b4ce-c686-7559-8814-1377592fce4a:~:text=Access%20Device).
+* [DUO](https://duo.com/) is used to provide two-factor authentication for Shibboleth logins. [It too provides administrators with detailed access logs.](https://help.duo.com/s/article/1023?language=en_US#docs-internal-guid-0aa3b4ce-c686-7559-8814-1377592fce4a:~:text=Access%20Device).
 
 You can partly view your Google Workplace login history for yourself by opening your Brown email and clicking "Details" in the bottom right-hand corner of the page; e.g.:
 
