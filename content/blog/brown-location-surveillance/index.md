@@ -6,11 +6,11 @@ tags = ["Brown University", "surveillance"]
 
 In September 2020, Brown University [accused students](https://www.browndailyherald.com/2020/09/28/remote-students-receive-emails-brown-accusing-violating-code-student-conduct) of lying about their location; e.g.:
 
-<a href="https://www.facebook.com/permalink.php?story_fbid=2408913859415693&id=100008913073123"><img src="/blog/brown-location-surveillance/notice.png" style="outline: 1px black solid" height="auto" width="100%" alt="The University has learned that between September 14, 2020 and September 21, 2020 you were allegedly in the Providence area during which time your location of study was listed as remote. This alleged behavior is a violation of the Student Code of Conduct and the COVID-19 Campus Safety Policy. A copy of the Student Commitment to COVID-19 Community Health and Safety Requirements is attached for your review, along with this link to the COVID-19 Campus Safety Policy. failure to abide by these requirements is a violation of the Code of Student Conduct. 
+<img src="/blog/brown-location-surveillance/notice.png" style="outline: 1px black solid" height="auto" width="100%" alt="The University has learned that between September 14, 2020 and September 21, 2020 you were allegedly in the Providence area during which time your location of study was listed as remote. This alleged behavior is a violation of the Student Code of Conduct and the COVID-19 Campus Safety Policy. A copy of the Student Commitment to COVID-19 Community Health and Safety Requirements is attached for your review, along with this link to the COVID-19 Campus Safety Policy. failure to abide by these requirements is a violation of the Code of Student Conduct. 
 Based on the details of the incident and your student conduct history, the Office of Student Conduct & Community Standards has decided to allow you the opportunity to accept responsibility for the following prohibited conduct without having a COVID-19 Dean's Review Meeting:
 • D.8 Failure to Comply
 • D.13 Misrepresentation
-"></img></a>
+"></img>
 
 **What was Brown's basis for these accusations?**
 
@@ -105,8 +105,11 @@ The [*Family Educational Right and Education Act*](https://en.wikipedia.org/wiki
 
 <div style='position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;'><iframe src='https://www.youtube.com/embed/jWzBrC8dVnw' style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder='0' allowfullscreen></iframe></div>
 
-If you would like to go beyond my blog post and learn *exactly* how Brown University knows your location, [file a FERPA request](https://www.brown.edu/about/administration/registrar/student-information-rightsferpa). Brown University is obligated to respond within 45 days. If you'd like to attempt this, please <a href="mailto:jack@wrenn.fyi">drop me an email</a> — I'd be happy to help you formulate your request.
+If you are a current Brown student would like to go beyond my blog post and learn *exactly* how Brown University knows your location, [file a FERPA request](https://www.brown.edu/about/administration/registrar/student-information-rightsferpa). Brown University is obligated to respond within 45 days. You'll need to be specific with your request. I suggest requesting:
+- the timestamps, MAC addresses and BSSIDs associated with your devices' connections to Brown University's wireless access points
+- the timestamps and locations associated with all building accesses conducted with your ID card
+- the login audit data associated with all Google Workplace, Shibboleth, and DUO authentications conducted by your accounts
 
-Additionally, the [*General Data Protection Regulation*](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) gives EU citizens and residents expansive control over how their personally identifiable information (PII) is used, and the right to request a copy of or the destruction of collected data. I believe these requests should be directed to [Brown's compliance office](https://compliance.brown.edu/).
+Additionally, the [*General Data Protection Regulation*](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) gives EU citizens and residents expansive control over how their personally identifiable information (PII) is used, and the right to request a copy of or the destruction of collected data. I believe these requests should be directed to [Brown's compliance office](https://compliance.brown.edu/). You might be able to do this even if you're a Brown alumni.
 
 **If you attempt either of these steps, <a href="mailto:jack@wrenn.fyi">please get in touch</a>!** I'm very curious as to what Brown is *actually* doing.
