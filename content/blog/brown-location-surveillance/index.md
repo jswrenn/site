@@ -84,7 +84,7 @@ Brown [maintains databases of the MAC addresses of all connected devices](https:
 If you have ever connected to an authenticated network, Brown will be able to de-anonymize your connections to Brown Guest — *unless* your device implements [MAC address randomization](https://en.wikipedia.org/wiki/MAC_address#Randomization), which (as the name suggests) randomizes your device's MAC address on a per-network basis.
 
 ### Localization
-Brown's access points log the MAC addresses of the devices that have connected to them. As of 2015, Brown retrained these logs for at least several years — possibly indefinitely. Since there are so many access points on campus, which access point you are connected to can narrow your location down to a particular room. **Combined, these logs paint a *very* accurate picture of your location on campus at any time.**
+Brown's access points log the MAC addresses of the devices that have connected to them. As of 2015, Brown retained these logs for at least several years — possibly indefinitely. Since there are so many access points on campus, which access point you are connected to can narrow your location down to a particular room. **Combined, these logs paint a *very* accurate picture of your location on campus at any time.**
 
 You do not need to be *actively* browsing the internet for Brown to know where you are via this mechanism. As you walk through campus, your phone likely *automatically* reconnects to the nearest available access point. If you are within a literal stone's throw of campus, you should assume that CIS can (roughly) identify your location.
 
