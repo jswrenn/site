@@ -86,7 +86,9 @@ If you have ever connected to an authenticated network, Brown will be able to de
 ### Localization
 Brown's access points log the MAC addresses of the devices that have connected to them. As of 2015, Brown retained these logs for at least several years — possibly indefinitely. Since there are so many access points on campus, which access point you are connected to can narrow your location down to a particular room. **Combined, these logs paint a *very* accurate picture of your location on campus at any time.**
 
-You do not need to be *actively* browsing the internet for Brown to know where you are via this mechanism. As you walk through campus, your phone likely *automatically* reconnects to the nearest available access point. If you are within a literal stone's throw of campus, you should assume that CIS can (roughly) identify your location.
+You do not need to be *actively* browsing the internet for Brown to know where you are via this mechanism. As you walk through campus, your phone likely *automatically* reconnects to the nearest available access point. If you are within a literal stone's throw of campus, you should assume that Brown can (roughly) identify your location.
+
+Furthermore, if you are in range of three or more of Brown's ARUBA access points, Brown can [precisely triangulate your location](https://www.arubanetworks.com/assets/ds/DS_ALE.pdf). This functionality is [common](https://www.arubanetworks.com/pdf/technology/whitepapers/wp_Hybrid_WIDS.pdf) in enterprise-grade WiFi infrastructure. (If you've ever tried to run a "rogue" WiFi router in your dorm room and receive an angry knock on your door — this is the mechanism by which you were located.) 
 
 ## Bonus: Surveillance Cameras
 
