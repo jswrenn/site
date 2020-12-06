@@ -16,7 +16,7 @@ Based on the details of the incident and your student conduct history, the Offic
 
 <!-- more -->
 
-In an [interview with The Brown Daily Herald](https://www.browndailyherald.com/2020/09/28/remote-students-receive-emails-brown-accusing-violating-code-student-conduct), University Spokesperson Brian Clark said the University evaluated a variety indicators, including:
+In an [interview with The Brown Daily Herald](https://www.browndailyherald.com/2020/09/28/remote-students-receive-emails-brown-accusing-violating-code-student-conduct), University Spokesperson Brian Clark said the University evaluated a variety of indicators, including:
 1. indications of building access,
 2. indications of accessing private electronic services,
 3. indications of accessing secure networks, and
@@ -29,7 +29,7 @@ For the most part, I do not have insider knowledge on how Brown reached its deci
 ## Indications of Building Access
 This is an easy one. Brown's buildings are located on Brown's campus. Brown's campus is in Providence. If you are in Brown's buildings, you are on Brown's campus, in Providence. QED.
 
-At Brown, building access is primarily regulated with electronic control systems (namely Software House's [**C•CURE 9000** system](https://www.swhouse.com/products/software_CCURE9000.aspx) system), not mechanical keys.
+At Brown, building access is primarily regulated with electronic control systems (namely Software House's [**C•CURE 9000**](https://www.swhouse.com/products/software_CCURE9000.aspx) system), not mechanical keys.
 
 Encoded on [track 2](https://en.wikipedia.org/wiki/Magnetic_stripe_card#Track_2) of the magnetic stripe on every University ID card is a sixteen digit number that uniquely identifies the card:
 
@@ -46,14 +46,14 @@ But, *also* unlike a mechanical key, *every* swipe of a Brown ID card is logged 
 ## Indicators from Electronic Services
 University web services like Canvas *don't* directly ask you for your location. Nonetheless, accessing these services leaves a location finger print: your IP address.
 
-You [IP address](https://en.wikipedia.org/wiki/IP_address) is a number that identifies your device (computer, phone, etc.) for the purposes of networking routing. In principle, nobody but you and your internet provide know the *exact* mapping of your IP address to your physical address.
+Your [IP address](https://en.wikipedia.org/wiki/IP_address) is a number that identifies your device (computer, phone, etc.) for the purposes of network routing. In principle, nobody but you and your internet provider know the *exact* mapping of your IP address to your physical address.
 
-In practice, IP addresses can be used to *roughly* geolocate a device. Batches of IP addresses are associated *loosely* with geographic areas. Since every web service access leaves an IP address as a trace, there is tremendous incentives for advertisers to be able accurately identify what city or town an IP address is probably associated with.
+In practice, IP addresses can be used to *roughly* geolocate a device. Batches of IP addresses are associated *loosely* with geographic areas. Since every web service access leaves an IP address as a trace, there are tremendous incentives for advertisers to be able accurately identify what city or town an IP address is probably associated with.
 
 Brown probably *isn't* analyzing the access logs of its *individual* web services (like Canvas). Rather, they need only to audit the access logs of its three identity access management (IAM) systems:
 * The [Google Workplace](https://workspace.google.com/) IAM system is used to control access to your @brown.edu email, and to the various Google Drive services. [**Google Workplace** provides administrators with login audit logs that include users' IP addresses.](https://support.google.com/a/answer/4580120?hl=en)
 * The [Shibboleth](https://www.shibboleth.net) IAM system controls access to all *other* Brown web services, such as Canvas. It's what you think of as your "Brown account". Shibboleth is *very* flexible, and can be [configured to log IP addresses](https://wiki.shibboleth.net/confluence/display/IDP30/AuditLoggingConfiguration#AuditLoggingConfiguration-GenericFields).
-* [DUO](https://duo.com/) is used to provide two-factor authentication for Shibboleth logins. [It too provides administrators with detailed access logs.](https://help.duo.com/s/article/1023?language=en_US#docs-internal-guid-0aa3b4ce-c686-7559-8814-1377592fce4a:~:text=Access%20Device).
+* [DUO](https://duo.com/) is used to provide two-factor authentication for Shibboleth logins. [It too provides administrators with detailed access logs](https://help.duo.com/s/article/1023?language=en_US#docs-internal-guid-0aa3b4ce-c686-7559-8814-1377592fce4a:~:text=Access%20Device).
 
 You can partly view your Google Workplace login history for yourself by opening your Brown email and clicking "Details" in the bottom right-hand corner of the page; e.g.:
 
@@ -101,11 +101,11 @@ While Brown probably does not *currently* have the capacity to both broadly and 
 <div style='position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;'><iframe src='https://www.youtube.com/embed/bk395D0tPRA' style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder='0' allowfullscreen></iframe></div>
 
 ## How do I find out more?
-The [*Family Educational Right and Education Act*](https://en.wikipedia.org/wiki/Family_Educational_Rights_and_Privacy_Act) empowers students to request their education records from their University.
+The [*Family Educational Rights and Privacy Act*](https://en.wikipedia.org/wiki/Family_Educational_Rights_and_Privacy_Act) empowers students to request their education records from their University.
 
 <div style='position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;'><iframe src='https://www.youtube.com/embed/jWzBrC8dVnw' style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder='0' allowfullscreen></iframe></div>
 
-If you are a current Brown student would like to go beyond my blog post and learn *exactly* how Brown University knows your location, [file a FERPA request](https://www.brown.edu/about/administration/registrar/student-information-rightsferpa). Brown University is obligated to respond within 45 days. You'll need to be specific with your request. I suggest requesting:
+If you are a current Brown student and would like to go beyond my blog post and learn *exactly* how Brown University knows your location, [file a FERPA request](https://www.brown.edu/about/administration/registrar/student-information-rightsferpa). Brown University is obligated to respond within 45 days. You'll need to be specific with your request. I suggest requesting:
 - the timestamps, MAC addresses and BSSIDs associated with your devices' connections to Brown University's wireless access points
 - the timestamps and locations associated with all building accesses conducted with your ID card
 - the login audit data associated with all Google Workplace, Shibboleth, and DUO authentications conducted by your accounts
