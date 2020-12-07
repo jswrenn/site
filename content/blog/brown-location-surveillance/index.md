@@ -88,7 +88,7 @@ Brown's access points log the MAC addresses of the devices that have connected t
 
 You do not need to be *actively* browsing the internet for Brown to know where you are via this mechanism. As you walk through campus, your phone likely *automatically* reconnects to the nearest available access point. If you are within a literal stone's throw of campus, you should assume that Brown can (roughly) identify your location.
 
-Furthermore, if you are in range of three or more of Brown's ARUBA access points, Brown can precisely triangulate your location. This functionality is [common](https://www.arubanetworks.com/pdf/technology/whitepapers/wp_Hybrid_WIDS.pdf) in enterprise-grade WiFi infrastructure. (If you've ever tried to run a "rogue" WiFi router in your dorm room and receive an angry knock on your door — this is the mechanism by which you were located.) 
+Furthermore, if you are in range of three or more of Brown's ARUBA access points, Brown can, in principle, precisely triangulate your location. This functionality is [common](https://www.arubanetworks.com/pdf/technology/whitepapers/wp_Hybrid_WIDS.pdf) in enterprise-grade WiFi infrastructure. (If you've ever tried to run a "rogue" WiFi router in your dorm room and receive an angry knock on your door — this is the mechanism by which you were located.)
 
 ## How do I find out more?
 The [*Family Educational Rights and Privacy Act*](https://en.wikipedia.org/wiki/Family_Educational_Rights_and_Privacy_Act) empowers students to request their education records from their University.
