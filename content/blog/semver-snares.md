@@ -39,4 +39,4 @@ The model crate author is the target audience of this series. The entries will c
 My model crate consumer's use of a crate is guided by that crate's documentation and by Rust's error messages. For the sake of this series, I will *generally* assume that crate consumers do not go out of their way to rely on unspecified behavior. (And, if they do, they have pinned the exact version of the crate, and won't file a bug report when a `cargo update` breaks their build.)
 
 ## Snares
-Coming soon! I'll keep the section updated as new posts are released.
+- [Sizedness and Size](/blog/semver-snares-size)
