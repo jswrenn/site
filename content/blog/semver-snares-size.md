@@ -13,6 +13,7 @@ In Rust, changes to a type's size are not usually understood to be Breaking Chan
 For one, you can change the *sizedness* of a type, by adding an unsized field:
 ```rust
 pub mod upstream {
+  #[repr(C)]
   pub struct Foo {
     bar: u8,
     // uncommenting this field is a breaking change:
@@ -47,6 +48,7 @@ pub mod downstream {
 Changing the size of a `Sized` type can also break (poorly-behaving) downstream code. The [`mem::size_of`](https://doc.rust-lang.org/core/mem/fn.size_of.html) intrinsic is a safe function that provides the size (in bytes) of any [`Sized`](https://doc.rust-lang.org/core/marker/trait.Sized.html) type. By convention, downstream code should not rely on `mem::size_of` producing a SemVer stable result, but that's only a convention. Consider:
 ```rust
 pub mod upstream {
+  #[repr(C)]
   pub struct Foo {
     bar: u8,
     // uncommenting this field is a breaking change for `downstream`:
@@ -94,6 +96,7 @@ Consequently, upstream changes that turn ZSTs into non-ZSTs can break downstream
 
 ```rust
 pub mod upstream {
+  #[repr(C)]
   pub struct Foo {
     bar: (),
     // uncommenting this field is a breaking change for `downstream`:
