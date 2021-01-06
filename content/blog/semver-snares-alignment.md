@@ -5,7 +5,7 @@ tags = ["rust","semver"]
 +++
 [*(Part of an ongoing series!)*](/blog/semver-snares)
 
-In Rust, changes to a type's alignment are not usually understood to be Breaking Changes™. Of course, that isn't to say you *can't* break downstream code by changing the alignment of a type...
+In Rust, changes to a type's alignment are not usually understood to be Breaking Changes™. Of course, that isn't to say you *can't* break safe, downstream code by changing the alignment of a type...
 
 <!-- more -->
 
@@ -35,7 +35,7 @@ pub mod downstream {
 </code></pre>
 
 ## `repr(transparent)`
-The `repr(transparent)` attribute also provides a mechanism for observing the alignment of a type. The `repr(transparent)` attribute can be applied to types where:
+The `repr(transparent)` attribute provides a mechanism for observing the alignment of a type. The `repr(transparent)` attribute can be applied to types where:
 - at most one field has size greater-than zero, and
 - all *other* fields have minimum alignment equal to 1
 
@@ -83,7 +83,7 @@ pub mod downstream {
    |                  ^^^ has alignment larger than 1
 </code></pre>
 
-You should therefore avoid `#[repr(transparent)]` unless the ZST field types are *documented* to remain ZSTs.
+You should therefore avoid `#[repr(transparent)]` unless the ZST field types are *documented* to have a minimum alignment of 1.
 
 ---
 

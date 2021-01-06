@@ -5,7 +5,7 @@ tags = ["rust","semver"]
 +++
 [*(Part of an ongoing series!)*](/blog/semver-snares)
 
-In Rust, changes to a type's size are not usually understood to be Breaking Changes™. Of course, that isn't to say you *can't* break downstream code by changing the size of a type...
+In Rust, changes to a type's size are not usually understood to be Breaking Changes™. Of course, that isn't to say you *can't* break safe downstream code by changing the size of a type...
 
 <!-- more -->
 
