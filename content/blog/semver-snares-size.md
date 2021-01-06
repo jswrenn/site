@@ -95,8 +95,9 @@ Consequently, upstream changes that turn ZSTs into non-ZSTs can break downstream
 ```rust
 pub mod upstream {
   pub struct Foo {
+    bar: (),
     // uncommenting this field is a breaking change for `downstream`:
-    /* bar: u8, */
+    /* baz: u8, */
   }
 }
 
