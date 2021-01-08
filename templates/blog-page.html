@@ -9,7 +9,7 @@
 {% block content %}
 <article itemscope itemtype="http://schema.org/BlogPosting">
   <header>
-    <h1 itemprop="headline">{{ page.title | markdown(inline=true) }}</h1>
+    <h1 itemprop="headline">{{ page.title | markdown(inline=true) | safe }}</h1>
     <time itemprop="datePublished" datetime="{{ page.date | date(format="%Y-%m-%d") }}">
       {{ page.date | date(format="%Y-%m-%d") }}
     </time>
