@@ -185,9 +185,8 @@ At the time of writing, there is [some effort to eliminate](https://github.com/r
 1. prohibit, on all but one field, most occurences of type parameters
 2. prohibit, on all but one field, most occurences of const parameters
 3. require, on all but one field, that field types are fully-implicitly constructible
-4. require, on all but one field, that field types are fully-implicitly constructible
-5. require, on all but one field, that field types have well-specified sizes and alignments
-6. document that changing the `repr` of *any* one-aligned ZST is a SemVer Breaking Change™
+4. require, on all but one field, that field types have well-specified sizes and alignments
+5. document that changing the `repr` of *any* one-aligned ZST is a SemVer Breaking Change™
 
 These requirements have far-reaching implications for the role of layout and `repr` in SemVer stability. Since these adjustments would likely need to be timed with an edition change anyways, it's worth considering if a simpler formulation of `repr(transparent)` exists. I think there is: limit `repr(transparent)` to structs on which at most one field is *not* `PhantomData`.
 
