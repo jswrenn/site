@@ -53,8 +53,10 @@ struct Bar(u8, Foo);
 Adding `repr(C)` or `repr(<primitive>)` to an ZST `enum` can increase its size:
 ```rust
 // uncommenting this line breaks `Bar`:
-/* #[repr(align(2))] */
-struct Foo;
+/* #[repr(isize)] */
+enum Foo {
+  Variant
+}
 
 #[repr(transparent)]
 struct Bar(u8, Foo);
@@ -145,7 +147,6 @@ struct Foo<const N: usize>([u8; N]);
 ```
 The instantiation of const-generic parameters can also affect the alignment of a type:
 ```rust
-use typenum::*;
 use std::mem::align_of;
 
 /// alignment of `ZST<{N}>` is equal to `N`
