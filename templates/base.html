@@ -29,7 +29,8 @@
             
             body {
               margin: 0 auto;
-              padding: 1em;
+              padding-right: 1em;
+              padding-bottom: 1em;
               max-width: 50em;
               overflow-x: hidden;
             }
@@ -118,16 +119,15 @@
 
     <body itemtype="http://schema.org/WebPage">
         <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
         <main itemscope itemtype="http://schema.org/Blog">
           <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
-          <header>
-            <h1 itemprop="name">
-              <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
-                <meta itemProp='name' content='Jack Wrenn' />
-                <a itemprop="url" href="/">Jack</a>
-              </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
-          </header>
-        
           {% block content %}{% endblock content %}
         </main>
     </body>
