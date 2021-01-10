@@ -41,3 +41,4 @@ My model crate consumer's use of a crate is guided by that crate's documentation
 ## Snares
 - [Sizedness and Size](/blog/semver-snares-size)
 - [Alignment](/blog/semver-snares-alignment)
+- [repr(transparent)](/blog/semver-snares-transparent)
