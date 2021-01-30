@@ -8,12 +8,12 @@
     <meta name=viewport content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="reset.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
     <style>
       html {
         margin: 0em;
-        font-size: 10pt;
+        font-size: 8pt;
         line-height: 1.75;
       }
 
@@ -22,13 +22,17 @@
         font-family: 'Raleway', sans-serif;
       }
 
+      em {
+        font-style: italic;
+      }
+
       a {
         color: blue;
         text-decoration: none; /* no underline */
       }
 
       code {
-        font-family: monospace;
+        font-family: 'Inconsolata', monospace;
       }
 
       ul {
@@ -60,49 +64,35 @@
       }
 
       body {
-        max-width: 8.5in;
-        height: 11in;
-        margin: 0 auto;
       }
 
       .page {
-        outline: 1px black solid;
-        padding: 0.5in;
-        height: 11in;
-        width: 8.5in;
-
-        display: grid;
-        grid-template-columns: 1fr 1.5fr;
-        grid-template-rows: 0.5fr 1fr 1fr;
-        gap: 1em 1em;
-        grid-template-areas:
-          "meta projects"
-          "education projects"
-          "employment projects";
+        /*outline: 1px rgba(0,0,0,0.1) solid;*/
+        height: 10in;
+        width: 7.5in;
+        margin: 0.5in;
       }
 
-      .projects { grid-area: projects; }
+      #page-1 {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        grid-template-rows: 1fr;
+        gap: 1em 1em;
+      }
+
       .meta { grid-area: meta; }
       .education { grid-area: education; }
       .employment { grid-area: employment; }
 
-      .page > section:not(.meta) {
+      .area {
+        padding: 1em;
+        width: -webkit-fill-available;
+      }
+
+      .area.bordered {
         border: 1px black dotted;
         box-shadow: 1em 1em rgba(0,0,0,0.1);
       }
-
-      .page > section.meta {
-        border: 1px transparent dotted;
-        box-shadow: 1em 1em rgba(0,0,0,0);
-      }
-
-      .page > section {
-        padding: 1em;
-      }
-
-      .page > section > section {
-      }
-
 
       .institution {
         margin-bottom: 0.4em;
@@ -124,28 +114,71 @@
       .education .when {
         float: right;
       }
-
-      
     </style>
   </head>
   <body itemscope itemtype="http://schema.org/Person">
-    <div class="page">
-      <section class="meta">
+    <div class="page" id="page-1">
+      <div class="column left">
         <style>
-          .meta .name {
-            margin-bottom: 0.3em;
+          #page-1 .column.left {
+            display: flex;
+            flex-direction: column;
+            justify-content:flex-end;
           }
 
-          .meta .contact {
-            display: grid;
-            grid-template: auto / 200px 1fr;
+          #page-1 .column.left > header {
+            flex: 1;
+          }
+
+          #page-1 .column.left > section {
+            flex: 0;
+            width: -webkit-fill-available;
+          }
+
+          #page-1 .column.left > section:not(:last-of-type) {
+            margin-bottom: 1em;
+          }
+
+          #page-1 section.meta {
+            align-self: start;
+          }
+
+
+          section.education,
+          section.employment,
+          section.awards
+          {
+            align-self: flex-end;
+          }
+
+          #page-1 section:not(.meta) {
+            height: min-content;
+            align-self: flex-end;
           }
         </style>
-        <header>
+        <header class="area" id="resume-header">
+          <style>
+            #resume-header {
+              border: 1px transparent dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0);
+            }
+          
+            #resume-header .name {
+              margin-bottom: 0.3em;
+            }
+
+            .contact-info {
+              display: grid;
+              grid-template: auto / 200px 1fr;
+              margin-top: 1.13em;
+            }
+
+            .contact-info dd {
+              text-align: right;
+            }
+          </style>
           <h2 class="name">Jack Wrenn</h2>
-        </header>
-        <section>
-          <dl class="contact">
+          <dl class="contact-info">
             <dt class="phone">Phone</dt>
             <dd><a rel=noopener href="tel:401-793-6774">401-793-6774</a></dd>
             <dt class="email">Email</dt>
@@ -155,9 +188,100 @@
             <dt class="github">Github</dt>
             <dd><a rel=noopener href="https://github.com/jswrenn">jswrenn</a></dd>
           </dl>
+        </header>
+
+        <section class="bordered area education">
+          <header><h2>Education</h2></header>
+          <section><header><h3 class="institution">Brown University</h3></header>
+            <span class="topic">Computer Science</span>
+            <ul class="degrees">
+              <li>
+                <span class="degree">Ph.D.</span>
+                <span class="when">(Anticipated) 2021</span>
+              </li>
+              <li>
+                <span class="degree">Sc.M.</span>
+                <span class="when">2018</span>
+              </li>
+            </ul>
+          </section>
+          <section><header><h3 class="institution">University of Rhode Island</h3></header>
+            <span class="topic">Computer Science, History</span>
+            <ul class="degrees">
+              <li>
+                <span class="degree">B.A.</span>
+                <span class="when">2015</span>
+              </li>
+            </ul>
+          </section>
         </section>
-      </section>
-      <section class="projects">
+        <section class="bordered area employment">
+          <style>
+            .employment .where {
+              font-style: italic;
+            }
+          
+            .employment .when {
+              float: right;
+            }
+
+            .employment .description {
+              display: block;
+              margin-left: 1em;
+              margin-top: 0.5em;
+            }
+          </style>
+          <header><h2>Employment</h2></header>
+          <section><header><h3 class="institution">Systems Operator</h3></header>
+            <span class="where">University of Rhode Island</span>
+            <span class="when">2011&ndash;2015</span>
+            <span class="description">
+              A systems operator and support technician, I provided technical support and maintained key infrastructure (Windows and Linux servers) for the ~40 staff members of URI’s student center.
+            </span>
+          </section>
+          <section><header><h3 class="institution">Course Staff</h3></header>
+            <span class="where">Brown University, URI</span>
+            <span class="when">2012&ndash;2020</span>
+            <span class="description">
+              I provided design, instructional, and infrastructure to support to various courses in OOP, functional programming, language design, and model-finding.
+            </span>
+          </section>
+          <section><header><h3 class="institution">Researcher</h3></header>
+            <span class="where">Brown University</span>
+            <span class="when">2015&ndash;2021</span>
+            <span class="description">
+              I contributed to the development of the Pyret Programming Language, and published five research papers on error reporting, software testing, and human factors.
+            </span>
+          </section>
+        </section>
+        <section class="bordered area awards">
+          <style>
+            .awards .where {
+              font-style: italic;
+            }
+          
+            .awards .when {
+              float: right;
+            }
+
+            .awards .description {
+              display: block;
+              margin-left: 1em;
+              margin-top: 0.5em;
+            }
+          </style>
+          <header><h2>Selected Awards</h2></header>
+          <section><header><h3 class="institution">Client Bug Bounty</h3></header>
+            <span class="where">Mozilla</span>
+            <span class="when">2019</span>
+            <span class="description">
+              I discovered a security issue in Firefox’s XSLT engine that enabled attackers to indefinitely execute JavaScript and make network requests (even with JavaScript disabled) <em>after</em> the tab was closed by the user. 
+            </span>
+          </section>
+        </section>
+    </div>
+    <div class="column right">
+      <section class="bordered area projects">
         <style>
           .projects .area h3 {
             margin-bottom: 0.4em;
@@ -169,107 +293,44 @@
           }
         </style>
         
-        <header><h2>Experience</h2></header>
-        <section class="area"><header><h3>Rust Programming Language</h3></header>
-          <p>I am passionate about expanding and leveraging Rust's language features to improve the safety and ergonomics of programming.</p>
+        <header><h2>Selected Projects</h2></header>
+        <section><header><h3>Rust Programming Language</h3></header>
+          <p>I am passionate about expanding and leveraging Rust’s language features to improve the safety and ergonomics of programming.</p>
 
           <h4>Safe Transmute Working Group</h4>
-          <p>I co-lead the working group tasked with making bit-reinterpration casts (e.g., <code>union</code>, <code>mem::transmute</code>) memory safe. I am the lead designer and author of the WG's <a href="https://github.com/rust-lang/rfcs/pull/2981">RFC-2981</a>.</p>
+          <p>I co-lead the working group tasked with making bit-reinterpretation casts (e.g., <code>union</code>, <code>mem::transmute</code>) memory safe. I am the lead designer and author of the WG’s <a href="https://github.com/rust-lang/rfcs/pull/2981">RFC-2981</a>.</p>
 
           <h4>Compiler Development</h4>
           <p>I was the implementor of RFC-2363, which permits fine-grain control over the memory layout of complex <code>enum</code> types; useful for C-interop and zero-copy parsing of network packets.</p>
 
           <h4>Open Source Libraries</h4>
-          <p>I am the lead maintainer of <a href="https://crates.io/crates/itertools">itertools</a>, a popular (&gt;16M downloads) library for ergonomic transformations and summarization of streams of data.</p>
+          <p>I have authored and contributed to numerous Rust libraries and utilities. I am the lead maintainer of <a href="https://crates.io/crates/itertools">itertools</a>, a popular (&gt;16M downloads) library for ergonomic transformations and summarization of streams of data.</p>
         </section>
         
         <section><header><h3>Pyret Programming Language</h3></header>
-          <p>Pyret is a programming language designed by computer science educators, for computer science education.</p> 
+          <p>I contribute to Pyret, a programming language designed by computer science educators, for computer science education.</p> 
 
           <h4>Error Messages</h4>
-          <p>I designed and developed Pyret's unique hypertext error messages, which leverage hyperlinks, highlights and in-line code snippets, that guide novice programmers towards deeply understanding their errors.</p>
+          <p>I designed and developed Pyret’s unique hypertext error messages, which leverage hyperlinks, highlights and in-line code snippets, that guide novice programmers towards deeply understanding their errors.</p>
 
           <h4>Data Science Support</h4>
-          <p>I designed and implemented Pyret's language-level support for manipulating tabular data.</p>
+          <p>I designed and implemented Pyret’s language-level support for manipulating tabular data.</p>
           
           <h4>Example-Driven Development</h4>
           <p>I developed and validated a cloud-hosted IDE for Pyret that encourages students to write input&ndash;ouput examples <em>before</em> they begin programming.</p>
 
           <h4>Evaluation at Scale</h4>
-          <p>I developed infrastructure for assessing the quality of students' Pyret programs and test suites at massive scale on a distributed supercomputing cluster, and developed an analysis to validate the robustness of these assessments.</p>
+          <p>I developed infrastructure for assessing the quality of students’ Pyret programs and test suites at massive scale on a distributed supercomputing cluster, and developed an analysis to validate the robustness of these assessments.</p>
         </section>
 
         <section><header><h3>Digital Archival</h3></header>
           <h4>Natural Language Processing</h4>
-          <p>I published a digital remix of Brown University's authoritative dead-tree encyclopedia, which leveraged natural language processing to extract timelines and insert hyperlinks.</p>
+          <p>I published a digital remix of Brown University’s authoritative dead-tree encyclopedia, which leveraged natural language processing to extract timelines and insert hyperlinks.</p>
 
           <h4>Digital Asset Management</h4>
           <p>I am currently developing a digital asset management system in Rust and Typescript to catalogue my archive of &gt;5,000 photographs, oral histories and written accounts of Brown University alumni.</p>
         </section>
-
       </section>
-      <section class="education">
-        <header><h2>Education</h2></header>
-        <section><header><h3 class="institution">Brown University</h3></header>
-          <span class="topic">Computer Science</span>
-          <ul class="degrees">
-            <li>
-              <span class="degree">Ph.D.</span>
-              <span class="when">(Anticipated) 2021</span>
-            </li>
-            <li>
-              <span class="degree">Sc.M.</span>
-              <span class="when">2018</span>
-            </li>
-          </ul>
-        </section>
-        <section><header><h3 class="institution">University of Rhode Island</h3></header>
-          <span class="topic">Computer Science, History</span>
-          <ul class="degrees">
-            <li>
-              <span class="degree">B.A.</span>
-              <span class="when">2015</span>
-            </li>
-          </ul>
-        </section>
-      </section>
-
-      <section class="employment">
-        <style>
-          .employment .where {
-            font-style: italic;
-          }
-        
-          .employment .when {
-            float: right;
-          }
-
-          .employment .description {
-            display: block;
-            margin-left: 1em;
-            text-align: justify;
-            margin-top: 0.5em;
-          }
-        </style>
-
-      
-        <header><h2>Employment</h2></header>
-        <section><header><h3 class="institution">Systems Operator</h3></header>
-          <span class="where">University of Rhode Island</span>
-          <span class="when">2011&ndash;2015</span>
-          <span class="description">
-            A systems operator and support technician, I provided technical support and maintained key infrastructure (Windows and Linux servers) for the ~40 staff members of URI's student center.
-          </span>
-        </section>
-        <section><header><h3 class="institution">Course Staff</h3></header>
-          <span class="where">Brown University</span>
-          <span class="when">2015&ndash;2020</span>
-          <span class="description">
-            FILL
-          </span>
-        </section>
-      </section>
-
     </div>
   </body>
 </html>
