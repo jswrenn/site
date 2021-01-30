@@ -28,8 +28,8 @@ I figured I would merely whip up a document of the appropriate size:
       }
 
       .page {
-        width: 8in;
-        height: 8in;
+        width: 8.5in;
+        height: 11in;
         padding: 0.5in;
         outline: 1px black solid;
       }
