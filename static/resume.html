@@ -6,7 +6,7 @@
     <meta name="description" content="Software Engineer">
     <meta name="author" content="John Wrenn">
     <meta name=viewport content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
@@ -30,18 +30,37 @@
 
     <style>
       * {
-        -webkit-hyphens: auto;
+      }
+    
+      @media not print {
+        html {
+          background: black;
+        }
+        body {
+          position: absolute;
+          background: white;
+          height: 11in;
+          width: 8.5in;
+        }
+      }
+    
+      * {
         hyphens: auto;
+        font-variant-ligatures: none;
       }
 
+
       html {
-        margin: 0em;
         font-size: 8pt;
         line-height: 1.75;
       }
 
       @page {
-        margin: 0.75in 0.5in;
+        margin: 0;
+      }
+
+      .page {
+        margin: 0.5in;
       }
 
       body {
@@ -66,6 +85,11 @@
         line-height: 1.75;
       }
 
+      .education {
+        margin-bottom: 0em;
+        padding-bottom: 0em;
+      }
+
       p {
         margin-bottom: 0.2em;
       }
@@ -83,6 +107,18 @@
       h5    {font-size: 1.125rem;}
       small {font-size: 0.889rem;}
 
+      h3 {
+        margin-top: 1em;
+      }
+
+      h4 {
+        margin-top: 1.1em;
+      }
+
+      p {
+        margin-top: 1pt;
+      }
+
       h1,
       h2 {
         margin-top: 0em;
@@ -90,7 +126,7 @@
       }
 
       .area > header {
-        border-bottom: 1px black dotted;
+        border-bottom: 1.5pt black dotted;
         margin-bottom: -0.6em;
       }
 
@@ -115,7 +151,7 @@
       }
 
       .area.bordered {
-        border: 1px black dotted;
+        border: 1.5pt black dotted;
         box-shadow: 1em 1em rgba(0,0,0,0.1);
       }
 
@@ -145,45 +181,14 @@
     <div class="page" id="page-1">
       <div class="column left">
         <style>
-          #page-1 .column.left {
-            display: flex;
-            flex-direction: column;
-            justify-content:flex-end;
-          }
-
-          #page-1 .column.left > header {
-            flex: 1;
-          }
-
-          #page-1 .column.left > section {
-            flex: 0;
-          }
-
           #page-1 .column.left > section:not(:last-of-type) {
             margin-bottom: 1em;
-          }
-
-          #page-1 section.meta {
-            align-self: start;
-          }
-
-
-          section.education,
-          section.employment,
-          section.awards
-          {
-            align-self: flex-end;
-          }
-
-          #page-1 section:not(.meta) {
-            height: min-content;
-            align-self: flex-end;
           }
         </style>
         <header class="area" id="resume-header">
           <style>
             #resume-header {
-              border: 1px transparent dotted;
+              border: 1pt transparent dotted;
               box-shadow: 1em 1em rgba(0,0,0,0);
             }
           
@@ -193,7 +198,8 @@
 
             .contact-info {
               display: grid;
-              grid-template: auto / 200px 1fr;
+              grid-template-columns: 1fr 1fr;
+              grid-template-rows: 1fr;
               margin-top: 1.13em;
             }
 
@@ -259,7 +265,7 @@
           <section><header><h3 class="institution">Systems Operator &amp; Technician</h3></header>
             <span class="where">University of Rhode Island</span>
             <span class="when">2011&ndash;2015</span>
-            <p class="description">
+            <p class="description" style="hyphens: none;">
               Provided technical support and maintained key infrastructure (Windows and Linux servers) for the ~40 staff members of URI’s student center.
             </p>
           </section>
@@ -267,7 +273,7 @@
             <span class="where">Brown University, URI</span>
             <span class="when">2012&ndash;2020</span>
             <p class="description">
-              Provided design, instructional, and infrastructure support to various courses in OOP, functional programming, language design, and model-finding.
+              Provided design, instructional, and infrastructure support to various courses in OOP, functional prog&shy;ramming, language design, and model-finding.
             </p>
           </section>
           <section><header><h3 class="institution">Researcher</h3></header>
@@ -315,6 +321,26 @@
             font-size: 1rem;
             font-weight: 700;
           }
+
+          .projects > section > h4 ~ p {
+            margin-left: 1em;
+          }
+
+          .projects {
+            height: 100%;
+          }
+
+          hr {
+            border: none;
+            border-top: 1pt dotted #000;
+          }
+
+          .projects > section:not(:first-of-type) {
+            margin-top: 1.5em;
+          }
+          .projects > section:not(:last-of-type) {
+            margin-bottom: 1.5em;
+          }
         </style>
         
         <header><h2>Selected Projects</h2></header>
@@ -325,11 +351,13 @@
           <p>Co-lead the working group tasked with making bit-reinterpretation casts (e.g., <code>union</code>, <code>mem::transmute</code>) memory safe. Lead designer and author of the WG’s inaugural <a href="https://github.com/rust-lang/rfcs/pull/2981">RFC-2981</a>.</p>
 
           <h4>Compiler Development</h4>
-          <p>Implementor of <a href="https://github.com/rust-lang/rfcs/pull/2363">RFC-2363</a>, which permits fine-grain control over the memory layout of complex <code>enum</code> types; useful for C-interop and zero-copy parsing of network packets.</p>
+          <p>Implementor of <a href="https://github.com/rust-lang/rfcs/pull/2363">RFC-2363</a>, which permits fine-grained control over the memory layout of complex <code>enum</code> types; useful for C-interop and zero-copy parsing of network packets.</p>
 
           <h4>Open Source Libraries</h4>
           <p>Author and contributor to numerous Rust libraries and utilities. Lead maintainer of <a href="https://crates.io/crates/itertools">itertools</a>, a popular (&gt;16M downloads) library for ergonomic transformations and summarization of streams of data.</p>
         </section>
+
+        <hr />
         
         <section><header><h3>Computing Education</h3></header>
           <p>Contributor to <a href="https://www.pyret.org/">Pyret</a>, a programming language designed by computer science educators, for computer science education.</p> 
@@ -346,6 +374,8 @@
           <h4>Evaluation at Scale</h4>
           <p>Developed infrastructure for assessing the quality of students’ Pyret programs and test suites at massive scale on a distributed super-computing cluster, and developed an analysis to validate the robustness of these assessments.</p>
         </section>
+
+        <hr />
 
         <section><header><h3>Digital Archival</h3></header>
           <h4>Natural Language Processing</h4>
