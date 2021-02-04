@@ -10,24 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
 
-    <!-- This attempt at automatic hyphenation just produced a bunch of widows. :( -->
-    <!--
-    <link href="https://unpkg.com/typesetbot/dist/typesetbot.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/typesetbot/dist/typesetbot.min.js" type="text/javascript"></script>
-    <script src="https://unpkg.com/@coffeeio/hypher@1.0.0/dist/hypher.js" type="text/javascript"></script>
-    <script type="text/javascript" src="https://unpkg.com/@fluid-project/hyphenation-patterns@0.2.2-dev.20181115T211247Z.d313a52/dist/browser/en-us.js"></script>
-    <script type="text/javascript">
-      let tsb = new TypesetBot(
-        'p', // Query selector.
-        {
-            'hyphenLanguage': 'en-us',
-            'alignment': 'left',
-        }
-      );
-    </script>
-    -->
-
-
     <style>
       * {
       }
@@ -43,6 +25,14 @@
           width: 8.5in;
         }
       }
+
+      /*.bordered {
+        background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><rect x='0.5pt' y='0.5pt' width='100%' height='100%' style='width:calc(100% - 1pt);height:calc(100% - 1pt);' stroke='%23000' stroke-width='1pt' stroke-dasharray='0 2' stroke-linecap='round' fill='transparent' /></svg>");
+        background-color:red;
+        background-size: 100% 100%;
+        background-position: center center;
+        background-repeat: no-repeat;
+      }*/
     
       * {
         hyphens: auto;
@@ -126,7 +116,7 @@
       }
 
       .area > header {
-        border-bottom: 1.5pt black dotted;
+        border-bottom: 1pt black dotted;
         margin-bottom: -0.6em;
       }
 
@@ -137,13 +127,6 @@
         /*outline: 1px rgba(0,0,0,0.1) solid;*/
       }
 
-      #page-1 {
-        display: grid;
-        grid-template-columns: 1fr 1.5fr;
-        grid-template-rows: 1fr;
-        gap: 1em 1em;
-      }
-
       .area {
         padding: 1em;
         width: 100%;
@@ -151,7 +134,7 @@
       }
 
       .area.bordered {
-        border: 1.5pt black dotted;
+        border: 1pt black dotted;
         box-shadow: 1em 1em rgba(0,0,0,0.1);
       }
 
@@ -179,6 +162,24 @@
   </head>
   <body itemscope itemtype="http://schema.org/Person">
     <div class="page" id="page-1">
+      <style>
+        #page-1 {
+          display: flex;
+        }
+      
+        #page-1 .column.left {
+          display: flex;
+          flex-direction: column;
+          
+          flex: 0 2.9555625in;
+          flex: 0 3.1in;
+          margin-right: 1em;
+        }
+        #page-1 .column.right {
+          flex: 1;
+        }
+      </style>
+    
       <div class="column left">
         <style>
           #page-1 .column.left > section:not(:last-of-type) {
@@ -188,6 +189,7 @@
         <header class="area" id="resume-header">
           <style>
             #resume-header {
+              flex: 1;
               border: 1pt transparent dotted;
               box-shadow: 1em 1em rgba(0,0,0,0);
             }
@@ -197,15 +199,16 @@
             }
 
             .contact-info {
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              grid-template-rows: 1fr;
               margin-top: 1.13em;
+              display: flex;
+              flex-wrap: wrap;
+              width: 100%;
             }
-
-            .contact-info dd {
-              text-align: right;
+            .contact-info dt, dd {
+              width: 50%;
             }
+            .contact-info dt { text-align: left }
+            .contact-info dd { text-align: right }
           </style>
           <header><h2 class="name">Jack Wrenn</h2></header>
           <dl class="contact-info">
@@ -280,7 +283,7 @@
             <span class="where">Brown University</span>
             <span class="when">2015&ndash;2021</span>
             <span class="description">
-              Contributed to the development of the Pyret programming language, and published five research papers on error reporting, software testing, and human factors.
+              Contributed to the development of the Pyret prog&shy;ramming language, and published <a href="https://jack.wrenn.fyi/publications">five research papers</a> on error reporting, software testing, tooling and human factors.
             </span>
           </section>
         </section>
@@ -354,7 +357,7 @@
           <p>Implementor of <a href="https://github.com/rust-lang/rfcs/pull/2363">RFC-2363</a>, which permits fine-grained control over the memory layout of complex <code>enum</code> types; useful for C-interop and zero-copy parsing of network packets.</p>
 
           <h4>Open Source Libraries</h4>
-          <p>Author and contributor to numerous Rust libraries and utilities. Lead maintainer of <a href="https://crates.io/crates/itertools">itertools</a>, a popular (&gt;16M downloads) library for ergonomic transformations and summarization of streams of data.</p>
+          <p>Author and contributor to <a href="https://jack.wrenn.fyi/#open-source">numerous</a> Rust libraries and utilities. Lead maintainer of <a href="https://crates.io/crates/itertools">itertools</a>, a popular (&gt;16M downloads) library for ergonomic transformations and summarization of streams of data.</p>
         </section>
 
         <hr />
@@ -363,23 +366,23 @@
           <p>Contributor to <a href="https://www.pyret.org/">Pyret</a>, a programming language designed by computer science educators, for computer science education.</p> 
 
           <h4>Error Message Design</h4>
-          <p>Developed Pyret’s unique hypertext error messages, which leverage hyperlinks, highlights and in-line code snippets, that guide novice programmers towards deeply understanding their errors.</p>
+          <p>Developed Pyret’s unique <a href="https://github.com/brownplt/pyret-lang/wiki/Error-Reporting,-July-2016">hypertext error messages</a>, which leverage hyperlinks, highlights and in-line code snippets to guide novice programmers towards deeply understanding their errors.</p>
 
           <h4>Data Science Support</h4>
-          <p>Developed Pyret’s language-level support for manipulat&shy;ing tabular data, used by the <a href="https://www.bootstrapworld.org/materials/data-science/">Bootstrap Data Science curriculum</a>.</p>
+          <p>Developed Pyret’s language-level support for manipulat&shy;ing tabular data, used by the <a href="https://www.bootstrapworld.org/materials/data-science/">data science module</a> of the Bootstrap curriculum, a research-based computer science curriculum for grades 6&ndash;12.</p>
           
           <h4>Example-Driven Development</h4>
-          <p>Developed a cloud-hosted IDE for Pyret that encourages students to write input&ndash;output examples <em>before</em> they begin programming, and conducted research to assess its impact.</p>
+          <p>Developed a cloud-hosted IDE for Pyret that <a href="https://jack.wrenn.fyi/publications/Wrenn,%20Krishnamurthi%20-%20Executable%20Examples%20for%20Programming%20Problem%20Comprehension%20(Paper).pdf">encourages</a> students to write input&ndash;output examples <em><a href="https://jack.wrenn.fyi/publications/Wrenn,%20Krishnamurthi%20-%20Will%20Students%20Write%20Tests%20Early%20Without%20Coercion.pdf">before</a></em> they begin programming, and conducted research to assess its impact.</p>
 
           <h4>Evaluation at Scale</h4>
-          <p>Developed infrastructure for assessing the quality of students’ Pyret programs and test suites at massive scale on a distributed super-computing cluster, and developed an analysis to validate the robustness of these assessments.</p>
+          <p>Developed infrastructure for assessing the quality of students’ Pyret prog&shy;rams and test suites at massive scale on a distributed super-computing cluster, and <a href="http://jack.wrenn.fyi/publications/Wrenn,%20Krishnamurthi,%20Fisler%20-%20Who%20Tests%20the%20Testers.pdf">developed an analysis</a> to validate the robustness of these assessments.</p>
         </section>
 
         <hr />
 
         <section><header><h3>Digital Archival</h3></header>
           <h4>Natural Language Processing</h4>
-          <p>Published a digital remix of Brown University’s authoritative dead-tree encyclopedia, which leveraged natural language processing to extract timelines and insert hyperlinks.</p>
+          <p>Published a <a href="https://liber-brunoniana.github.io/">digital remix</a> of Brown University’s authoritative dead-tree encyclopedia, which leveraged natural language processing to extract timelines and insert hyperlinks.</p>
 
           <h4>Digital Asset Management</h4>
           <p>Currently developing a digital asset management system in Rust and Typescript to catalogue my archive of &gt;5,000 photographs, oral histories and written accounts of Brown University alumni.</p>
