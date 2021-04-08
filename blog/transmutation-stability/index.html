@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>A Gentle Introduction to Transmutation Stability</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+
+        
+        
+<meta name="twitter:title" content="A Gentle Introduction to Transmutation Stability" />
+<meta name="twitter:description" content="" />
+
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: 'Libre Baskerville', serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered) {
+
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">A Gentle Introduction to Transmutation Stability</h1>
+    <time itemprop="datePublished" datetime="2020-09-02">
+      2020-09-02
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>What's up with transmutation stability?</p>
+<span id="continue-reading"></span>
+<p>Imagine a trait &quot;<code>TransmuteFrom</code>&quot; that is implemented by the compiler for all types <code>Src</code> and <code>Dst</code> if the bits of <code>Src</code> are reinterpretable as <code>Dst</code>.</p>
+<p>Such a trait would be unusual in two respects:</p>
+<ul>
+<li>The type system is reasoning about in-memory layouts. Type systems don't <em>typically</em> worry about such things.</li>
+<li>You don't <em>ask</em> for this trait to be implemented for your types.</li>
+</ul>
+<p>In this post, we'll focus on that second point of weirdness. Most traits are implemented <em>by request</em>. If an implementation of a trait exists for a type, it's usually because somebody, <em>somewhere</em> has typed the keyword <code>impl</code>.</p>
+<p>But not in this case: whether our <code>TransmuteFrom</code> trait is implemented for a <code>Src</code> and <code>Dst</code> depends <em>solely</em> on the safety of that conversion—not because <code>impl</code> was written somewhere.</p>
+<p>With traits that are manually implemented, you can trust that an <code>impl</code> you are relying on won't simply vanish. In other words, trait implementations are <em>stable</em>. Unfortunately, that won't be the case with our transmutation trait, because some of the factors which would affect transmutability are not covered by the existing stability rules.</p>
+<p>For instance, let's say a crate defines:</p>
+<pre style="background-color:#ffffff;">
+<code class="language-rust" data-lang="rust"><span style="color:#4d4d4c;">#[</span><span style="color:#f55800;">repr</span><span style="color:#4d4d4c;">(C)]
+</span><span style="color:#8e44be;">pub struct </span><span style="color:#4d4d4c;">Foo {
+  </span><span style="color:#8e44be;">pub </span><span style="color:#f55800;">bar</span><span style="color:#4d4d4c;">: </span><span style="color:#8e44be;">u8</span><span style="color:#4d4d4c;">,
+  </span><span style="color:#8e44be;">pub </span><span style="color:#f55800;">baz</span><span style="color:#4d4d4c;">: </span><span style="color:#8e44be;">u16</span><span style="color:#4d4d4c;">,
+}
+</span></code></pre>
+<p>The current stability rules permit this crate's author to reverse the definition order of the <code>bar</code> and <code>baz</code> fields in a minor version release, without breaking stability.</p>
+<p>Yet doing this <em>could</em> affect transmutability. The previous definition of <code>Foo</code> is <code>TransmuteFrom</code> the type <code>Fizz</code>:</p>
+<pre style="background-color:#ffffff;">
+<code class="language-rust" data-lang="rust"><span style="color:#4d4d4c;">#[</span><span style="color:#f55800;">repr</span><span style="color:#4d4d4c;">(C)] </span><span style="color:#8e44be;">pub struct </span><span style="color:#4d4d4c;">Fizz(</span><span style="color:#8e44be;">i8</span><span style="color:#4d4d4c;">, </span><span style="color:#8e44be;">i16</span><span style="color:#4d4d4c;">);
+</span></code></pre>
+<p>...but it won't be if the ordering of <code>Foo</code>'s fields is reversed (since that would expose a padding byte as initialized memory).</p>
+<h2 id="why-should-the-compiler-automatically-conjure-up-trait-implementations-anyways">Why should the compiler <em>automatically</em> conjure up trait implementations, anyways!?</h2>
+<p>The stability weirdness created by automatic trait implementations isn't unprecedented: Rust's <code>auto</code> traits (e.g., <a href="https://doc.rust-lang.org/std/marker/trait.Send.html"><code>Send</code></a> and <a href="https://doc.rust-lang.org/std/marker/trait.Send.html"><code>Sync</code></a>) are prone to similar surprises.</p>
+<p>These <code>auto</code> traits follow the usual stability rules: it is a breaking change to modify one's type in a way that would remove an <code>impl</code> of these traits. Unfortunately, type authors must be <em>very</em> careful to not change their types in seemingly-harmless ways (e.g., the type of a private field) that would nonetheless impact the implementation of these traits. Because type authors do not every <code>impl</code> these traits manually, they may be unaware that they even exist! Additionally, implementations of these traits are sometimes created even when a type's author would wish otherwise. Rust therefore provides a mechanism to explicitly <em>un</em>-implement these traits.</p>
+<p>Given the hazards imposed by <code>auto</code> traits, it's reasonable to ask:</p>
+<ul>
+<li>Do we <em>really</em> need the compiler to conjure up implementations?</li>
+<li>If so, couldn't we <em>re-use</em> the opt-out mechanism of <code>auto</code> traits?</li>
+</ul>
+<p>Alternatives in which the compiler does <em>not</em> conjur up trait implementations automatically indeed do not suffer from this weirdness. In the approach taken by the <a href="https://internals.rust-lang.org/t/pre-rfc-frombits-intobits/7071"><code>FromBits</code> pre-RFC</a>, <code>Foo</code>'s author would simply declare that <code>Fizz</code> is transmutable into a type <code>Foo</code> by writing a normal <code>impl</code>:</p>
+<pre style="background-color:#ffffff;">
+<code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl </span><span style="color:#4d4d4c;">FromBits&lt;Fizz&gt; </span><span style="color:#8e44be;">for </span><span style="color:#4d4d4c;">Foo {};
+</span></code></pre>
+<p>Having provided this <code>impl</code>, <em>removing</em> it would be considered a breaking change according to the established rules of stability. In other words: no stability weirdness here! Yet, treating transmutability as a normal trait comes at a steep cost: <code>Foo</code>'s author must foresee and write an <code>impl</code> of <code>FromBits</code> for <code>Foo</code>for <em>every</em> source type from which <code>Foo</code> should be reinterpretable.</p>
+<p>This degree of manual labor isn't satisfactory. Our RFC and <a href="(https://github.com/jswrenn/rfcs/blob/safer-transmute/text/0000-safer-transmute.md#automatic)">prior art</a> address this issue by having the compiler automatically infer implementations of a transmutability trait on-the-fly.</p>
+<p>The existing opt-out mechanism of <code>auto</code> traits is a poor fit for addressing the stability weirdness imposed by our transmutability trait. Unlike the <code>auto</code> traits, our <code>TransmuteFrom</code> trait has an additional <code>Src</code> type parameter. An opt-out mechanism merely inverts the problem of <code>FromBits</code>: the end-user would have to opt <em>out</em> of every transmutation they wished to prevent. This isn't practical.</p>
+<p>Besides, it's questionable whether the opt-out mechanism of <code>auto</code> traits <em>actually</em> reduces their stability hazards. Unless a type's author is exceptionally proactive, the ability to opt-out of <code>auto</code> traits really just provides a way to clean up issues <em>after</em> they're noticed.</p>
+<p>Fortunately, whereas <a href="https://github.com/jswrenn/rfcs/blob/safer-transmute/text/0000-safer-transmute.md#stability-hazards">safe transmutation prior art</a> basically ignores the hazard this stability weirdness poses, our RFC neutralizes it <em>almost completely</em>.</p>
+<h2 id="mitigating-the-stability-weirdness">Mitigating the Stability Weirdness</h2>
+<p>The Safer Transmute RFC neutralizes this stability weirdness in two ways.</p>
+<h3 id="make-the-weirdness-obvious">Make the Weirdness Obvious</h3>
+<p>First, we make this weirdness <strong>unmissable</strong>. Our transmutation trait <em>only</em> behaves unstably if you write the words <code>NeglectStability</code>, like this:</p>
+<pre style="background-color:#ffffff;">
+<code class="language-rust" data-lang="rust"><span style="color:#8e44be;">where
+</span><span style="color:#4d4d4c;">    Dst: TransmuteFrom&lt;Src, NeglectStability&gt;
+</span></code></pre>
+<p>(You could also imagine achieving this by naming our transmutation trait something stark like <code>UnstableTransmuteFrom</code>. However, our <code>TransmuteFrom</code> trait is going to have an extra parameter for neglecting static checks anyways, so we simply use it to indicate that stability is being neglected.)</p>
+<h3 id="make-the-weirdness-opt-in">Make the Weirdness Opt-In</h3>
+<p>Second, we make this weirdness <strong>opt-in</strong>. Whereas this:</p>
+<pre style="background-color:#ffffff;">
+<code class="language-rust" data-lang="rust"><span style="color:#8e44be;">where
+</span><span style="color:#4d4d4c;">    Dst: TransmuteFrom&lt;Src, NeglectStability&gt;
+</span></code></pre>
+<p><em>doesn't</em> follow the usual rules of trait implementation of stability, writing <em>this</em> <strong>will</strong>:</p>
+<pre style="background-color:#ffffff;">
+<code class="language-rust" data-lang="rust"><span style="color:#8e44be;">where
+</span><span style="color:#4d4d4c;">    Dst: TransmuteFrom&lt;Src&gt;
+</span></code></pre>
+<p>By default, <code>TransmuteFrom</code> is <em>only</em> implemented for <code>Src</code> and <code>Dst</code> if it <em>sound</em>, <em>safe</em> and <em>stable</em>. Neglecting any of <em>any</em> of these requires passing an additional type parameter to <code>TransmuteFrom</code>. If you don't <code>NeglectStability</code>, then <code>TransmuteFrom</code> follows the all of the usual rules of trait stability.</p>
+<p>But how? We achieve this <em>without</em> any additional specialized compiler machinery, and <em>without</em> introducing any new stability rules. Instead, we introduce two regular traits which <em>are</em> implemented <strong>manually</strong> to signal that <code>impl</code>s of <code>TransmuteFrom</code> on a type adhere to the usual trait stability rules.</p>
+<p>My next blog post will provide a gentle introduction to exactly how this is accomplished!</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>
