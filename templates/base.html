@@ -5,9 +5,11 @@
         <meta name="author" content="Jack Wrenn" />
         <link rel="author" href="https://jack.wrenn.fyi/">
 
-
-        
         {% block meta %}{% endblock meta %}
+
+        {% block rss %}
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="{{ get_url(path="atom.xml", trailing_slash=false) }}">
+        {% endblock %}
 
         <meta property='og:type' content='article' />
         <meta property='article:author' content='https://jack.wrenn.fyi/' />

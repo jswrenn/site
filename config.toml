@@ -4,6 +4,9 @@ base_url = "https://jack.wrenn.fyi"
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
+# Whether to generate feeds.
+generate_feed = true
+
 [markdown]
 # Whether to do syntax highlighting
 # Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola

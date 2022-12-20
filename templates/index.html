@@ -6,6 +6,9 @@
     <meta name="description" content="Rust and bikes. But not rusty bikes.">
     <meta name="author" content="John Wrenn">
     <meta name=viewport content="width=device-width, initial-scale=1">
+    {% block rss %}
+      <link rel="alternate" type="application/atom+xml" title="Atom" href="{{ get_url(path="atom.xml", trailing_slash=false) }}">
+    {% endblock %}
     <style>
       html {
         margin: 1em;
