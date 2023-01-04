@@ -1,6 +1,6 @@
 +++
 title = "Oh the Crates You'll Go! A 2022 Retrospective"
-date = 2022-01-04
+date = 2023-01-04
 tags = ["Rust"]
 +++
 
