@@ -5,7 +5,7 @@ base_url = "https://jack.wrenn.fyi"
 compile_sass = true
 
 # Whether to generate feeds.
-generate_feed = true
+generate_feeds = true
 
 [markdown]
 # Whether to do syntax highlighting
