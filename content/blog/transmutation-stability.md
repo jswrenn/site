@@ -2,6 +2,7 @@
 title = "A Gentle Introduction to Transmutation Stability"
 date = 2020-09-02
 tags = ["rust","safer transmutation"]
+draft = true
 +++
 
 What's up with transmutation stability?
