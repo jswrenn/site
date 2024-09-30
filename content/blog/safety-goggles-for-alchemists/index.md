@@ -349,7 +349,7 @@ Worse, types are not always finite; e.g.:
 ```rust
 struct LinkedList<T> {
     head: T,
-    tail: Option<Box<T>>,
+    tail: Option<Box<LinkedList<T>>>,
 }
 ```
 A linked list does not have bounded size at compile time, and we can't simply ignore its `tail` for the purpose of analyzing transmutability.
