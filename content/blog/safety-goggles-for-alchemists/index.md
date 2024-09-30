@@ -306,7 +306,7 @@ Suffice to say, the zerocopy crate provided the foundational abstractions that m
 
 ## Introducing Project Safe Transmute
 
-However, zerocopy has a dity secret: it’s backed by nearly *fourteen thousand* lines of subtle unsafe code and safety comments.
+However, zerocopy has a dirty secret: it’s backed by nearly *fourteen thousand* lines of subtle unsafe code and safety comments.
 
 This is ridiculous. The compiler already knows about the layouts of types, so why is the onus entirely on you to reason about them in the context of transmute? Why can’t the compiler use its knowledge to tell you when one type is transmutable into another?
 
