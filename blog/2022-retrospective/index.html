@@ -1,0 +1,505 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Oh the Crates You'll Go! A 2022 Retrospective</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Oh the Crates You'll Go! A 2022 Retrospective" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Oh the Crates You’ll Go! A 2022 Retrospective</h1>
+    <time itemprop="datePublished" datetime="2023-01-04">
+      2023-01-04
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>As my first full calendar year in the Rust Platform Team at AWS draws to a close, I thought it might be illuminating to reflect on what I worked on. The breadth of crates I released or contributed to surprised me! Time really does fly when you’re having fun.</p>
+<span id="continue-reading"></span>
+<p>Throughout the year, I chatted with programmers building networked services in Rust about their pain-points. The driving theme of those conversations was <em>observability</em>. Rust is not so inherently fast that good architecture is irrelevant. When performance isn’t satisfactory, discovering why can be harder than it is in some ‘slower’ languages like Javascript or Java. Rust’s speed comes at a cost: It leaves it up to <em>you</em> to carefully instrument your program. I spent my year building the tools to help you do this.</p>
+<p>So, without further ado, here’s a rundown of the crates I released or significantly contributed to in 2022:</p>
+<ul>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#tokio-metrics"><code>tokio-metrics</code></a></li>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#tracing-allocations"><code>tracing-allocations</code></a></li>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#type-census"><code>type-census</code></a></li>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#interlude-tracing"><code>tracing</code></a></li>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#fn-name"><code>fn_name</code></a></li>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#feature-transmutability"><code>#![feature(transmutability)]</code></a></li>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#tracing-causality"><code>tracing-causality</code></a></li>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#async-backtrace"><code>async-backtrace</code></a></li>
+<li><a href="https://jack.wrenn.fyi/blog/2022-retrospective/#deflect"><code>deflect</code></a></li>
+</ul>
+<h2 id="tokio-metrics"><code>tokio-metrics</code></h2>
+<p>Get insight into the performance of async tasks and the tokio runtime. Key links:</p>
+<ul>
+<li><a href="https://tokio.rs/blog/2022-02-announcing-tokio-metrics">announcement</a></li>
+<li><a href="https://crates.io/crates/tokio-metrics">crates.io</a></li>
+<li><a href="https://docs.rs/tokio-metrics/0.1.0/tokio_metrics/">docs.rs</a></li>
+<li><a href="https://github.com/tokio-rs/tokio-metrics">github.com</a></li>
+</ul>
+<p>How much time is a task spending scheduled, running, or waiting? Am I hitting bottlenecks in the Tokio runtime itself? The <code>tokio-metrics</code> crate provides tools to help answer these questions, and more. At the start of 2022, I picked up development of the tokio-metrics crate from <a href="https://carllerche.com/">Carl Lerche</a> and drove the prototype to its initial release.</p>
+<p>To monitor metrics of one or more async tasks with this crate, you construct a <code>TaskMonitor</code>, and <code>.instrument</code> your tasks with it before spawning them. For example:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// construct a TaskMonitor
+</span><span style="color:#8e44be;">let</span><span> monitor </span><span style="color:#1aa7b0;">= </span><span>tokio_metrics::TaskMonitor::new();
+</span><span>
+</span><span style="color:#999999;">// print task metrics every 500ms
+</span><span>{
+</span><span>    </span><span style="color:#8e44be;">let</span><span> frequency </span><span style="color:#1aa7b0;">= </span><span>std::time::Duration::from_millis(</span><span style="color:#6969ff;">500</span><span>);
+</span><span>    </span><span style="color:#8e44be;">let</span><span> monitor </span><span style="color:#1aa7b0;">=</span><span> monitor.</span><span style="color:#3366cc;">clone</span><span>();
+</span><span>    tokio::spawn(async </span><span style="color:#8e44be;">move </span><span>{
+</span><span>        </span><span style="color:#8e44be;">for</span><span> metrics </span><span style="color:#1aa7b0;">in</span><span> monitor.</span><span style="color:#3366cc;">intervals</span><span>() {
+</span><span>            println!(</span><span style="color:#699200;">&quot;</span><span style="color:#666666;">{:?}</span><span style="color:#699200;">&quot;</span><span>, metrics);
+</span><span>            tokio::time::sleep(frequency).await;
+</span><span>        }
+</span><span>    });
+</span><span>}
+</span><span>
+</span><span style="color:#999999;">// instrument some tasks and spawn them
+</span><span style="color:#8e44be;">loop </span><span>{
+</span><span>    tokio::spawn(monitor.</span><span style="color:#3366cc;">instrument</span><span>(</span><span style="color:#3366cc;">do_work</span><span>()));
+</span><span>}
+</span></code></pre>
+<p>The <code>TaskMonitor</code> abstraction lets you be as granular with metrics collection as you’d like. A single <code>TaskMonitor</code> can be shared for, say, all tasks spawned at a particular source code location, or (after narrowing in on a performance issue) a distinct <code>TaskMonitor</code> can be used for distinct tasks. The <a href="https://docs.rs/tokio-metrics/0.1.*/tokio_metrics/struct.TaskMonitor.html#why-are-my-tasks-slow">documentation for <code>TaskMonitor</code></a> walks through how one might use the crate to answer <em>“Why are my tasks slow?”</em>.</p>
+<p>Task monitoring is only half the crate. The other half, <code>RuntimeMonitor</code>, provides a similar API for getting metrics from the tokio runtime. Although the crate is called <em>tokio</em>-metrics, the <code>TaskMonitor</code> machinery of the crate <em>doesn’t</em> depend on tokio — you can use it to monitor tasks scheduled with <code>async-std</code> and <code>smol</code>, too.</p>
+<p>Looking back on this crate, I’m particularly proud of the documentation I wrote — lines of documentation exceed lines of code by more than a factor of three, and every metric has a doctest illustrating a scenario that would impact that metric.</p>
+<h2 id="tracing-allocations"><code>tracing-allocations</code></h2>
+<p>A <a href="https://doc.rust-lang.org/stable/std/alloc/trait.GlobalAlloc.html">global allocator</a> that emits <a href="https://crates.io/crates/tracing">tracing</a> events upon allocation and deallocation. Key links:</p>
+<ul>
+<li><a href="https://crates.io/crates/tracing-allocations">crates.io</a></li>
+<li><a href="https://docs.rs/tracing-allocations">docs.rs</a></li>
+<li><a href="https://github.com/jswrenn/tracing-allocations">github.com</a></li>
+</ul>
+<p>Where is my asynchronous application allocating and deallocating memory? That is the question I attempted to answer with the <code>tracing-allocations</code> crate. The crate provides a <code>TracingAllocator</code>, which wraps any global allocator and augments it with tracing events. To use the crate, one simply writes:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">use </span><span>std::alloc::System;
+</span><span style="color:#8e44be;">use </span><span>tracing_allocations::TracingAllocator;
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">global_allocator</span><span>]
+</span><span style="color:#8e44be;">static </span><span style="color:#666666;">GLOBAL</span><span>: TracingAllocator&lt;System&gt; </span><span style="color:#1aa7b0;">= </span><span>TracingAllocator::new(System);
+</span></code></pre>
+<p>Then—in theory—allocation events will appear seamlessly in whatever tool you’re using to analyze tracing logs.</p>
+<p>Although the crate works as advertised, I found that it was impractical to completely control for reentrant allocations; i.e., ensuring that whatever tracing layers you installed to process your application’s tracing events did not, themselves, allocate memory when processing the events emitted by the tracing allocator. You might, for instance, want to <em>print</em> allocation events to stdout. Tough luck! The <code>println!</code> macro, under-the-hood, <em>buffers</em> output to stdout, and might lock and (re)allocate that buffer in the process of printing. Thus, if you try to print <em>while</em> this buffer is being (re)allocated, your application will deadlock.</p>
+<p>While it’s possible to workaround this particular footgun, I could not find a way to mitigate <em>all</em> footguns of this genre. I cannot advise using this crate unless your tracing layers anticipate it, and make a point of turning off allocation tracing at any points they allocate. The crate stands as an imperfect experiment.</p>
+<h2 id="type-census"><code>type-census</code></h2>
+<p>Audit the population counts of types. Key links:</p>
+<ul>
+<li><a href="https://crates.io/crates/type-census">crates.io</a></li>
+<li><a href="https://docs.rs/type-census">docs.rs</a></li>
+<li><a href="https://github.com/jswrenn/type-census">github.com</a></li>
+</ul>
+<p>In the aftermath of <code>tracing-allocations</code>, I circled back service teams and learned that one question they’d really like to answer, at the very least, was <em>“How many instances of a given type are there?”</em>. I developed the <code>type-census</code> crate to provide an efficient mechanism for answering this question. It’s used like so:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// 1. import these two items:
+</span><span style="color:#8e44be;">use </span><span>type_census::{Instance, Tabulate};
+</span><span>
+</span><span style="color:#999999;">// 2. Derive `Tabulate`
+</span><span>#[</span><span style="color:#f55800;">derive</span><span>(Clone, Tabulate)]
+</span><span style="color:#8e44be;">pub struct </span><span>Foo&lt;T&gt; {
+</span><span>    </span><span style="color:#f55800;">v</span><span>: T,
+</span><span>    </span><span style="color:#999999;">// 3. add a field of type `Instance&lt;Self&gt;`
+</span><span>    </span><span style="color:#f55800;">_instance</span><span>: Instance&lt;</span><span style="color:#8e44be;">Self</span><span>&gt;,
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">impl</span><span>&lt;T&gt; Foo&lt;T&gt; {
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">new</span><span>(</span><span style="color:#6969ff;">v</span><span>: T) -&gt; </span><span style="color:#8e44be;">Self
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        </span><span style="color:#999999;">// 4. add a `Self: Tabulate` bound to constructors
+</span><span>        </span><span style="color:#8e44be;">Self</span><span>: Tabulate,
+</span><span>    {
+</span><span>        </span><span style="color:#8e44be;">Self </span><span>{
+</span><span>            v,
+</span><span>            </span><span style="color:#999999;">// 5. and initialize your `Instance` field like so:
+</span><span>            _instance: Instance::new(),
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>Then, you can call <code>T::instances()</code> to get the population count of <code>T</code>; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>assert_eq!(Foo::&lt;</span><span style="color:#8e44be;">i8</span><span>&gt;::instances(), </span><span style="color:#6969ff;">0</span><span>);
+</span><span>
+</span><span style="color:#8e44be;">let mut</span><span> bar: </span><span style="color:#f0ae00;">Vec</span><span>&lt;Foo&lt;</span><span style="color:#8e44be;">i8</span><span>&gt;&gt; </span><span style="color:#1aa7b0;">= </span><span>vec![Foo::new(</span><span style="color:#6969ff;">0</span><span style="color:#8e44be;">i8</span><span>); </span><span style="color:#6969ff;">10</span><span>];
+</span><span>
+</span><span>assert_eq!(Foo::&lt;</span><span style="color:#8e44be;">i8</span><span>&gt;::instances(), </span><span style="color:#6969ff;">10</span><span>);
+</span><span>
+</span><span style="color:#8e44be;">let </span><span style="color:#1aa7b0;">_ =</span><span> bar.</span><span style="color:#3366cc;">drain</span><span>(</span><span style="color:#6969ff;">0</span><span style="color:#1aa7b0;">..</span><span style="color:#6969ff;">5</span><span>);
+</span><span>
+</span><span>assert_eq!(Foo::&lt;</span><span style="color:#8e44be;">i8</span><span>&gt;::instances(), </span><span style="color:#6969ff;">5</span><span>);
+</span></code></pre>
+<p>The crate has its limitations (or, depending on your use-case, features). The same instance counter is shared between all instantiations of generic types; i.e., <code>Foo&lt;u8&gt;</code> and <code>Foo&lt;i8&gt;</code> would both report a population count of 5 at the end of the above example. It also requires explicit code modifications—a far cry from the convenience of a Java heap dump.</p>
+<h2 id="interlude-tracing">Interlude: <code>tracing</code></h2>
+<p>The <a href="https://docs.rs/tracing"><code>tracing</code></a> family of crates brings structured logging to Rust. I contributed to <code>tracing</code> significantly in 2022:</p>
+<ul>
+<li><a href="https://github.com/tokio-rs/tracing/pull/2091">permit setting parent span via <code>#[instrument(parent = …)]</code></a></li>
+<li><a href="https://github.com/tokio-rs/tracing/pull/2093">permit <code>#[instrument(follows_from = …)]</code></a></li>
+<li><a href="https://github.com/tokio-rs/tracing/pull/2160">more <code>downcast_ref</code> &amp; <code>is</code> methods</a></li>
+<li><a href="https://github.com/tokio-rs/tracing/pull/2161">implement <code>Collect</code> for <code>Box&lt;C&gt;</code>, <code>Arc&lt;C&gt;</code></a></li>
+<li><a href="https://github.com/tokio-rs/tracing/pull/2229">implement <code>PartialEq</code>, <code>Eq</code> for <code>Metadata</code>, <code>FieldSet</code></a></li>
+<li><a href="https://github.com/tokio-rs/tracing/pull/2247">implement <code>LookupSpan</code> for <code>Box&lt;LS&gt;</code> and <code>Arc&lt;LS&gt;</code></a></li>
+<li><a href="https://github.com/tokio-rs/tracing/pull/2269">add <code>{Collect,Subscriber}::on_register_dispatch</code></a></li>
+<li><a href="https://github.com/tokio-rs/tracing/pull/2293">add <code>Dispatch::downgrade()</code> and <code>WeakDispatch</code></a></li>
+</ul>
+<p>Many of these changes were made to support my work on my own <a href="https://jack.wrenn.fyi/blog/2022-retrospective/#tracing-causality"><code>tracing-causality</code></a> crate (more on that later)!</p>
+<h2 id="fn-name"><code>fn_name</code></h2>
+<p>Macros that expand to the name of the function they’re invoked within. Key links:</p>
+<ul>
+<li><a href="https://crates.io/crates/fn_name">crates.io</a></li>
+<li><a href="https://docs.rs/fn_name">docs.rs</a></li>
+<li><a href="https://github.com/jswrenn/fn_name">github.com</a></li>
+</ul>
+<p>I developed this after discovering that the <code>tracing</code> crate’s <code>#[instrument]</code> attribute macro <a href="https://github.com/tokio-rs/tracing/issues/2116"><em>only</em> sees the name of the method it’s applied to, not the name of the type the method is on</a>.</p>
+<p>The crate provides two macros. The <code>fn_name::uninstantiated!()</code> macro produces the name of the surrounding function with generics left uninstantiated; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">struct </span><span>GenericType&lt;A&gt;(A);
+</span><span>
+</span><span style="color:#8e44be;">impl</span><span>&lt;A&gt; GenericType&lt;A&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">generic_method</span><span>&lt;B&gt;(</span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#1aa7b0;">_</span><span>: B) -&gt; </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static str </span><span>{
+</span><span>        fn_name::uninstantiated</span><span style="color:#1aa7b0;">!</span><span>()
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span>assert_eq!(
+</span><span>    GenericType(</span><span style="color:#6969ff;">42</span><span style="color:#8e44be;">u8</span><span>).</span><span style="color:#3366cc;">generic_method</span><span>(</span><span style="color:#6969ff;">false</span><span>),
+</span><span>    </span><span style="color:#699200;">&quot;GenericType&lt;_&gt;::generic_method&quot;
+</span><span>);
+</span></code></pre>
+<p>The <code>fn_name:instantiated!()</code> macro produces the name of the surrounding function, including generic types:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">struct </span><span>GenericType&lt;A&gt;(A);
+</span><span>
+</span><span style="color:#8e44be;">impl</span><span>&lt;A&gt; GenericType&lt;A&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">generic_method</span><span>&lt;B&gt;(</span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#1aa7b0;">_</span><span>: B) -&gt; </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static str </span><span>{
+</span><span>        fn_name::instantiated</span><span style="color:#1aa7b0;">!</span><span>()
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span>assert_eq!(
+</span><span>    GenericType(</span><span style="color:#6969ff;">42</span><span style="color:#8e44be;">u8</span><span>).</span><span style="color:#3366cc;">generic_method</span><span>(</span><span style="color:#6969ff;">false</span><span>),
+</span><span>    </span><span style="color:#699200;">&quot;GenericType&lt;u8&gt;::generic_method&lt;bool&gt;&quot;
+</span><span>);
+</span></code></pre>
+<p>Unfortunately, the crate is a little hacky under-the-hood; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#3366cc;">macro_rules! </span><span>instantiated {
+</span><span>    () </span><span style="color:#1aa7b0;">=&gt; </span><span>{{
+</span><span>        </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">type_name_of_val</span><span>&lt;T: ?</span><span style="color:#f0ae00;">Sized</span><span style="color:#1aa7b0;">&gt;</span><span>(</span><span style="color:#1aa7b0;">_</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>T) -&gt; </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static str </span><span>{
+</span><span>            core::any::type_name::&lt;T&gt;()
+</span><span>        }
+</span><span>        </span><span style="color:#8e44be;">const </span><span style="color:#666666;">PREFIX</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">str </span><span style="color:#1aa7b0;">= </span><span>concat!(module_path!(), </span><span style="color:#699200;">&quot;::&quot;</span><span>);
+</span><span>        </span><span style="color:#8e44be;">const </span><span style="color:#666666;">SUFFIX</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">str </span><span style="color:#1aa7b0;">= </span><span style="color:#699200;">&quot;::{{closure}}&quot;</span><span>;
+</span><span>        </span><span style="color:#8e44be;">let</span><span> here </span><span style="color:#1aa7b0;">= &amp;</span><span style="color:#3366cc;">type_name_of_val</span><span>(</span><span style="color:#1aa7b0;">&amp;||</span><span>{});
+</span><span>        </span><span style="color:#1aa7b0;">&amp;</span><span>here[</span><span style="color:#666666;">PREFIX</span><span>.</span><span style="color:#3366cc;">len</span><span>()</span><span style="color:#1aa7b0;">..</span><span>(here.</span><span style="color:#3366cc;">len</span><span>() </span><span style="color:#1aa7b0;">- </span><span style="color:#666666;">SUFFIX</span><span>.</span><span style="color:#3366cc;">len</span><span>())]
+</span><span>    }}
+</span><span>}
+</span></code></pre>
+<p>These macros cannot be used in <code>const</code> contexts due to the dependency on <a href="https://doc.rust-lang.org/std/any/fn.type_name.html"><code>type_name</code></a>, and it’s probably not too appropriate to parse <code>type_name</code>’s output, anyways. I’d love to see official versions of them as part of Rust, proper!</p>
+<h2 id="feature-transmutability"><code>#![feature(transmutability)]</code></h2>
+<p>In 2021, I submitted <a href="https://github.com/rust-lang/compiler-team/issues/411">MCP411</a>, which proposes adding to Rust a compiler-supported analysis of when the bytes of one type can be safely reinterpreted as if they belong to another type. In 2022, I <a href="https://github.com/rust-lang/rust/issues/99571">began to implement it</a>!</p>
+<p>On nightly Rust, you can now use <code>#![feature(transmutability)]</code> to verify the transmutability of primitive and user-defined types with specified layouts:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#![</span><span style="color:#f55800;">feature</span><span>(transmutability)]
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)] </span><span style="color:#8e44be;">struct </span><span>Foo(</span><span style="color:#8e44be;">u8</span><span>, </span><span style="color:#8e44be;">bool</span><span>);
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)] </span><span style="color:#8e44be;">struct </span><span>Bar(</span><span style="color:#8e44be;">u16</span><span>);
+</span><span>
+</span><span>assert::is_transmutable::&lt;Foo, Bar&gt;(); </span><span style="color:#999999;">// Compiler accepts this!
+</span><span>assert::is_transmutable::&lt;Bar, Foo&gt;(); </span><span style="color:#999999;">// ERROR! 
+</span><span>
+</span><span style="color:#8e44be;">mod </span><span>assert {
+</span><span>    </span><span style="color:#8e44be;">use </span><span>std::mem::BikeshedIntrinsicFrom </span><span style="color:#1aa7b0;">as</span><span> TransmutableFrom;
+</span><span>    </span><span style="color:#8e44be;">pub struct </span><span>Context;
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">is_transmutable</span><span>&lt;Src, Dst&gt;()
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        Dst: TransmutableFrom&lt;Src, Context&gt;
+</span><span>    {}
+</span><span>}
+</span></code></pre>
+<p>What remains to be done: support for references, optimizations, and better error messages. Nonetheless, I’m extraordinarily happy that the end of my safe transmute saga—begun in 2019—is now within sight.</p>
+<h2 id="tracing-causality"><code>tracing-causality</code></h2>
+<p>A crate for tracking the causal relationships between tracing spans. Key links:</p>
+<ul>
+<li><a href="https://crates.io/crates/tracing-causality">crates.io</a></li>
+<li><a href="https://docs.rs/tracing-causality">docs.rs</a></li>
+<li><a href="https://github.com/jswrenn/tracing-causality">github.com</a></li>
+</ul>
+<p>Although the <code>tracing</code> family of crates brings structured logging to Rust, they do not provide much out-of-the-box functionality for exploring those structures from within the application. This functionality is invaluable for instrumenting async applications. <em>What is an async task doing?</em> Just walk down its tree of tracing spans to find out!</p>
+<p>This crate provides mechanisms for doing just that—it provides a tracing layer that tracks causal relationships, and <a href="https://docs.rs/tracing-causality/0.1.*/tracing_causality/fn.trace.html">an interface for efficiently querying those relationships</a>.</p>
+<p>I used this crate to explore <a href="https://github.com/tokio-rs/console/pull/363">adding tracing-driven ‘stack’ traces</a> to <a href="https://tokio.rs/blog/2021-12-announcing-tokio-console">Tokio Console</a>, but ultimately abandoned that work in favor of the <a href="https://jack.wrenn.fyi/blog/2022-retrospective/#async-backtrace"><code>async-backtrace</code></a>. I still believe that graphical tracing-driven stack traces are valuable, and welcome any readers to revive my draft PR to Tokio Console!</p>
+<h2 id="async-backtrace"><code>async-backtrace</code></h2>
+<p>A crate for efficiently tracking and querying the call tree of <code>async</code> functions. Key links:</p>
+<ul>
+<li><a href="https://tokio.rs/blog/2022-10-announcing-async-backtrace">announcement</a></li>
+<li><a href="https://crates.io/crates/async-backtrace">crates.io</a></li>
+<li><a href="https://docs.rs/async-backtrace">docs.rs</a></li>
+<li><a href="https://github.com/tokio-rs/async-backtrace">github.com</a></li>
+</ul>
+<p>In synchronous, multi-threaded applications, you can investigate deadlocks by inspecting stack traces of all running threads. Unfortunately, this approach breaks down for most asynchronous Rust applications, since suspended tasks — tasks that are not actively being polled — are invisible to traditional stack traces. The <code>async-backtrace</code> crate fills this gap, allowing you see the state of these hidden tasks.</p>
+<p>To use it, annotate your <code>async</code> functions with <code>#[async_backtrace::framed]</code>; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">async_backtrace</span><span>::</span><span style="color:#f55800;">framed</span><span>]
+</span><span>async </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">foo</span><span>() {
+</span><span>    </span><span style="color:#3366cc;">bar</span><span>().await;
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">async_backtrace</span><span>::</span><span style="color:#f55800;">framed</span><span>]
+</span><span>async </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">bar</span><span>() {
+</span><span>    </span><span style="color:#3366cc;">baz</span><span>().await;
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">async_backtrace</span><span>::</span><span style="color:#f55800;">framed</span><span>]
+</span><span>async </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">baz</span><span>() {
+</span><span>    std::future::pending::&lt;()&gt;().await
+</span><span>}
+</span></code></pre>
+<p>…and call <code>taskdump_tree</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">tokio</span><span>::</span><span style="color:#f55800;">main</span><span>(flavor </span><span style="color:#1aa7b0;">= </span><span style="color:#699200;">&quot;current_thread&quot;</span><span>)]
+</span><span>async </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">main</span><span>() {
+</span><span>    tokio::select</span><span style="color:#1aa7b0;">! </span><span>{
+</span><span>        </span><span style="color:#999999;">// run the following branches in order of their appearance
+</span><span>        biased;
+</span><span>
+</span><span>        </span><span style="color:#999999;">// spawn task #1
+</span><span>        </span><span style="color:#1aa7b0;">_ = </span><span>tokio::spawn(</span><span style="color:#3366cc;">foo</span><span>()) </span><span style="color:#1aa7b0;">=&gt; </span><span>{ unreachable!() }
+</span><span>
+</span><span>        </span><span style="color:#999999;">// spawn task #2
+</span><span>        </span><span style="color:#1aa7b0;">_ = </span><span>tokio::spawn(</span><span style="color:#3366cc;">foo</span><span>()) </span><span style="color:#1aa7b0;">=&gt; </span><span>{ unreachable!() }
+</span><span>
+</span><span>        </span><span style="color:#999999;">// print the running tasks
+</span><span>        </span><span style="color:#1aa7b0;">_ = </span><span>tokio::spawn(async {}) </span><span style="color:#1aa7b0;">=&gt; </span><span>{
+</span><span>            println!(</span><span style="color:#699200;">&quot;</span><span style="color:#666666;">{}</span><span style="color:#699200;">&quot;</span><span>, async_backtrace::taskdump_tree(</span><span style="color:#6969ff;">true</span><span>));
+</span><span>        }
+</span><span>    };
+</span><span>}
+</span></code></pre>
+<p>Running the above program prints out traces for each task:</p>
+<pre data-lang="text" style="background-color:#ffffff;color:#4d4d4c;" class="language-text "><code class="language-text" data-lang="text"><span>╼ foo::{{closure}} at example.rs:22:1
+</span><span>  └╼ multiple::bar::{{closure}} at example.rs:27:1
+</span><span>     └╼ multiple::baz::{{closure}} at example.rs:32:1
+</span><span>╼ foo::{{closure}} at example.rs:22:1
+</span><span>  └╼ bar::{{closure}} at example.rs:27:1
+</span><span>     └╼ baz::{{closure}} at example.rs:32:1
+</span></code></pre>
+<p>Under-the-hood, this crate does some <em>very</em> cool things: with minimal locking, it builds up an intrusive, doubly-linked tree of <code>Future</code>s as they are polled for the first time, and tears down the tree as they are dropped. It’s the gnarliest <code>unsafe</code> code I’ve ever written, and I’m indebted to <a href="https://github.com/rust-lang/miri">miri</a> and <a href="https://github.com/tokio-rs/loom">loom</a> for helping me identify aliasing and concurrency bugs.</p>
+<h2 id="deflect"><code>deflect</code></h2>
+<p>Native reflection for Rust. Key links:</p>
+<ul>
+<li><a href="../deflect">announcement</a></li>
+<li><a href="https://crates.io/crates/deflect">crates.io</a></li>
+<li><a href="https://docs.rs/deflect">docs.rs</a></li>
+<li><a href="https://github.com/jswrenn/deflect">github.com</a></li>
+</ul>
+<p>Rounding out the year, I released <code>deflect</code>, a library implementing reflection for Rust. It uses DWARF debuginfo to dynamically interpret types, much like a native debugger (e.g., GDB, LLDB, etc.). With it, you can:</p>
+<ul>
+<li>recover the concrete type of any trait object</li>
+<li>index-by-name or iterate-over the fields of a <code>struct</code></li>
+<li>examine the captured data of a closure</li>
+<li>examine the internal structure of Rust <code>async fn</code> generators</li>
+<li>pretty-print arbitrary data (even if it doesn’t implement <code>Debug</code>!)</li>
+</ul>
+<p>Here is an example showing off a few of these capabilities:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// define a datatype
+</span><span style="color:#999999;">// note that it doesn&#39;t `derive` any traits
+</span><span style="color:#8e44be;">struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">a</span><span>: </span><span style="color:#8e44be;">u8
+</span><span>}
+</span><span>
+</span><span style="color:#999999;">// initialize the reflection info provider
+</span><span style="color:#8e44be;">let</span><span> context </span><span style="color:#1aa7b0;">= </span><span>deflect::default_provider()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span>
+</span><span style="color:#999999;">// create some type-erased data
+</span><span style="color:#8e44be;">let</span><span> erased: </span><span style="color:#f0ae00;">Box</span><span>&lt;dyn Any&gt; </span><span style="color:#1aa7b0;">= </span><span style="color:#f0ae00;">Box</span><span>::new(Foo { a: </span><span style="color:#6969ff;">42 </span><span>});
+</span><span>
+</span><span style="color:#999999;">// cast it to `&amp;dyn Reflect`
+</span><span style="color:#8e44be;">let</span><span> reflectable: </span><span style="color:#1aa7b0;">&amp;</span><span>dyn deflect::Reflect </span><span style="color:#1aa7b0;">= &amp;</span><span>erased;
+</span><span>
+</span><span style="color:#999999;">// reflect it!
+</span><span style="color:#8e44be;">let</span><span> value: deflect::Value </span><span style="color:#1aa7b0;">=</span><span> reflectable.</span><span style="color:#3366cc;">reflect</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span>context)</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span>
+</span><span style="color:#999999;">// pretty-print the reflected value
+</span><span style="color:#999999;">// note that the concrete type `Foo` has been recovered from `dyn Any`!
+</span><span>assert_eq!(value.</span><span style="color:#3366cc;">to_string</span><span>(), </span><span style="color:#699200;">&quot;box Foo { a: 42 }&quot;</span><span>);
+</span><span> 
+</span><span style="color:#999999;">// downcast into a `BoxedDyn` value
+</span><span style="color:#8e44be;">let</span><span> value: deflect::value::BoxedDyn </span><span style="color:#1aa7b0;">=</span><span> value.</span><span style="color:#3366cc;">try_into</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span>
+</span><span style="color:#999999;">// dereference the boxed value
+</span><span style="color:#8e44be;">let</span><span> value: deflect::Value </span><span style="color:#1aa7b0;">=</span><span> value.</span><span style="color:#3366cc;">deref</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span> 
+</span><span style="color:#999999;">// downcast into a `Struct` value
+</span><span style="color:#8e44be;">let</span><span> value: deflect::value::Struct </span><span style="color:#1aa7b0;">=</span><span> value.</span><span style="color:#3366cc;">try_into</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span> 
+</span><span style="color:#999999;">// get the field `a` by name
+</span><span style="color:#8e44be;">let </span><span style="color:#f0ae00;">Some</span><span>(field) </span><span style="color:#1aa7b0;">=</span><span> value.</span><span style="color:#3366cc;">field</span><span>(</span><span style="color:#699200;">&quot;a&quot;</span><span>)</span><span style="color:#1aa7b0;">? </span><span style="color:#8e44be;">else </span><span>{
+</span><span>    panic!(</span><span style="color:#699200;">&quot;no field named `a`!&quot;</span><span>)
+</span><span>};
+</span><span> 
+</span><span style="color:#999999;">// get the value of the field
+</span><span style="color:#8e44be;">let</span><span> value: deflect::Value </span><span style="color:#1aa7b0;">=</span><span> field.</span><span style="color:#3366cc;">value</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span> 
+</span><span style="color:#999999;">// downcast into a `u8`
+</span><span style="color:#8e44be;">let</span><span> value: </span><span style="color:#8e44be;">u8 </span><span style="color:#1aa7b0;">=</span><span> value.</span><span style="color:#3366cc;">try_into</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span> 
+</span><span style="color:#999999;">// check that it&#39;s equal to `42`!
+</span><span>assert_eq!(value, </span><span style="color:#6969ff;">42</span><span>);
+</span></code></pre>
+<p>While I won’t regurgitate my <a href="../deflect">entire announcement post for <code>deflect</code></a> (go read it!), I will reiterate the story of why my year ended here. In the wake of publishing <code>async-backtrace</code>, I found that few people relish the thought of annotating <em>every</em> <code>async</code> fn in their code base. It was around this time that I learned that <a href="https://github.com/tmandry">Tyler Mandry</a> was <a href="https://rust-lang.zulipchat.com/#narrow/stream/187312-wg-async/topic/Async.20stack.20trace.20support.20library/near/306350471">experimenting with DWARF-directed async backtraces</a>, capable of providing traces of arbitrary <code>async fn</code>s. His proof of concept was compelling, but generalizing it to <em>arbitrary</em> <code>Future</code>s (particularly, manually-implemented ones) would require the ability to reflect <em>arbitrary</em> types. Thus, deflect was born.</p>
+<h2 id="what-s-next">What’s next?</h2>
+<p>I hope 2023 is as fruitful as 2022! I plan to continue talking to folks about their Rust pain-points, and doing what I can to resolve them. I could not have predicted last January the problems I would tackle in the year to come, so I’d be foolish to think I could predict everything 2023 holds for me.</p>
+<p>Nonetheless, I <em>do</em> have some unfinished business. For one, rustc’s transmutability analysis still lacks support for references; I’ve begun chipping away at that. And for <code>deflect</code>, I hope to implement pretty-printed stacktraces of arbitrary futures. Lastly, I have a few yet-to-be-explored ideas for how to improve the Tokio performance debugging story—stay tuned!</p>
+<h2 id="thanks">Thanks</h2>
+<p>I’m tremendously grateful for the time, ideas and expertise of my colleagues, and of all those who shared with me their pain-points of developing networked services in Rust. And, I’m tremendously grateful to my employer for the freedom and opportunity to keep pushing the bounds of what’s possible in Rust. Little of what I mentioned in this blog post would have been possible without all of the aforementioned support.</p>
+<h2 id="personal-postscript">Personal Postscript</h2>
+<p>I had a lovely year non-professionally, too. I completed my PhD. I began to learn Spanish. My girlfriend and I embarked on our most ambitious bicycle tours, yet! We’re getting a tandem bicycle this year—I can’t wait to see where it takes us. My most professionally productive periods in 2022 were, paradoxically, the same periods in which I made the most time for myself, nature, and my loved ones. I’m hoping to approach 2023 with renewed intentionality: to seek out more moments for reflection, to tread more lightly on this earth, and to experience more of this world’s wonders.</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

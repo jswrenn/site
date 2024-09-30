@@ -1,0 +1,216 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>`repr(C)`: Clear, Simple and (Sometimes) Wrong</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="`repr(C)`: Clear, Simple and (Sometimes) Wrong" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline"><code>repr(C)</code>: Clear, Simple and (Sometimes) Wrong</h1>
+    <time itemprop="datePublished" datetime="2024-07-31">
+      2024-07-31
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>Too often, <code>repr(C)</code> is thought of as a panacea to layout stability and portability problems; that values of a type marked <code>repr(C)</code> can be consistently reflected upon, across different platforms, different compiler versions, and even perhaps different minor library versions. That is not always the case!</p>
+<span id="continue-reading"></span>
+<p>The promise of <code>repr(C)</code> is quite limited: applied to a struct, it guarantees that a particular layout algorithm will be used for that struct. That algorithm uses the definition order, sizes, and alignments of its fields as inputs. When those inputs change, the output — the struct’s layout — may change, too.</p>
+<p>This post highlights two ways in which <code>repr(C)</code> may fall short of expectations.</p>
+<h2 id="repr-c-layouts-are-not-always-platform-portable"><code>repr(C)</code> layouts are not always platform portable</h2>
+<p>As their names suggest, the sizes of Rust’s primitive integer types are well-specified. A <code>u8</code> is always 8 bits; an <code>i128</code> is always 128 bits. By contrast, their alignments are unspecified. A <code>u128</code> can have an alignment anywhere between 1 and 16!</p>
+<p>Consequently, <code>repr(C)</code> alone does not guarantee that a struct has a consistent alignment. For example:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// The size of this struct is 16 bytes across all toolchains and targets, but
+</span><span style="color:#999999;">/// its alignment is unspecified. On some existing targets the alignment is 4, on others the alignment is 8.
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">struct </span><span>AlignUnportable(</span><span style="color:#8e44be;">u128</span><span>);
+</span></code></pre>
+<p>…nor does it guarantee that a struct will have a consistent size:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// Both the size and alignment of this struct are unspecified. Although the
+</span><span style="color:#999999;">/// `u8` field will always appear at byte offset 0, a variable amount of of trailing
+</span><span style="color:#999999;">/// padding will be added depending on the alignment of `AlignUnportable`.
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">struct </span><span>SizeUnportable(
+</span><span>    [AlignUnportable; 0],
+</span><span>    </span><span style="color:#8e44be;">u8</span><span>,
+</span><span>);
+</span></code></pre>
+<p>…nor does it guarantee that a struct’s fields will have consistent offsets:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// Not only are both the size and alignment of this struct unspecified, the
+</span><span style="color:#999999;">/// byte offset of the `u8` field is also unspecified.
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">struct </span><span>OffsetUnportable(
+</span><span>    AlignUnportable,
+</span><span>    </span><span style="color:#8e44be;">u8</span><span>,
+</span><span>);
+</span></code></pre>
+<p>These inconsistencies are relevant whenever you transmuting a Rust struct into bytes on one computer and transmuting those bytes back into a Rust struct on a different computer.</p>
+<p>Safe transmutation crates like <a href="https://crates.io/crates/zerocopy">zerocopy</a> and <a href="https://crates.io/crates/bytemuck">bytemuck</a> do not yet ensure portability. Although these crates will prevent unportable transmutations from inducing undefined behavior, compilation errors and unexpected runtime behavior might still arise.</p>
+<p>Stay tuned for developments in this space. In zerocopy, we’re planning to add both <a href="https://github.com/google/zerocopy/issues/1329">inline layout assertions</a> and a <a href="https://github.com/google/zerocopy/issues/1262">marker trait for portability</a>. In the mean time, use <a href="https://doc.rust-lang.org/nightly/core/mem/macro.offset_of.html"><code>offset_of!</code></a> and the <a href="https://crates.io/crates/static_assertions">static_assertions</a> crate to test that your layouts match your expectations.</p>
+<h2 id="repr-c-layouts-are-not-always-semver-stable"><code>repr(C)</code> layouts are not always SemVer stable</h2>
+<p>The limitations of <code>repr(C)</code> are not only technical, but also social. The central social contract of Rust’s crate authors is SemVer, a convention to consider some changes to be “major” (like removing an API) and others as “minor” (like adding an API), and to adjust version numbers accordingly. The line between major and minor changes is defined by <a href="https://rust-lang.github.io/rfcs/1105-api-evolution.html"><em>RFC 1105: API Evolution</em></a>.</p>
+<p>This document says <em>nothing</em> about <code>repr(C)</code>. No official documentation says anything about the SemVer contract of <code>repr(C)</code>. Is it acceptable to freely add and remove <code>repr(C)</code> between minor versions? Is it acceptable to reorder public fields of <code>repr(C)</code> structs? Is it acceptable to shift the offsets of public fields of <code>repr(C)</code> structs?</p>
+<p>These questions are wholly unanswered. If you require these guarantees from a library, you should request that they are explicitly documented by the library.</p>
+<h2 id="safety-goggles-for-alchemists">Safety Goggles for Alchemists</h2>
+<p>If this post intrigued you, consider attending my upcomming RustConf talk, <a href="https://rustconf.com/programs/#676"><em>Safety Goggles for Alchemists</em></a>. In this talk, you’ll learn how Rust is poised to become the first systems programming language with transmutation safety, and how safe transmute is already being put to use to build next-gen systems.</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>
