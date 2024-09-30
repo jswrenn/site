@@ -1,6 +1,6 @@
 +++
 title = "Safety Goggles for Alchemists"
-date = 2024-09-27
+date = 2024-09-30
 tags = ["rust", "transmute"]
 +++
 
@@ -361,7 +361,7 @@ For example, this `Direction` enum has four possible values:
 ```rust
 #[repr(u8)]
 enum Direction {
-    North = 0x01,
+    North = 0x00,
     East  = 0x01,
     South = 0x02,
     West  = 0x03,
