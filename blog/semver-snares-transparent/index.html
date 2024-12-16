@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Rust's SemVer Snares: `repr(transparent)` Super-Cut</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Rust's SemVer Snares: `repr(transparent)` Super-Cut" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Rust’s SemVer Snares: <code>repr(transparent)</code> Super-Cut</h1>
+    <time itemprop="datePublished" datetime="2021-01-09">
+      2021-01-09
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p><a href="/blog/semver-snares"><em>(Part of an ongoing series!)</em></a></p>
+<p>In the last two posts, <code>repr(transparent)</code> provided an unusual mechanism by which safe, downstream code could inadvertently rely on the <a href="/blog/semver-snares-size/">size</a> and <a href="/blog/semver-snares-alignment/">alignment</a> of an upstream type. In this post, I’ll recap the issue and discuss why it is tricky to fix.</p>
+<span id="continue-reading"></span>
+<p>To recap, <code>repr(transparent)</code> attribute provides a mechanism for observing the alignment of a type. The <code>repr(transparent)</code> attribute can be applied to types where:</p>
+<ul>
+<li>at most one field has size greater-than zero, and</li>
+<li>all <em>other</em> fields have minimum alignment equal to 1</li>
+</ul>
+<p>…to specify that the annotated type’s layout is identical to that of the non-zero-sized field.</p>
+<p>Applying <code>repr(transparent)</code> to a type with more than one field of size ≥1 is a compile error:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: </span><span style="color:#8e44be;">u8</span><span>, </span><span style="color:#999999;">// size = 1
+</span><span>    </span><span style="color:#f55800;">baz</span><span>: </span><span style="color:#8e44be;">u8  </span><span style="color:#999999;">// size = 1 (⚠)
+</span><span>}
+</span></code></pre>
+<p>…as is applying <code>repr(transparent)</code> to a type with more than one field having alignment &gt;1:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: </span><span style="color:#8e44be;">u8</span><span>,      </span><span style="color:#999999;">// align = 1
+</span><span>    </span><span style="color:#f55800;">baz</span><span>: [</span><span style="color:#8e44be;">u16</span><span>; 0] </span><span style="color:#999999;">// align = 2 (⚠)
+</span><span>}
+</span></code></pre>
+<p><strong>At present, you should not use <code>#[repr(transparent)]</code> unless you are sure your ZST fields are <em>guaranteed</em> to have size equal to zero, and alignment equal to one.</strong></p>
+<p>What would it take to fully shift this diligence from the programmer to the compiler?</p>
+<h2 id="potentially-breaking-changes">Potentially-Breaking Changes</h2>
+<p>To answer this, let’s consider the sorts of (otherwise) non-breaking changes that can increase the alignment and size of ZSTs.</p>
+<h3 id="repr-annotations"><code>repr</code> Annotations</h3>
+<p>Applying a <code>repr</code> annotation to a type can alter its size and alignment. The <code>align(N)</code> modifier specifies that the annotated type will have a minimum alignment of at least <code>N</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// uncommenting this line breaks `Bar`:
+</span><span style="color:#999999;">/* #[repr(align(2))] */
+</span><span style="color:#8e44be;">struct </span><span>Foo;
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">struct </span><span>Bar(</span><span style="color:#8e44be;">u8</span><span>, Foo);
+</span></code></pre>
+<p>Adding <code>repr(C)</code> or <code>repr(&lt;primitive&gt;)</code> to an ZST <code>enum</code> can increase its size:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// uncommenting this line breaks `Bar`:
+</span><span style="color:#999999;">/* #[repr(isize)] */
+</span><span style="color:#8e44be;">enum </span><span>Foo {
+</span><span>  Variant
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">struct </span><span>Bar(</span><span style="color:#8e44be;">u8</span><span>, Foo);
+</span></code></pre>
+<h3 id="fields">Fields</h3>
+<p>Generally speaking, it is not a breaking change to:</p>
+<ul>
+<li>modify or remove private fields</li>
+<li>add private fields to structs marked with <code>#[non_exhaustive]</code></li>
+<li>add private fields to structs that already have private fields</li>
+</ul>
+<p>…but, in the presence of <code>repr(transparent)</code>, all of the above changes can potentially break downstream code.</p>
+<p>The minimum alignment of <code>repr(C)</code> and <code>repr(transparent)</code> types is equal to the greatest minimum alignment of its fields. Adding a &gt;1-aligned field to a 1-aligned ZST prohibits that ZST from use as a field in a <code>repr(transparent)</code> type:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: [</span><span style="color:#8e44be;">u8</span><span>; 0], </span><span style="color:#999999;">// align == 1
+</span><span>    </span><span style="color:#999999;">// uncommenting this field breaks `Bar`:
+</span><span>    </span><span style="color:#999999;">/* baz: [u16; 0], */ // align == 2
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">struct </span><span>Bar(</span><span style="color:#8e44be;">u8</span><span>, Foo);
+</span></code></pre>
+<p>Likewise, adding or modifying a field of a ZST such that the size increases in a breaking change:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: (),
+</span><span>    </span><span style="color:#999999;">// uncommenting this field breaks `Bar`:
+</span><span>    </span><span style="color:#999999;">/* baz: u8 */
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">struct </span><span>Bar(</span><span style="color:#8e44be;">u8</span><span>, Foo);
+</span></code></pre>
+<h3 id="type-parameters">Type Parameters</h3>
+<p>As type parameters provide a mechanism for consumers to alter the private, internal details of a type, <em>changes</em> to how type parameters are instantiated directly effect the alignment of a type:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// `Foo` is *always* a ZST, but its alignment is equal to that of `T` 
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)] </span><span style="color:#8e44be;">struct </span><span>Foo&lt;T&gt;([T; 0]);
+</span><span>
+</span><span>assert_eq!(</span><span style="color:#6969ff;">0</span><span>, size_of::&lt;Foo&lt;</span><span style="color:#8e44be;">u8</span><span>&gt;&gt;());
+</span><span>assert_eq!(</span><span style="color:#6969ff;">0</span><span>, size_of::&lt;Foo&lt;</span><span style="color:#8e44be;">u16</span><span>&gt;&gt;());
+</span><span>
+</span><span>assert_eq!(</span><span style="color:#6969ff;">1</span><span>, align_of::&lt;Foo&lt;</span><span style="color:#8e44be;">u8</span><span>&gt;&gt;());
+</span><span>assert_eq!(</span><span style="color:#6969ff;">2</span><span>, align_of::&lt;Foo&lt;</span><span style="color:#8e44be;">u16</span><span>&gt;&gt;());
+</span></code></pre>
+<p>…and the size of a type:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// `Foo` is 1-aligned, but has the size of `T`
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C, packed)] </span><span style="color:#8e44be;">struct </span><span>Foo&lt;T&gt;(MaybeUninit&lt;T&gt;);
+</span><span>
+</span><span>assert_eq!(</span><span style="color:#6969ff;">1</span><span>, size_of::&lt;Foo&lt;</span><span style="color:#8e44be;">u8</span><span>&gt;&gt;());
+</span><span>assert_eq!(</span><span style="color:#6969ff;">2</span><span>, size_of::&lt;Foo&lt;</span><span style="color:#8e44be;">u16</span><span>&gt;&gt;());
+</span><span>
+</span><span>assert_eq!(</span><span style="color:#6969ff;">1</span><span>, align_of::&lt;Foo&lt;</span><span style="color:#8e44be;">u8</span><span>&gt;&gt;());
+</span><span>assert_eq!(</span><span style="color:#6969ff;">1</span><span>, align_of::&lt;Foo&lt;</span><span style="color:#8e44be;">u16</span><span>&gt;&gt;());
+</span></code></pre>
+<p>Consequently, Rust must usually assume that generically-instantiated fields are <em>not</em> one-aligned ZSTs:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">struct </span><span>Foo&lt;T, U&gt;(T, [U; 0]);
+</span></code></pre>
+<pre class="language-rust_errors"><code class="language-rust_errors"><span class="token error">error<a class="token error-explanation" href="https://doc.rust-lang.org/nightly/error-index.html#E0690" target="_blank">[E0690]</a>: transparent struct needs exactly one non-zero-sized field, but has 2</span>
+ <a class="token error-location" href="#" data-line="2" data-col="1">--&gt; src/lib.rs:2:1
+</a>  |
+2 | struct Foo&lt;T, U&gt;(T, [U; 0]);
+  | ^^^^^^^^^^^^^^^^^-^^------^^
+  | |                |  |
+  | |                |  this field is non-zero-sized
+  | |                this field is non-zero-sized
+  | needs exactly one non-zero-sized field, but has 2
+</code></pre>
+<p>This error is necessary if one wants to provide <em>definition-site</em> errors for <code>repr(transparent)</code> violations.</p>
+<h3 id="const-parameters">Const Parameters</h3>
+<p>Unsurprisingly, the instantiation of a const-generic parameter can affect the size of a type:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// the alignment of `Foo&lt;N&gt;` is 1
+</span><span style="color:#999999;">/// the size of `Foo&lt;N&gt;` is `N` bytes
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">struct </span><span>Foo&lt;</span><span style="color:#8e44be;">const</span><span> N: </span><span style="color:#8e44be;">usize</span><span>&gt;([</span><span style="color:#8e44be;">u8</span><span>; N]);
+</span></code></pre>
+<p>The instantiation of const-generic parameters can also affect the alignment of a type:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">use </span><span>std::mem::align_of;
+</span><span>
+</span><span style="color:#999999;">/// alignment of `ZST&lt;{N}&gt;` is equal to `N`
+</span><span style="color:#999999;">/// the size of `ZST&lt;{N}&gt;` is equal to 0.
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">pub struct </span><span>ZST&lt;</span><span style="color:#8e44be;">const</span><span> N: </span><span style="color:#8e44be;">usize</span><span>&gt;
+</span><span>where
+</span><span>    (): Align&lt;{N}</span><span style="color:#1aa7b0;">&gt;</span><span>,
+</span><span>{
+</span><span>    align: [</span><span style="color:#1aa7b0;">&lt;</span><span>() </span><span style="color:#1aa7b0;">as </span><span>Align&lt;{N}</span><span style="color:#1aa7b0;">&gt;&gt;</span><span>::Type; </span><span style="color:#6969ff;">0</span><span>],
+</span><span>}
+</span><span>
+</span><span>assert_eq!(</span><span style="color:#6969ff;">1</span><span>, align_of::&lt;ZST&lt;1&gt;&gt;());
+</span><span>assert_eq!(</span><span style="color:#6969ff;">2</span><span>, align_of::&lt;ZST&lt;2&gt;&gt;());
+</span><span>
+</span><span style="color:#8e44be;">pub trait </span><span>Align&lt;const N: usize&gt; { </span><span style="color:#8e44be;">type </span><span>Type; }
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(</span><span style="color:#f55800;">align</span><span style="color:#3366cc;">(1)</span><span>)] </span><span style="color:#8e44be;">pub struct </span><span>Align1;
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(</span><span style="color:#f55800;">align</span><span style="color:#3366cc;">(2)</span><span>)] </span><span style="color:#8e44be;">pub struct </span><span>Align2;
+</span><span style="color:#999999;">/* and so on */
+</span><span style="color:#8e44be;">impl </span><span>Align&lt;{1}&gt; </span><span style="color:#8e44be;">for</span><span> () { </span><span style="color:#8e44be;">type </span><span>Type </span><span style="color:#1aa7b0;">=</span><span> Align1; }
+</span><span style="color:#8e44be;">impl </span><span>Align&lt;{2}&gt; </span><span style="color:#8e44be;">for</span><span> () { </span><span style="color:#8e44be;">type </span><span>Type </span><span style="color:#1aa7b0;">=</span><span> Align2; }
+</span><span style="color:#999999;">/* and so on */
+</span></code></pre>
+<h3 id="default-repr-and-rustc-version">Default <code>repr</code> and <code>rustc</code> Version</h3>
+<p>Generally speaking, the layout properties of “default repr” (i.e., a type without a <code>repr</code> attribute) are <em>unspecified</em>. To my knowledge, it is not currently specified that:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">enum </span><span>Foo {
+</span><span>  Bar
+</span><span>}
+</span></code></pre>
+<p>is guaranteed to be a one-aligned and zero-sized. Although <code>Foo</code> may be laid out as such by <em>particular</em> versions of Rust (such as the version available at the time of writing), that may not be true for <em>future</em> versions of Rust. This is a deeper issue than just SemVer stability.</p>
+<h2 id="enforcing-semver-stability">Enforcing SemVer Stability</h2>
+<p>At the time of writing, there is <a href="https://github.com/rust-lang/rust/issues/78586">some effort to eliminate</a> the stability hazards of <code>repr(transparent)</code>. However, to <em>comprehensively</em> enforce that uses of <code>#[repr(transparent)]</code> are SemVer-respecting at type definition sites in this manner, <code>rustc</code> would need implement all of the following restrictions atop the basic well-formedness check:</p>
+<ol>
+<li>prohibit, on all but one field, most occurences of type parameters</li>
+<li>prohibit, on all but one field, most occurences of const parameters</li>
+<li>require, on all but one field, that field types are fully-implicitly constructible</li>
+<li>require, on all but one field, that field types have well-specified sizes and alignments</li>
+<li>document that changing the <code>repr</code> of <em>any</em> one-aligned ZST is a SemVer Breaking Change™</li>
+</ol>
+<p>These requirements have far-reaching implications for the role of layout and <code>repr</code> in SemVer stability. Since these adjustments would likely need to be timed with an edition change anyways, it’s worth considering if a simpler formulation of <code>repr(transparent)</code> exists. I think there is: limit <code>repr(transparent)</code> to structs on which at most one field is <em>not</em> <code>PhantomData</code>.</p>
+<h2 id="beyond-repr-transparent">Beyond <code>repr(transparent)</code></h2>
+<p>SemVer aside, <code>repr(transparent)</code>’s restrictions on generic parameters are complex and unwieldy. These restrictions are necessary to ensure, <strong>at definition site</strong>, that <em>any</em> instantiation of the annotated type will be transparent with respect to its non-one-aligned-ZST field. But, in the future, <code>repr(transparent)</code> may not be necessary at all as a layout modifier (merely as a definition-site check).</p>
+<p>The Unsafe Code Working Group <a href="https://github.com/rust-lang/unsafe-code-guidelines/pull/164">proposes</a> that one-aligned-ZST fields shalt not influence the layout of default-<code>repr</code> structs, and that default-<code>repr</code> structs with exactly one <em>non</em>-one-aligned-ZST field shall have layout identical to that of the field. If accepted, these rules would mean that one could determine whether or not a particular type was <em>effectively</em> transparent, even in the absence of <code>repr(transparent)</code>. What would be missing is an in-language mechanism to double-check. To this end, I’d suggest the introduction of the compiler-intrinsic trait <code>mem::AbiEq&lt;Other&gt;</code>, which is implemented for all types whose ABI is identical to <code>Other</code>.</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

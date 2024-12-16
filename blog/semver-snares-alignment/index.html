@@ -1,0 +1,247 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Rust's SemVer Snares: Alignment</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Rust's SemVer Snares: Alignment" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Rust’s SemVer Snares: Alignment</h1>
+    <time itemprop="datePublished" datetime="2021-01-06">
+      2021-01-06
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p><a href="/blog/semver-snares"><em>(Part of an ongoing series!)</em></a></p>
+<p>In Rust, changes to a type’s alignment are not usually understood to be Breaking Changes™. Of course, that isn’t to say you <em>can’t</em> break safe, downstream code by changing the alignment of a type…</p>
+<span id="continue-reading"></span><h2 id="align-of"><code>align_of</code></h2>
+<p>The <a href="https://doc.rust-lang.org/std/mem/fn.align_of.html"><code>mem::align_of</code></a> intrinsic is a safe function that provides the minimum alignment (in bytes) of any type. As with <code>size_of</code>, downstream code should not rely on <code>mem::align_of</code> producing a SemVer stable result, but that’s only a convention. Consider:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub mod </span><span>upstream {
+</span><span>  #[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span>  </span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: </span><span style="color:#8e44be;">u8</span><span>,
+</span><span>    </span><span style="color:#999999;">// uncommenting this field is a breaking change for `downstream`:
+</span><span>    </span><span style="color:#999999;">/* baz: u16 */
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">pub mod </span><span>downstream {
+</span><span>  </span><span style="color:#8e44be;">use super</span><span>::upstream::</span><span style="color:#1aa7b0;">*</span><span>;
+</span><span>  
+</span><span>  </span><span style="color:#8e44be;">const </span><span style="color:#1aa7b0;">_</span><span>: [(); </span><span style="color:#6969ff;">1</span><span>] </span><span style="color:#1aa7b0;">= </span><span>[(); std::mem::align_of::&lt;Foo&gt;()];
+</span><span>}
+</span></code></pre>
+<pre class="language-rust_errors"><code class="language-rust_errors"><span class="token error">error<a class="token error-explanation" href="https://doc.rust-lang.org/stable/error-index.html#E0308" target="_blank">[E0308]</a>: mismatched types</span>
+  <a class="token error-location" href="#" data-line="12" data-col="22">--&gt; src/lib.rs:12:22
+</a>   |
+12 |   const _: [(); 1] = [(); std::mem::align_of::&lt;Foo&gt;()];
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an array with a fixed size of 1 element, found one with 2 elements
+</code></pre>
+<h2 id="repr-transparent"><code>repr(transparent)</code></h2>
+<p>The <code>repr(transparent)</code> attribute provides a mechanism for observing the alignment of a type. The <code>repr(transparent)</code> attribute can be applied to types where:</p>
+<ul>
+<li>at most one field has size greater-than zero, and</li>
+<li>all <em>other</em> fields have minimum alignment equal to 1</li>
+</ul>
+<p>…to specify that the annotated type’s layout is identical to that of the non-zero-sized field. Applying <code>repr(transparent)</code> to a type with more than one field that has alignment &gt;1 is a compile error:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: </span><span style="color:#8e44be;">u8</span><span>,      </span><span style="color:#999999;">// align = 1
+</span><span>    </span><span style="color:#f55800;">baz</span><span>: [</span><span style="color:#8e44be;">u16</span><span>; 0] </span><span style="color:#999999;">// align = 2 (⚠)
+</span><span>}
+</span></code></pre>
+<pre class="language-rust_errors"><code class="language-rust_errors"><span class="token error">error<a class="token error-explanation" href="https://doc.rust-lang.org/stable/error-index.html#E0691" target="_blank">[E0691]</a>: zero-sized field in transparent struct has alignment larger than 1</span>
+ <a class="token error-location" href="#" data-line="4" data-col="5">--&gt; src/lib.rs:4:5
+</a>  |
+4 |     baz: [u16; 0]
+  |     ^^^^^^^^^^^^^ has alignment larger than 1
+</code></pre>
+<p>This requirement exists because even zero-sized fields affect the alignment (and thus padding) of the types they appear in.</p>
+<p>Consequently, upstream changes that increase the alignment of ZST can break downstream code:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub mod </span><span>upstream {
+</span><span>  #[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span>  </span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: (),
+</span><span>    </span><span style="color:#999999;">// uncommenting this field is a breaking change for `downstream`:
+</span><span>    </span><span style="color:#999999;">/* baz: [u16; 0], */
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">pub mod </span><span>downstream {
+</span><span>  </span><span style="color:#8e44be;">use super</span><span>::upstream::</span><span style="color:#1aa7b0;">*</span><span>;
+</span><span>
+</span><span>  #[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span>  </span><span style="color:#8e44be;">struct </span><span>Bar(</span><span style="color:#8e44be;">u8</span><span>, Foo);
+</span><span>}
+</span></code></pre>
+<pre class="language-rust_errors"><code class="language-rust_errors"><span class="token error">error<a class="token error-explanation" href="https://doc.rust-lang.org/stable/error-index.html#E0691" target="_blank">[E0691]</a>: zero-sized field in transparent struct has alignment larger than 1</span>
+  <a class="token error-location" href="#" data-line="14" data-col="18">--&gt; src/lib.rs:14:18
+</a>   |
+14 |   struct Bar(u8, Foo);
+   |                  ^^^ has alignment larger than 1
+</code></pre>
+<p>You should therefore avoid <code>#[repr(transparent)]</code> unless the ZST field types are <em>documented</em> to have a minimum alignment of 1.</p>
+<hr />
+<p>Thanks to <a href="https://www.reddit.com/user/CUViper">/u/CUViper</a> for <a href="https://www.reddit.com/r/rust/comments/kr41sq/semver_snares_sizedness_and_size/gibo0pk/?context=1">nudging me</a> towards thinking about alignment-related snares!</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Scoped Trait Implementations</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Scoped Trait Implementations" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Scoped Trait Implementations</h1>
+    <time itemprop="datePublished" datetime="2020-10-18">
+      2020-10-18
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>In Rust, the <code>impl</code> keyword doesn’t have an associated visibility; there’s no such thing as <code>pub impl</code>. However, that isn’t to say that implementations don’t have visibility—they do! Enter: <a href="https://github.com/rust-lang/rfcs/pull/2145"><strong>RFC2145 - Type Privacy</strong></a>.</p>
+<span id="continue-reading"></span>
+<p>RFC2145 formalizes the notion of “private implementations” in terms of Rust’s existing visibility mechanisms. In short, you don’t <em>need</em> <code>pub impl</code> or <code>pub(self) impl</code> to figure out who can see a trait implementation—you can do so by inspecting the visibility of its components. Specifically: a trait implementation is as visible as the <em>least</em> visible of its trait, target type, or type parameters.</p>
+<h2 id="implementation-privacy-by-example">Implementation Privacy By Example</h2>
+<p>Given this:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/* This type is private to this module. */
+</span><span style="color:#8e44be;">enum </span><span>Private {}
+</span><span>
+</span><span style="color:#999999;">/* This type is public outside of this module. */
+</span><span style="color:#8e44be;">pub enum </span><span>Public {}
+</span><span>
+</span><span style="color:#999999;">/* This type is public outside of this module */
+</span><span style="color:#8e44be;">pub trait </span><span>Trait&lt;Parameter&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">function</span><span>();
+</span><span>}
+</span></code></pre>
+<p>…this is a <strong>public</strong> impl:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl</span><span>&lt;Anything&gt; Trait&lt;Anything&gt; </span><span style="color:#8e44be;">for </span><span>Public {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">function</span><span>() {
+</span><span>        println!(</span><span style="color:#699200;">&quot;Callable anywhere.&quot;</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>…this is a <strong>private</strong> impl:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl</span><span>&lt;Anything&gt; Trait&lt;Anything&gt; </span><span style="color:#8e44be;">for </span><span>Private {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">function</span><span>() {
+</span><span>        println!(</span><span style="color:#699200;">&quot;Callable only where `Private` is in scope.&quot;</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>…and this is a <strong>private</strong> impl:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl</span><span>&lt;Anything&gt; Trait&lt;Private&gt; </span><span style="color:#8e44be;">for </span><span>Anything {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">function</span><span>() {
+</span><span>        println!(</span><span style="color:#699200;">&quot;Callable only where `Private` is in scope.&quot;</span><span>);
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>Type privacy <a href="https://github.com/petrochenkov/rfcs/blob/9901089b2467b0813456479ba03642e9f0ac0912/text/0000-type-privacy.md#user-content-additional-restrictions-for-associated-items:~:text=type%20privacy%20additionally%20prohibits%20use%20of%20any%20associated%20items%20from%20private%20impls">prohibits the use of associated items from private impls</a>, so whether <code>function</code> is publicly callable depends on the visibility of the implementation.</p>
+<h2 id="putting-type-privacy-to-work">Putting Type Privacy to Work</h2>
+<p>We can leverage these rules to create “hidden implementations” of public traits. To illustrate, consider this public trait, <code>CTF</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub trait </span><span>CTF {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">ctf</span><span>() {
+</span><span>        println!(</span><span style="color:#699200;">&quot;You captured the flag!&quot;</span><span>)
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">impl </span><span>CTF </span><span style="color:#8e44be;">for </span><span>u32 {}
+</span><span>
+</span><span style="color:#8e44be;">impl </span><span>CTF </span><span style="color:#8e44be;">for </span><span>i8 {}
+</span></code></pre>
+<p>How can we make our implementation of <code>CTF</code> for <code>u32</code> available to everyone, but our implementation for <code>i8</code> only available to us?</p>
+<p>Per RFC2145, these two trait implementations are public: <code>CTF</code> is a public trait and <code>i8</code> is a public type. To make these trait implementations private, we need only add a type parameter to <code>CTF</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub trait </span><span>CTF&lt;Scope&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">ctf</span><span>() {
+</span><span>        println!(</span><span style="color:#699200;">&quot;You captured the flag!&quot;</span><span>)
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>…and modify our implementations to suit.</p>
+<p>Our implementation of <code>CTF</code> for <code>i8</code> should be usable <em>anywhere</em>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl</span><span>&lt;Anywhere&gt; CTF&lt;Anywhere&gt; </span><span style="color:#8e44be;">for </span><span>u32 {}
+</span></code></pre>
+<p>And our implementation of <code>CTF</code> for <code>i8</code> should only be usable <em>here</em>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/* a private type! */
+</span><span style="color:#8e44be;">enum </span><span>Here {}
+</span><span>
+</span><span style="color:#8e44be;">impl </span><span>CTF&lt;Here&gt; </span><span style="color:#8e44be;">for </span><span>u32 {}
+</span></code></pre>
+<p><strong>That’s it!</strong></p>
+<h3 id="ergonomics">Ergonomics</h3>
+<p>Okay, but doesn’t this mean we need to <em>always</em> supply a scope parameter when invoking <code>ctf</code> and modify <em>all</em> of our existing public implementations of the trait? No! We can simply define a <em>public</em> default value for <code>Scope</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub trait </span><span>CTF&lt;Scope = ()&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">ctf</span><span>() {
+</span><span>        println!(</span><span style="color:#699200;">&quot;You captured the flag!&quot;</span><span>)
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>…so third-parties can still just write:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#1aa7b0;">&lt;</span><span style="color:#8e44be;">u32 </span><span style="color:#1aa7b0;">as </span><span style="color:#666666;">CTF</span><span style="color:#1aa7b0;">&gt;</span><span>::ctf();
+</span></code></pre>
+<p>…and existing implementations can remain unchanged; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl </span><span>CTF </span><span style="color:#8e44be;">for </span><span>Foo {}
+</span><span style="color:#999999;">//      ^ don&#39;t need to provide `Scope` parameter
+</span></code></pre>
+<h3 id="resilience">Resilience</h3>
+<p>If you are relying on type privacy for safety, it’s crucial that your private types (like <code>Here</code>) remain private. Fortunately, you can do so <em>solely</em> by manually examining their definition site. While it is possible to publicly re-export private types via public type aliases:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub mod </span><span>crate_a {
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">enum </span><span>Here {}
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">pub trait </span><span>CTF&lt;Scope=()&gt; {
+</span><span>        </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">ctf</span><span>();
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">impl</span><span>&lt;Anywhere&gt; CTF&lt;Anywhere&gt; </span><span style="color:#8e44be;">for </span><span>u32 {
+</span><span>        </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">ctf</span><span>() {
+</span><span>            println!(</span><span style="color:#699200;">&quot;Anyone can capture the flag for u32!&quot;</span><span>)
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">impl </span><span>CTF&lt;Here&gt; </span><span style="color:#8e44be;">for </span><span>i8 {
+</span><span>        </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">ctf</span><span>() {
+</span><span>            println!(</span><span style="color:#699200;">&quot;Only things that can see `Here` can capture the flag for i8!&quot;</span><span>);
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">pub mod </span><span>smuggle {
+</span><span>        </span><span style="color:#8e44be;">pub type </span><span>Here </span><span style="color:#1aa7b0;">= </span><span style="color:#8e44be;">super</span><span>::Here;
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>…these cases are <em>automatically</em> linted:</p>
+<pre class="  language-rust_errors"><code class="language-rust_errors"><span class="token warning">warning: private type `crate_a::Here` in public interface (error E0446)</span>
+  <a class="token error-location" data-line="21" data-col="5">--&gt; src/lib.rs:21:5
+</a>   |
+21 |     pub type Here = Here;
+   |     ^^^^^^^^^^^^^^^^^^^^^
+   |
+<span class="token note">   = note: `#[warn(private_in_public)]` on by default</span>
+   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!
+<span class="token note">   = note: for more information, <a class="token see-issue" href="https://github.com/rust-lang/rust/issues/34537" target="_blank">see issue #34537 &lt;https://github.com/rust-lang/rust/issues/34537&gt;</a></span>
+</code></pre>
+<p>And <strong>using</strong> such smuggled types:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">main</span><span>() {
+</span><span>    </span><span style="color:#8e44be;">use </span><span>crate_a::{</span><span style="color:#666666;">CTF</span><span>, smuggle::Here};
+</span><span>    
+</span><span>    &lt;</span><span style="color:#8e44be;">u32 </span><span style="color:#1aa7b0;">as</span><span> CTF&gt;::ctf(); </span><span style="color:#999999;">// Ok!
+</span><span>    
+</span><span>    </span><span style="color:#1aa7b0;">&lt;</span><span style="color:#8e44be;">u32 </span><span style="color:#1aa7b0;">as </span><span>CTF&lt;Here&gt;</span><span style="color:#1aa7b0;">&gt;</span><span>::ctf(); </span><span style="color:#999999;">// ERROR!
+</span><span>}
+</span></code></pre>
+<p>…produces hard errors:</p>
+<pre class="  language-rust_errors"><code class="  language-rust_errors"><span class="token error">error: type `crate_a::Here` is private</span>
+  <a class="token error-location" href="#" data-line="31" data-col="5">--&gt; src/main.rs:31:5
+</a>   |
+31 |     &lt;u32 as CTF&lt;Here&gt;&gt;::ctf(); // ERROR!
+   |     ^^^^^^^^^^^^^^^^^^^^^^^ private type
+</code></pre>
+<p><a href="https://play.rust-lang.org/?version=nightly&amp;mode=debug&amp;edition=2018&amp;gist=c711d84abd5187cdb52d90d603601da6"><strong>Try it for yourself!</strong></a></p>
+<h2 id="a-future-for-pub-impl">A future for <code>pub impl</code>?</h2>
+<p>There <em>has</em> been some prior work to add a <code>pub(...) impl</code> syntax to Rust (including <a href="https://github.com/rust-lang/rfcs/pull/2529">this yet-to-be-merged RFC</a>), but defining extensions to the trait system is a thorny endeavor. However, these proposals have not (to my knowledge) taken advantage of Rust’s existing type privacy work. If they did, perhaps we could reason about and experiment with the implications of such proposals <em>within</em> Rust’s <em>current</em> trait system.</p>
+<p>Concretely: Any public trait can be made “scope-aware” by adding a <code>Scope</code> parameter to it; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub trait </span><span>Default&lt;Scope=()&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">default</span><span>() -&gt; </span><span style="color:#8e44be;">Self</span><span>;
+</span><span>}
+</span></code></pre>
+<p>Then, we might think of <code>pub impl Default for Foo</code> as desugaring to:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl</span><span>&lt;Anywhere&gt; </span><span style="color:#f0ae00;">Default</span><span>&lt;Anywhere&gt; </span><span style="color:#8e44be;">for </span><span>Foo {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">default</span><span>() -&gt; </span><span style="color:#8e44be;">Self </span><span>{ </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>}
+</span></code></pre>
+<p>…and think of <code>pub(self) impl Default for Foo</code> as desugaring to:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#f55800;">self</span><span>) </span><span style="color:#8e44be;">enum </span><span>Here {}
+</span><span>
+</span><span style="color:#8e44be;">impl </span><span style="color:#f0ae00;">Default</span><span>&lt;Here&gt; </span><span style="color:#8e44be;">for </span><span>Foo {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">default</span><span>() -&gt; </span><span style="color:#8e44be;">Self </span><span>{ </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>}
+</span></code></pre>
+<p>This is only a sketch, but it might be a promising starting point for a native <code>pub(...) impl</code> syntax!</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

@@ -1,0 +1,700 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Safety Goggles for Alchemists</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Safety Goggles for Alchemists" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Safety Goggles for Alchemists</h1>
+    <time itemprop="datePublished" datetime="2024-09-30">
+      2024-09-30
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p><em><strong>The Path Towards Safer Transmute</strong></em></p>
+<p>Since Rust’s inception, <code>mem::transmute</code> has been the poster-dragon of unsafe code, but its reign of error is coming to an end! In this <del>talk</del> blog post, you’ll learn how Rust is poised to become the first systems programming language with transmutation safety, and how safe transmute is already being put to use to build next-gen systems.</p>
+<span id="continue-reading"></span>
+<blockquote>
+<p><em>(This is an adaption of my RustConf 2024 talk of the same name. Being a talk adaptation, this blog post is a little more narrative and conversational than my usual fare. A video of the talk will be available soon!</em>)</p>
+</blockquote>
+<h2 id="history">History</h2>
+<p>As you might know, when Graydon Hoare presented Rust at the Mozilla Annual Summit in 2010, <a href="http://venge.net/graydon/talks/intro-talk.pdf">his opening slide</a> described the project as “<em>Technology from the past come to save the future from itself.</em>” This tagline has usually understood as a nod to <a href="https://doc.rust-lang.org/reference/influences.html">Rust’s influences</a>, which include Scheme (1975), StandardML (1983), and Cyclone (2001).</p>
+<p>But to <em>really</em> understand Rust’s roots, we need to turn the clock back a little further, to 1379.</p>
+<p>That year, famed bookseller Nicholas Flamel — so the story goes — translated the cryptic tome of Abremelin the Mage. With its occult insights, Flamel transmuted lead into gold, and, some say, achieved immortal life.</p>
+<p>Whether Flamel took his secrets to the grave, or assumed a false identity, I cannot say. All I do know is that nearly six hundred years later, <em>another</em> beareded man began contributing to an upstart programming language called Rust.</p>
+<p><img src="https://avatars.githubusercontent.com/brson" alt="Photograph of Brian Anderson" /></p>
+<p>This is “<a href="https://brson.github.io/">Brian Anderson</a>”, and in July 2012, he <a href="https://github.com/rust-lang/rust/commit/f12adcbf930122ef6d98790b53d80d511dc62406">added a curious new function to Rust</a> called <code>transmute</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">unsafe fn </span><span style="color:#3366cc;">transmute</span><span>&lt;Src, Dst&gt;(</span><span style="color:#6969ff;">src</span><span>: Src) -&gt; Dst {
+</span><span>    </span><span style="color:#1aa7b0;">...
+</span><span>}
+</span></code></pre>
+<p>Transmute is an <code>unsafe</code> function that consumes a source value of any type and returns a value of any type of your chosing, backed by those same bits. With it, Rust, too, can turn lead into gold:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">struct </span><span>Lead;
+</span><span style="color:#8e44be;">struct </span><span>Gold;
+</span><span>
+</span><span style="color:#8e44be;">let</span><span> gold: Gold </span><span style="color:#1aa7b0;">= </span><span style="color:#8e44be;">unsafe </span><span>{ </span><span style="color:#3366cc;">transmute</span><span>(Lead) };
+</span></code></pre>
+<p>…and, <em>perhaps</em>, gain immortality.</p>
+<h2 id="dangers">Dangers</h2>
+<p>But, with great power, comes equally great danger. There are many risks to transmutation, this section will cover the four you need to worry about (unless you’re transmuting <a href="https://doc.rust-lang.org/reference/dynamically-sized-types.html">dynamically sized types</a> or <a href="https://doc.rust-lang.org/reference/types/function-pointer.html">function pointers</a>).</p>
+<h4 id="1-bit-validity">1. Bit Validity</h4>
+<p>Foremost, the source value must be a bit-valid instance of the destination type. Consider this transmutation from <code>u8</code> to <code>bool</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8_to_bool</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#8e44be;">u8</span><span>) -&gt; </span><span style="color:#8e44be;">bool </span><span>{
+</span><span>    </span><span style="color:#8e44be;">unsafe </span><span>{ core::mem::transmute(src) }
+</span><span>}
+</span></code></pre>
+<p>The layout of a <code>u8</code> is a single, initialized byte of any value. The layout of a <code>bool</code> is a single, initialized byte with the value of either zero or one.</p>
+<p>The above function, therefore, is sound to invoke only with <code>0</code> or <code>1</code>. What happens if you pass in a <code>2</code>? <a href="https://raphlinus.github.io/programming/rust/2018/08/17/undefined-behavior.html">Undefined behavior!</a> Rust programs <strong>must never</strong> exhibit undefined behavior.</p>
+<h4 id="2-alignment">2. Alignment</h4>
+<p>Next, if references are involved, you need to worry about at least two things in addition to their bit validity. The first is reference alignment.</p>
+<p>Types in Rust have <a href="https://doc.rust-lang.org/reference/type-layout.html#size-and-alignment">alignment requirements</a>. Whereas <code>u8</code>s can appear at any memory address, <code>u16</code>s can only appear at even memory addresses on most platforms.</p>
+<p>Given this, invoking the below function, which transmutes a reference to two <code>u8</code>s into a reference to a <code>u16</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8s_to_u16</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>[</span><span style="color:#8e44be;">u8</span><span>; 2]) -&gt; </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">u16 </span><span>{
+</span><span>    </span><span style="color:#999999;">// UNSOUND!
+</span><span>    </span><span style="color:#8e44be;">unsafe </span><span>{ transmute::&lt;</span><span style="color:#1aa7b0;">&amp;</span><span>[</span><span style="color:#8e44be;">u8</span><span>; </span><span style="color:#6969ff;">2</span><span>], </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">u16</span><span>&gt;(src) }
+</span><span>}
+</span></code></pre>
+<p>…will be sound about half the time.</p>
+<h4 id="3-lifetimes">3. Lifetimes</h4>
+<p>And of course, wherever there are references, there are lifetimes. It’s trivial to use transmute to extend a reference with a bounded lifetime into a reference with a static lifetime:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">extend</span><span>&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T&gt;(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;a</span><span> T) -&gt; </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static</span><span> T {
+</span><span>    </span><span style="color:#8e44be;">unsafe </span><span>{ core::mem::transmute(src) }
+</span><span>}
+</span></code></pre>
+<p>Although there are valid use-cases for this, it’s easy to accidentally end up with a dangling reference and that, of course, is undefined behavior.</p>
+<h4 id="4-safety-invariants">4. Safety Invariants</h4>
+<p>Finally, most subtle of all, you need to worry about violating your own safety invariants. Let’s say one person on your team defines a struct that holds even numbers:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">pub struct </span><span>Even {
+</span><span>    </span><span style="color:#999999;">// SAFETY: Always an even number!
+</span><span>    </span><span style="color:#f55800;">n</span><span>: </span><span style="color:#8e44be;">u8
+</span><span>}
+</span></code></pre>
+<p>…and then elsewhere, you bypass that constructor with <code>transmute</code></p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8_to_even</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#8e44be;">u8</span><span>) -&gt; Even {
+</span><span>    </span><span style="color:#999999;">// POTENTIALLY UNSOUND!
+</span><span>    </span><span style="color:#8e44be;">unsafe </span><span>{ transmute::&lt;</span><span style="color:#8e44be;">u8</span><span>, Even&gt;(src) }
+</span><span>}
+</span></code></pre>
+<p>Unless you’ve guaranteed that your source value upholds all the safety invariants of the destination type, this is potentially unsound!</p>
+<p>Although this example might seem contrived (it is), this is the safety story of Rust’s <code>str</code> type, which <a href="https://doc.rust-lang.org/std/primitive.str.html#invariant">carries a library-level invariant that its backing bits are valid UTF-8</a>.</p>
+<h2 id="why-transmute-a-case-study">Why Transmute? A Case Study</h2>
+<p>Given these risks, why bother with transmutation at all? As a case study, let’s consider a simplified scenario of parsing UDP packets. A UDP header looks something like this:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span> 0      7 8     15 16    23 24    31  
+</span><span>+--------+--------+--------+--------+ 
+</span><span>|     Source      |   Destination   | 
+</span><span>|      Port       |      Port       | 
+</span><span>+--------+--------+--------+--------+ 
+</span><span>|                 |                 | 
+</span><span>|     Length      |    Checksum     | 
+</span><span>+--------+--------+--------+--------+ 
+</span><span>|                                     
+</span><span>|          data octets ...            
+</span><span>+---------------- ...                 
+</span><span>
+</span><span>     User Datagram Header Format
+</span></code></pre>
+<p>Two bytes for the source port, another two for the destination port, another two for the length, two for the checksum, and then the data follows.</p>
+<h3 id="traditional-packet-parsing">Traditional Packet Parsing</h3>
+<p>A traditional parser for this format might look something like this:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">struct </span><span>UdpPacketHeader {
+</span><span>    </span><span style="color:#f55800;">src_port</span><span>: </span><span style="color:#8e44be;">u16</span><span>,
+</span><span>    </span><span style="color:#f55800;">dst_port</span><span>: </span><span style="color:#8e44be;">u16</span><span>,
+</span><span>    </span><span style="color:#f55800;">length  </span><span>: </span><span style="color:#8e44be;">u16</span><span>,
+</span><span>    </span><span style="color:#f55800;">checksum</span><span>: </span><span style="color:#8e44be;">u16</span><span>,
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">read_header</span><span>(</span><span style="color:#6969ff;">bytes</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>[</span><span style="color:#8e44be;">u8</span><span>]) -&gt; </span><span style="color:#f0ae00;">Option</span><span>&lt;UdpPacketHeader&gt; {
+</span><span>    </span><span style="color:#8e44be;">let </span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span>src_port, bytes) </span><span style="color:#1aa7b0;">=</span><span> bytes.</span><span style="color:#3366cc;">split_first_chunk</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span>    </span><span style="color:#8e44be;">let </span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span>dst_port, bytes) </span><span style="color:#1aa7b0;">=</span><span> bytes.</span><span style="color:#3366cc;">split_first_chunk</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span>    </span><span style="color:#8e44be;">let </span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span>length,   bytes) </span><span style="color:#1aa7b0;">=</span><span> bytes.</span><span style="color:#3366cc;">split_first_chunk</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span>    </span><span style="color:#8e44be;">let </span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span>checksum, bytes) </span><span style="color:#1aa7b0;">=</span><span> bytes.</span><span style="color:#3366cc;">split_first_chunk</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span>    
+</span><span>    </span><span style="color:#f0ae00;">Some</span><span>(UdpPacketHeader { 
+</span><span>        src_port: </span><span style="color:#8e44be;">u16</span><span>::from_be_bytes(src_port),
+</span><span>        dst_port: </span><span style="color:#8e44be;">u16</span><span>::from_be_bytes(dst_port),
+</span><span>        length:   </span><span style="color:#8e44be;">u16</span><span>::from_be_bytes(length),
+</span><span>        checksum: </span><span style="color:#8e44be;">u16</span><span>::from_be_bytes(checksum),
+</span><span>    })
+</span><span>}
+</span></code></pre>
+<p>The <code>read_header</code> function here consumes a slice of bytes, and reads by-value the four two-byte chunks that comprise the header’s fields.</p>
+<p>This is all well-and-good (elegant, even!), but with <code>transmute</code> we can do better.</p>
+<h3 id="zero-copy-packet-parsing">Zero-Copy Packet Parsing</h3>
+<p>First, with very little effort, we can redefine <code>UdpPacketHeader</code> so that its layout in memory matches the wire layout of a UDP packet header:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(C)] </span><span style="color:#999999;">// &lt;- Add `repr(C)`
+</span><span style="color:#8e44be;">struct </span><span>UdpPacketHeader {
+</span><span>    </span><span style="color:#f55800;">src_port</span><span>: [</span><span style="color:#8e44be;">u8</span><span>; 2], </span><span style="color:#999999;">// &lt;- Use `[u8; 2]` instead
+</span><span>    </span><span style="color:#f55800;">dst_port</span><span>: [</span><span style="color:#8e44be;">u8</span><span>; 2], </span><span style="color:#999999;">//        of `u16` to avoid
+</span><span>    </span><span style="color:#f55800;">length  </span><span>: [</span><span style="color:#8e44be;">u8</span><span>; 2], </span><span style="color:#999999;">//           aforementioned
+</span><span>    </span><span style="color:#f55800;">checksum</span><span>: [</span><span style="color:#8e44be;">u8</span><span>; 2], </span><span style="color:#999999;">//         alignment issues.
+</span><span>}
+</span></code></pre>
+<p>Then, we can define a function that, like <code>read_header</code>, that consumes a slice of input bytes but instead returns an optional <em>reference</em> to a <code>UdpPacketHeader</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">view_header</span><span>(</span><span style="color:#6969ff;">bytes</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>[</span><span style="color:#8e44be;">u8</span><span>]) -&gt; </span><span style="color:#f0ae00;">Option</span><span>&lt;</span><span style="color:#1aa7b0;">&amp;</span><span>UdpPacketHeader&gt; {
+</span><span>    </span><span style="color:#8e44be;">const</span><span> N: </span><span style="color:#8e44be;">usize </span><span style="color:#1aa7b0;">= </span><span>mem::size_of::&lt;UdpPacketHeader&gt;();
+</span><span>    </span><span style="color:#8e44be;">let</span><span> bytes </span><span style="color:#1aa7b0;">= </span><span>&lt;</span><span style="color:#1aa7b0;">&amp;</span><span>[</span><span style="color:#8e44be;">u8</span><span>; </span><span style="color:#f55800;">N</span><span>]&gt;::try_from(bytes).</span><span style="color:#3366cc;">ok</span><span>()</span><span style="color:#1aa7b0;">?</span><span>;
+</span><span>    </span><span style="color:#f0ae00;">Some</span><span>(</span><span style="color:#8e44be;">unsafe </span><span>{ mem::transmute(bytes) })
+</span><span>}
+</span></code></pre>
+<p>This works by first checking that there are enough <code>bytes</code> to parse a <code>UdpPacketHeader</code> and then, if so, transmuting the <code>&amp;[u8; size_of::&lt;UdpPacketHeader&gt;()]</code> to <code>&amp;UdpPacketHeader</code>.</p>
+<p>Not only did this require far fewer lines of code than <code>read_header</code>, it also optimizes down to a small fraction of the machine code (<a href="https://rust.godbolt.org/z/jhPo6G7cE">Godbolt</a>):</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>view_header:
+</span><span>        xor     eax, eax
+</span><span>        cmp     rsi, 8
+</span><span>        cmove   rax, rdi
+</span><span>        ret
+</span></code></pre>
+<p>By comparison, <code>read_header</code> optimizes to this (<a href="https://rust.godbolt.org/z/Kcj37fsY9">Godbolt</a>):</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>read_header:
+</span><span>        cmp     rsi, 2
+</span><span>        jae     .LBB0_2
+</span><span>        xor     eax, eax
+</span><span>.LBB0_3:
+</span><span>        xor     ecx, ecx
+</span><span>.LBB0_4:
+</span><span>        or      rax, rcx
+</span><span>        ret
+</span><span>.LBB0_2:
+</span><span>        mov     rcx, rsi
+</span><span>        and     rcx, -2
+</span><span>        xor     eax, eax
+</span><span>        cmp     rcx, 2
+</span><span>        je      .LBB0_3
+</span><span>        and     rsi, -4
+</span><span>        mov     ecx, 0
+</span><span>        cmp     rsi, 4
+</span><span>        je      .LBB0_4
+</span><span>        movzx   eax, word ptr [rdi]
+</span><span>        movzx   ecx, word ptr [rdi + 2]
+</span><span>        movzx   esi, word ptr [rdi + 4]
+</span><span>        movzx   edx, word ptr [rdi + 6]
+</span><span>        rol     ax, 8
+</span><span>        rol     cx, 8
+</span><span>        rol     si, 8
+</span><span>        rol     dx, 8
+</span><span>        movzx   ecx, cx
+</span><span>        movzx   esi, si
+</span><span>        shl     rsi, 48
+</span><span>        shl     rcx, 32
+</span><span>        shl     eax, 16
+</span><span>        or      rax, rcx
+</span><span>        or      rax, rsi
+</span><span>        mov     ecx, 1
+</span><span>        or      rax, rcx
+</span><span>        ret
+</span></code></pre>
+<p>(And if our packet had more fields, the amount of machine code would scale with them. By contrast, all that would change in the machine code for <code>view_header</code> is the constant <code>8</code>.)</p>
+<p>Of course, zero-copy parsing remains tremendously dangerous. What if we forgot to mark <code>UdpPacketHeader</code> with <code>repr(C)</code>? What if we forgot to change its fields to <code>[u8; 2]</code>? What if we miscalculated <code>N</code>? The penalty of getting any of these details wrong is unsoundness, and trusting individual programmers to get them right in a large codebase isn’t tenable.</p>
+<h3 id="interlude-safe-transmutation-crates">Interlude: Safe Transmutation Crates</h3>
+<p>The response to challenge in Rust community has been the creation of various crates that safely abstract over transmutation. The two major players in this area are <a href="https://crates.io/crates/bytemuck">bytemuck</a> and <a href="https://crates.io/crates/zerocopy">zerocopy</a>. (I’ll pick on zerocopy, since I co-maintain it.)</p>
+<p>Zerocopy (and bytemuck) work by defining marker traits; e.g., <a href="https://docs.rs/zerocopy/0.8.0-alpha.26/zerocopy/trait.FromBytes.html"><code>FromBytes</code></a>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// Types for which any bit pattern is valid.
+</span><span style="color:#999999;">///
+</span><span style="color:#999999;">/// # Safety
+</span><span style="color:#999999;">///
+</span><span style="color:#999999;">/// If `T: FromBytes`, then unsafe code may assume
+</span><span style="color:#999999;">/// that it is sound to produce a T whose bytes are
+</span><span style="color:#999999;">/// initialized to any sequence of valid `u8`s (in other
+</span><span style="color:#999999;">/// words, any byte value which is not uninitialized).
+</span><span style="color:#999999;">/// If a type is marked as `FromBytes` which violates
+</span><span style="color:#999999;">/// this contract, it may cause undefined behavior.
+</span><span style="color:#8e44be;">unsafe trait </span><span>FromBytes { … }
+</span></code></pre>
+<p>These marker traits are <code>unsafe</code>, denoting both that they carry invariants which you must prove to be true when implementing them, and which you can rely on while writing unsafe code.</p>
+<p>For each trait, these crates typically provide a comprehensive set of base implementations over primitive types; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for </span><span>f32 {}
+</span><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for </span><span>f64 {}
+</span><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for </span><span>i8 {}
+</span><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for </span><span>i16 {}
+</span><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for </span><span>i32 {}
+</span><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for </span><span>i64 {}
+</span><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for </span><span>i128 {}
+</span><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for </span><span>isize {}
+</span><span style="color:#999999;">/* and so on */
+</span></code></pre>
+<p>Note that while all primitive numbers are <code>FromBytes</code>, types like <code>bool</code> and <code>char</code> are not because they have bit-validity invariants.</p>
+<p>To support compound types, these crates combine inductive reasoning and additional checks. For example, a struct or tuple is <code>FromBytes</code> if its fields are all <code>FromBytes</code>; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">unsafe impl </span><span>FromBytes </span><span style="color:#8e44be;">for</span><span> (A, B)
+</span><span style="color:#8e44be;">where
+</span><span>    A: FromBytes,
+</span><span>    B: FromBytes,
+</span><span>{}
+</span><span style="color:#999999;">/* and so on */
+</span></code></pre>
+<p>Fortunately, as a user, you don’t need to remember any of these rules or write unsafe code yourself. Both bytemuck and zerecopy provide proc macro derives for their marker traits.</p>
+<p>So, if we apply zerocopy to our packet parsing problem, we don’t have to write any <code>unsafe</code> code at all. We just derive the right traits, and call the safe methods they provide:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// (using zerocopy 0.8)
+</span><span style="color:#8e44be;">use </span><span>zerocopy::{FromBytes, Immutable, KnownLayout};
+</span><span style="color:#8e44be;">use </span><span>zerocopy::byteorder::network::</span><span style="color:#666666;">U16</span><span>;
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">derive</span><span>(FromBytes, Immutable, KnownLayout)]
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">struct </span><span>UdpPacketHeader {
+</span><span>    </span><span style="color:#f55800;">src_port</span><span>: U16,
+</span><span>    </span><span style="color:#f55800;">dst_port</span><span>: U16,
+</span><span>    </span><span style="color:#f55800;">length  </span><span>: U16,
+</span><span>    </span><span style="color:#f55800;">checksum</span><span>: U16,
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">view_udp_packet</span><span>(</span><span style="color:#6969ff;">bytes</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>[</span><span style="color:#8e44be;">u8</span><span>]) -&gt; </span><span style="color:#f0ae00;">Option</span><span>&lt;</span><span style="color:#1aa7b0;">&amp;</span><span>UdpPacketHeader&gt; {
+</span><span>    UdpPacketHeader::ref_from_bytes(bytes).</span><span style="color:#3366cc;">ok</span><span>()
+</span><span>}
+</span></code></pre>
+<h3 id="the-fuchsia-networking-stack">The Fuchsia Networking Stack</h3>
+<p>At Google, engineers working on their new <a href="https://fuchsia.dev/">Fuchsia operating system</a>, used the zerocopy crate to <a href="https://fuchsia.dev/fuchsia-src/contribute/roadmap/2021/netstack3">build a networking stack</a> that parses and serializes packets almost entirely in-place and achieved this feat almost bug-free.</p>
+<p>If you’re curious about how they accomplished this feat, I’d encourage you to watch Josh Liebow-Feeser’s RustConf talk, <em>Safety in an Unsafe World</em> (<a href="https://joshlf.com/files/talks/Safety%20in%20an%20Unsafe%20World.pdf">slides here</a>).</p>
+<p>Suffice to say, the zerocopy crate provided the foundational abstractions that made this possible.</p>
+<h2 id="introducing-project-safe-transmute">Introducing Project Safe Transmute</h2>
+<p>However, zerocopy has a dirty secret: it’s backed by nearly <em>fourteen thousand</em> lines of subtle unsafe code and safety comments.</p>
+<p>This is ridiculous. The compiler already knows about the layouts of types, so why is the onus entirely on you to reason about them in the context of transmute? Why can’t the compiler use its knowledge to tell you when one type is transmutable into another?</p>
+<p>And remember, zerocopy only solves the limited problems of safe transmutes into bytes, and from bytes. If state-of-the-art networking stacks can be built by solving this limited problem, what might be possible by solving transmutability between <em>arbitrary</em> types?</p>
+<p>These are the questions that motivated the creation of <a href="https://rust-lang.github.io/rfcs/2835-project-safe-transmute.html"><em>Project Safe Transmute</em></a>, which hopes to provide new, safer alternatives that can replace <em>every</em> use <code>mem::transmute</code> and pointer casting.</p>
+<h2 id="theory-of-alchemy">Theory of Alchemy</h2>
+<p>To begin to do so, we had to develop a theory of type alchemy. The general idea is quite straightforward: <em>A type, <code>Src</code>, is transmutable into a type, <code>Dst</code>, if every possible value of <code>Src</code> is a valid value of <code>Dst</code>.</em></p>
+<p>At first glance, this sounds like a simple problem of sets and subsets. For example, we can think of the layout of a <code>u8</code> as being the set of all initialized bytes ranging from <code>0</code> to <code>255</code>:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>layout(u8) = {0x00, ... 0xFF}
+</span></code></pre>
+<p>…and the layout of a <code>NonZeroU8</code> as being all values ranging from <code>1</code> to <code>255</code>:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>layout(NonZeroU8) = {0x01, ... 0xFF}
+</span></code></pre>
+<p>Given this, we can say that <code>NonZeroU8</code> is transmutable into <code>u8</code> because its layout is a subset of that of u8, and that the reverse is not transmutable, because <code>u8</code> is not a subset of <code>NonZeroU8</code>:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>layout(NonZeroU8) ⊆ layout(u8)
+</span><span>layout(NonZeroU8) ⊉ layout(u8)
+</span></code></pre>
+<p>But this representation is extraordinarly computationally expensive. If a type is a single byte, its layout is a set of at most 256 elements. But as the size of the type grows, the maximum size of its layout set grows exponentially:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>|layout(u8)|  = 2^8  = 256
+</span><span>|layout(u16)| = 2^16 = 65,536
+</span><span>|layout(u32)| = 2^32 = 4,294,967,296
+</span><span>|layout(u64)| = 2^64 = 18,446,744,073,709,551,616
+</span></code></pre>
+<p>Worse, types are not always finite; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">struct </span><span>LinkedList&lt;T&gt; {
+</span><span>    </span><span style="color:#f55800;">head</span><span>: T,
+</span><span>    </span><span style="color:#f55800;">tail</span><span>: </span><span style="color:#f0ae00;">Option</span><span>&lt;</span><span style="color:#f0ae00;">Box</span><span>&lt;LinkedList&lt;T&gt;&gt;&gt;,
+</span><span>}
+</span></code></pre>
+<p>A linked list does not have bounded size at compile time, and we can’t simply ignore its <code>tail</code> for the purpose of analyzing transmutability.</p>
+<h3 id="types-are-automata">Types are Automata!</h3>
+<p>Fortunately, there’s another way we can view types: as finite automata: The layout of a type is a finite automaton, in which each edge represents a validity constraint, and each path of edges from start to finish represents a particular possible value of the type.</p>
+<p>For example, this <code>Direction</code> enum has four possible values:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(u8)]
+</span><span style="color:#8e44be;">enum </span><span>Direction {
+</span><span>    North </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">0x00</span><span>,
+</span><span>    East  </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">0x01</span><span>,
+</span><span>    South </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">0x02</span><span>,
+</span><span>    West  </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">0x03</span><span>,
+</span><span>}
+</span></code></pre>
+<p>and, accordingly, there are four paths through its corresponding automaton:</p>
+<p><img src="https://jack.wrenn.fyi/blog/safety-goggles-for-alchemists/direction.svg" alt="A DFA representing the Direction enum." /></p>
+<p>This representation is also extremely expressive. In addition to bit values, edges can encode uninitialized bytes (e.g., from padding), and references. For example, a <code>LinkedList</code> of <code>Direction</code>s:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span style="color:#8e44be;">struct </span><span>LinkedList {
+</span><span>    </span><span style="color:#f55800;">head</span><span>: Direction,
+</span><span>    </span><span style="color:#f55800;">tail</span><span>: </span><span style="color:#f0ae00;">Option</span><span>&lt;</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static Self</span><span>&gt;,
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(u8)]
+</span><span style="color:#8e44be;">enum </span><span>Direction {
+</span><span>    North,
+</span><span>    East,
+</span><span>    South,
+</span><span>    West
+</span><span>}
+</span></code></pre>
+<p>…would look something like this on a 16-bit target:</p>
+<p><img src="https://jack.wrenn.fyi/blog/safety-goggles-for-alchemists/linkedlist.svg" alt="A DFA representing a LinkedList of Directions." /></p>
+<p>Crucially, this representation scales gracefully. Although the number of total paths through an array <code>[Direction; N]</code> still scales exponentially with respect to <code>N</code>, the total number of <em>edges</em> scales linearly!</p>
+<p>And best yet, this structured representation lends itself to a polynomial-time analysis of transmutability: We simply construct the layout graphs of the source and destination types, and perform a memoized, depth-first check that every path through the source type has a matching path through the destination type.</p>
+<h2 id="creating-safety-goggles-for-alchemists">Creating Safety Goggles for Alchemists</h2>
+<p>Thanks to these insights, solving transmutability for arbitrary types is both theoretically possible and practical to implement. So we implemented it!</p>
+<p><a href="https://doc.rust-lang.org/nightly/core/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a> is an <code>unsafe</code> marker trait which is automatically implemented by the compiler, on-the-fly, for any two types that are transmutable:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">unsafe trait </span><span>TransmuteFrom&lt;Src: ?Sized&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">transmute</span><span>(</span><span style="color:#6969ff;">src</span><span>: Src) -&gt; Dst
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        Src: Sized,
+</span><span>        </span><span style="color:#8e44be;">Self</span><span>: Sized;  
+</span><span>}
+</span></code></pre>
+<p>With this trait, our examples of unsoundness become compilation errors. Let’s revisit our examples from earlier.</p>
+<h4 id="1-bit-validity-errors">1. Bit Validity Errors</h4>
+<p>If we rewrite our bit validity example to use this trait and method:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8_to_bool</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#8e44be;">u8</span><span>) -&gt; </span><span style="color:#8e44be;">bool </span><span>{
+</span><span>    TransmuteFrom::transmute(src) </span><span style="color:#999999;">// Error!
+</span><span>}
+</span></code></pre>
+<p>…it fails to compile. And the compilation error explains exactly why:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>error[E0277]: `u8` cannot be safely transmuted into `bool`
+</span><span> --&gt; src/lib.rs:3:30
+</span><span>  |
+</span><span>4 |     TransmuteFrom::transmute(src)
+</span><span>  |     ------------------------ ^^^ at least one value of
+</span><span>  |     |                            `u8` isn&#39;t a bit-valid
+</span><span>  |     |                            value of `bool`
+</span><span>  |     required by a bound introduced by this call
+</span></code></pre>
+<h4 id="2-alignment-errors">2. Alignment Errors</h4>
+<p>And if we attempt a reference transmutation that might have alignment issues:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8s_to_u16</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>[</span><span style="color:#8e44be;">u8</span><span>; 2]) -&gt; </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">u16 </span><span>{
+</span><span>    TransmuteFrom::transmute(src) </span><span style="color:#999999;">// Error!
+</span><span>}
+</span></code></pre>
+<p>…we’ll get an error message telling us exactly that:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>error[E0277]: `&amp;[u8; 2]` cannot be safely transmuted into `&amp;u16`
+</span><span> --&gt; src/lib.rs:3:30
+</span><span>  |
+</span><span>4 |     TransmuteFrom::transmute(src)
+</span><span>  |     ------------------------ ^^^ the minimum alignment of
+</span><span>  |     |                            `&amp;[u8; 2]` (1) should be
+</span><span>  |     |                            greater than that of
+</span><span>  |     |                            `&amp;u16` (2)
+</span><span>  |     required by a bound introduced by this call
+</span></code></pre>
+<h4 id="3-lifetimes-errors">3. Lifetimes Errors</h4>
+<p>And if we try to extend the lifetime of a reference:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">extend</span><span>&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T&gt;(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;a</span><span> T) -&gt; </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static</span><span> T {
+</span><span>    TransmuteFrom::transmute(src) </span><span style="color:#999999;">// Error!
+</span><span>}
+</span></code></pre>
+<p>that, too, is a compilation error:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>error: lifetime may not live long enough
+</span><span> --&gt; src/lib.rs:3:5
+</span><span>  |
+</span><span>1 | fn extend&lt;&#39;a&gt;(src: &amp;&#39;a u8) -&gt; &amp;&#39;static u8 {
+</span><span>  |           -- lifetime `&#39;a` defined here
+</span><span>2 |     // compile error!
+</span><span>3 |     TransmuteFrom::transmute(src)
+</span><span>  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ returning this value
+</span><span>  |                                   requires that `&#39;a`
+</span><span>  |                                   must outlive `&#39;static`
+</span></code></pre>
+<h4 id="4-safety-invariant-errors">4. Safety Invariant Errors</h4>
+<p>And finally, if we violate the safety invariants of user-defined types:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">pub struct </span><span>Even {
+</span><span>    </span><span style="color:#999999;">// SAFETY: Always an even number!
+</span><span>    </span><span style="color:#f55800;">n</span><span>: </span><span style="color:#8e44be;">u8
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8_to_even</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#8e44be;">u8</span><span>) -&gt; Even {
+</span><span>    TransmuteFrom::transmute(src) </span><span style="color:#999999;">// Error!
+</span><span>}
+</span></code></pre>
+<p>…that, too, is a compilation error:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>error[E0277]: `u8` cannot be safely transmuted into `Even`
+</span><span> --&gt; src/lib.rs:3:30
+</span><span>  |
+</span><span>4 |     TransmuteFrom::transmute(src)
+</span><span>  |     ------------------------ ^^^ `Even` may carry
+</span><span>  |     |                            safety invariants
+</span><span>  |     |
+</span><span>  |     required by a bound introduced by this call
+</span></code></pre>
+<p>But, wait: Rust doesn’t yet have any notion of <code>unsafe</code> fields. How can <code>TransmuteFrom</code> possibly know that <code>Even</code> has safety invariants?</p>
+<p>It doesn’t. It can’t. Any user-defined type might have safety invariants, so the only sound thing to do (for now) is assume they <em>all</em> have safety invariants.</p>
+<h3 id="take-2-safer-transmutation">Take 2: Saf<em>er</em> Transmutation</h3>
+<p>It turns out, “Safe” transmutation isn’t all that useful. What you really need, for most real-word applications, is safer transmutation.</p>
+<p>So we built an escape hatch into <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a>, an extra parameter called <code>ASSUME</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">unsafe trait </span><span>TransmuteFrom&lt;Src: ?Sized, const ASSUME: Assume&gt; {
+</span><span>    </span><span style="color:#8e44be;">unsafe fn </span><span style="color:#3366cc;">transmute</span><span>(</span><span style="color:#6969ff;">src</span><span>: Src) -&gt; Dst
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        Src: Sized,
+</span><span>        </span><span style="color:#8e44be;">Self</span><span>: Sized;  
+</span><span>}
+</span><span>
+</span><span>
+</span><span>struct Assume {
+</span><span>    alignment: </span><span style="color:#8e44be;">bool</span><span>,
+</span><span>    lifetimes: </span><span style="color:#8e44be;">bool</span><span>,
+</span><span>    safety:    </span><span style="color:#8e44be;">bool</span><span>,
+</span><span>    validity:  </span><span style="color:#8e44be;">bool</span><span>,
+</span><span>}
+</span></code></pre>
+<p><code>ASSUME</code> lets you tell the compiler which safety properties it should assume that you, the programmer, are taking care of ensuring.</p>
+<p>In essence, it lets you relax the compile-time checks of <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a>, so long as you promise to do those checks yourself.</p>
+<p>Let’s revisit some of our earlier examples again, this time using <code>Assume</code>.</p>
+<h4 id="assume-bit-validity">Assume Bit Validity</h4>
+<p>For example, let’s again consider transmuting a <code>u8</code> to a <code>bool</code>. Sure, this transmutation is invalid for most values of u8, but not for all values of <code>u8</code>. If we tell the compiler to assume validity:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8_to_bool</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#8e44be;">u8</span><span>) -&gt; </span><span style="color:#8e44be;">bool </span><span>{
+</span><span>    assert!(src </span><span style="color:#1aa7b0;">&lt; </span><span style="color:#6969ff;">2</span><span>);
+</span><span>    </span><span style="color:#8e44be;">unsafe </span><span>{ TransmuteFrom::&lt;</span><span style="color:#1aa7b0;">_</span><span>, </span><span style="color:#8e44be;">Assume::</span><span>VALIDITY&gt;::transmute(src) }
+</span><span>}
+</span></code></pre>
+<p>…it will accept this transmutation instead of emitting a compilation error.</p>
+<h4 id="assume-alignment">Assume Alignment</h4>
+<p>Likewise, if we tell the compiler to assume that we’ve ensured alignment:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8s_to_u16</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>[</span><span style="color:#8e44be;">u8</span><span>; 2]) -&gt; </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">u16 </span><span>{
+</span><span>    assert!(</span><span style="color:#1aa7b0;">&lt;</span><span style="color:#8e44be;">*const </span><span style="color:#1aa7b0;">_&gt;</span><span>::is_aligned_to(src, align_of::&lt;</span><span style="color:#8e44be;">u16</span><span>&gt;()));
+</span><span>    </span><span style="color:#8e44be;">unsafe </span><span>{ TransmuteFrom::&lt;</span><span style="color:#1aa7b0;">_</span><span>, </span><span style="color:#8e44be;">Assume::</span><span>ALIGNMENT&gt;::transmute(src) }
+</span><span>}
+</span></code></pre>
+<p>…it will let us transmute between references with potentially incompatible alignment requirements, again, assuming that we’ve done the work of guaranteeing that alignment is actually satisfied — in this case with a runtime check.</p>
+<h4 id="assume-safety-invariants">Assume Safety Invariants</h4>
+<p>And finally, if tell <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a> to assume safety:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">pub struct </span><span>Even {
+</span><span>    </span><span style="color:#999999;">// SAFETY: Always an even number!
+</span><span>    </span><span style="color:#f55800;">n</span><span>: </span><span style="color:#8e44be;">u8
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8_to_even</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#8e44be;">u8</span><span>) -&gt; Even {
+</span><span>    assert!(src </span><span style="color:#1aa7b0;">% </span><span style="color:#6969ff;">2 </span><span style="color:#1aa7b0;">== </span><span style="color:#6969ff;">0</span><span>)
+</span><span>    </span><span style="color:#8e44be;">unsafe </span><span>{ TransmuteFrom::&lt;</span><span style="color:#1aa7b0;">_</span><span>, </span><span style="color:#8e44be;">Assume::</span><span>SAFETY&gt;::transmute(src) }
+</span><span>}
+</span></code></pre>
+<p>…it will let us do transmutations that could violate the safety invariants of the involved types, enabling <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a> to accept transmutations involving user-defined types.</p>
+<h2 id="using-transmutefrom">Using <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a></h2>
+<p>This trait, which <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html">is available for testing right now on nightly</a>, provides effective safety goggles for folks doing transmutations and, especially, for abstracting over transmutation.</p>
+<h3 id="writing-safety-comments">Writing <code>SAFETY</code> Comments</h3>
+<p>For one-off transmutations, <code>ASSUME</code> tells you exactly what you need to write in your safety comment. For example, if we assume alignment and validity, that’s our cue that our safety comment needs to justify why both these safety conditions are satisfied; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// SAFETY: We have checked that:
+</span><span style="color:#999999;">// 1. `src` validly aligned for `Dst` because...
+</span><span style="color:#999999;">// 2. `src` is a bit-valid instance of `Dst` because...
+</span><span style="color:#8e44be;">unsafe </span><span>{
+</span><span>    TransmuteFrom::&lt;</span><span style="color:#1aa7b0;">_</span><span>, { 
+</span><span>        Assume::</span><span style="color:#666666;">ALIGNMENT</span><span>.</span><span style="color:#3366cc;">and</span><span>(Assume::</span><span style="color:#666666;">VALIDITY</span><span>)
+</span><span>    }</span><span style="color:#1aa7b0;">&gt;</span><span>::transmute(src)
+</span><span>}
+</span></code></pre>
+<h3 id="building-safe-abstractions">Building Safe Abstractions</h3>
+<p>Moreover, we see this truly versatile foundation for abstractions over transmute. Recall zerocopy’s <code>FromBytes</code> trait:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// # Safety
+</span><span style="color:#999999;">///
+</span><span style="color:#999999;">/// By implementing this, you guarantee that `Self`
+</span><span style="color:#999999;">/// can be transmuted from arbitrary init bytes.
+</span><span style="color:#999999;">///
+</span><span style="color:#999999;">/// Unsafe code may assume that `Self` has no
+</span><span style="color:#999999;">/// bit validity invariants.
+</span><span style="color:#8e44be;">pub unsafe trait </span><span>FromBytes
+</span><span>{}
+</span></code></pre>
+<p>Judging whether a given type is soundly <code>FromBytes</code> is often a substantial, non-trivial exercise.</p>
+<p>With <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a>, the onus for proving this safety burden moves entirely from the programmer to the compiler, just by adding a <code>where</code> bound:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// # Safety
+</span><span style="color:#999999;">///
+</span><span style="color:#999999;">/// By implementing this, you promise that
+</span><span style="color:#999999;">/// `Self` has no safety invariants.
+</span><span style="color:#999999;">///
+</span><span style="color:#999999;">/// Unsafe code may assume that `Self` has no
+</span><span style="color:#999999;">/// bit validity invariants.
+</span><span style="color:#8e44be;">pub unsafe trait </span><span>FromBytes: Sized
+</span><span>where
+</span><span>    Self: TransmuteFrom&lt;[u8; size_of::&lt;Self&gt;()], { Assume::</span><span style="color:#666666;">SAFETY </span><span>}</span><span style="color:#1aa7b0;">&gt;
+</span><span>{}
+</span></code></pre>
+<p>Given this, it’s with little exaggeration that think we can get zerocopy’s 14,000 lines of code down to about 1,400.</p>
+<h2 id="future-outlook">Future Outlook</h2>
+<p>There are a few remaining pieces of design and development work needed to get safe transmute over the finish line.</p>
+<h3 id="support-for-dsts">Support for DSTs</h3>
+<p>Foremost, to fully support crates like zerocopy, we need to support dynamically sized types. The previous <code>where</code>-bound demonstration required adding <code>Sized</code> bounds to zerocopy’s marker traits. However, zerocopy doesn’t have <code>Sized</code> bounds, nor does it want to add them!</p>
+<p>To fully support zerocopy, we would like to be able to rewrite that <code>where</code> bound like this:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub unsafe trait </span><span>FromBytes
+</span><span>where
+</span><span>    Self: TransmuteFrom&lt;[u8], { Assume::</span><span style="color:#666666;">SAFETY </span><span>}</span><span style="color:#1aa7b0;">&gt;
+</span><span>{}
+</span></code></pre>
+<p>…using <code>[u8]</code> instead of <code>[u8; size_of::&lt;Self&gt;()]</code>.</p>
+<p>In such cases, the compiler will imagine a DST instantiated to be of sufficiently great length to fill the destination type, and perform a transmutability analysis with that imagined type.</p>
+<h3 id="fallible-transmutation">Fallible Transmutation</h3>
+<p>Next, is fallible transmutation. Sure, with <code>Assume</code> we can tell the compiler to assume we’re taking care of doing certain checks. For example, with <code>Assume::VALIDITY</code>, the compiler will let us transmute a <code>u8</code> to a <code>bool</code>, but the onus is on us to correctly implement that runtime check on the source value; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8_to_bool</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#8e44be;">u8</span><span>) -&gt; </span><span style="color:#8e44be;">bool </span><span>{
+</span><span>    assert!(src </span><span style="color:#1aa7b0;">&lt; </span><span style="color:#6969ff;">2</span><span>);
+</span><span>    </span><span style="color:#999999;">// SAFETY: We have checked that `src` is a bit-valid
+</span><span>    </span><span style="color:#999999;">// instance of `bool`.
+</span><span>    </span><span style="color:#8e44be;">unsafe </span><span>{
+</span><span>        TransmuteFrom::&lt;</span><span style="color:#1aa7b0;">_</span><span>, </span><span style="color:#8e44be;">Assume::</span><span>VALIDITY&gt;::transmute(src)
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>But what if the compiler could do this for us, as well? Perhaps we could have a complementary <code>TryTransmuteTrait</code> with a <code>try_transmute</code> associated function that would automatically codegen the necessary runtime checks; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">u8_to_bool</span><span>(</span><span style="color:#6969ff;">src</span><span>: </span><span style="color:#8e44be;">u8</span><span>) -&gt; </span><span style="color:#f0ae00;">Option</span><span>&lt;</span><span style="color:#8e44be;">bool</span><span>&gt; {
+</span><span>    TryTransmuteFrom::try_transmute(src)
+</span><span>}
+</span></code></pre>
+<p>This would further reduce the risk of user error resulting in undefined behavior.</p>
+<h3 id="critical-optimizations">Critical Optimizations</h3>
+<p>To reduce the compile-time cost of using <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a>, we need to implement a variety of optimizations to our implementation. We need to avoid recursion, migrate to a denser memory representation of layouts, and implement a run-length-encoding optimization so we can support very large arrays efficiently.</p>
+<h3 id="portability-and-stability">Portability and Stability</h3>
+<p>Although <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a> effectively solves the problem of transmutation <em>safety</em>, some (but not all) use-cases of transmutation are also concerned with portability and SemVer stability. These are substantial challenges in their own right.</p>
+<p>Rust provides very little in the way of layout portability. For example, the alignments of primitive integers vary between platforms, and this can have downstream effects on the soundness of pointer casts. We have some ideas of how to solve this, including the possibility of a marker trait automatically implemented for types whose memory representation is consistent across targets and compiler versions.</p>
+<p>Relatedly, we also plan to investigate the potential of reflecting the SemVer stability of type layouts and transmutation into the type system. This is a remarkably difficult problem, with myriad answers that are clear, simple, and wrong. What does it mean to promise layout stability in the absence of portability? What does it mean for a crate author to promise transmutability in the absence of a closed set of types?</p>
+<h3 id="rfc-and-stabilization">RFC and Stabilization</h3>
+<p>In the tradition of Project Safe Transmute, we’ll likely first focus on landing <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a>, and then begin to iterate on solutions to these related problems (<code>TryTransmuteFrom</code>, stability and portability) in the crate ecosystem. We’ve already <a href="https://docs.rs/zerocopy/0.8.0-alpha.26/zerocopy/trait.TryFromBytes.html">begun prototyping a design for <code>TryTransmuteFrom</code> in zerocopy</a>.</p>
+<p>Landing <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a> will require testing, feedback, an RFC, and — most importantly — your support. If all goes well, I can see us making the <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a> RFC in 2025.</p>
+<h3 id="closing-words">Closing Words</h3>
+<p>If any of this happens, it will be thanks to the support of community members like you — and all the phenomenal collaborators who’ve helped us get this far:</p>
+<ul>
+<li>You! Yes, You!</li>
+<li>Ryan Levick</li>
+<li>Josh Liebow-Feeser</li>
+<li>Lokathor</li>
+<li>Eli Rosenthal</li>
+<li>Michael Goulet</li>
+<li>Oli Scherer</li>
+<li>Bryan Garza</li>
+</ul>
+<p>Thank you!</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>
