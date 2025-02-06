@@ -1,0 +1,305 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Taming nalgebra's Rustdoc</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Taming nalgebra's Rustdoc" />
+<meta name="twitter:description" content="Nalgebra is a powerhouse of functionality, but its documentation can be overwhelming—the documentation for Matrix lists over 600 methods. Your documentation endeavors might not be quite so overwhelming, but you still could benefit from these three tricks nalgebra uses to improve its docs." />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Taming nalgebra’s Rustdoc</h1>
+    <time itemprop="datePublished" datetime="2020-09-10">
+      2020-09-10
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p><a href="https://nalgebra.org/">Nalgebra</a> is a powerhouse of functionality, but its documentation can be overwhelming—the <a href="https://nalgebra.org/rustdoc/nalgebra/base/struct.Matrix.html">documentation for <code>Matrix</code></a> lists over <em>600</em> methods. Your documentation endeavors might not be <em>quite</em> so overwhelming, but you still could benefit from these <strong>three tricks</strong> nalgebra uses to improve its docs.</p>
+<span id="continue-reading"></span><h2 id="documenting-type-aliases">Documenting Type Aliases</h2>
+<p><strong>TIP: Write <code>impl</code>s and documentation on type aliases.</strong></p>
+<p>The <a href="https://nalgebra.org/rustdoc/nalgebra/base/struct.Matrix.html"><code>Matrix</code></a> <code>struct</code> type is at the heart of nalgebra’s functionality. It is generically parametrized by dimension, so the same outer type is used to encode matrices of all sizes. A vector of dimension <code>R</code>, for instance, is merely a <code>Matrix</code> of <code>R</code> rows and <code>U1</code> columns.</p>
+<p>From a programming ergonomics perspective, you might think it’d be convenient to codify this with a type alias; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">type </span><span>Vector</span><span style="color:#1aa7b0;">&lt;</span><span>N, D, S</span><span style="color:#1aa7b0;">&gt; = </span><span>Matrix&lt;N, D, U1, S&gt;;
+</span></code></pre>
+<p>…and you’d be right; nalgebra defines just such a type alias!</p>
+<p>But type aliases aren’t <em>just</em> programming shorthand; they can be used to improve documentation, too: <strong>When an inherent <code>impl</code> is written in terms of a type alias, the documentation of that <code>impl</code> <em>also</em> appears of the documentation page of that type alias.</strong></p>
+<p>Sure enough, if you visit nalgebra’s <a href="https://docs.rs/nalgebra/0.22.0/nalgebra/base/type.Vector.html"><code>Vector</code> documentation page</a> type alias, you’ll see <em>only</em> the methods specific to vectors:</p>
+<p><a style="display:block" href="https://docs.rs/nalgebra/0.22.0/nalgebra/base/type.Vector.html#impl-1"><iframe scrolling="no" style="pointer-events:none; height:90vh; width:100%" src="https://docs.rs/nalgebra/0.22.0/nalgebra/base/type.Vector.html#impl-1"></iframe></a></p>
+<p>Unfortunately, this same documentation is <a href="https://docs.rs/nalgebra/0.21.1/nalgebra/base/struct.Matrix.html#impl-1"><em>also</em> rendered on the page for <code>Matrix</code></a> and <em>without</em> the type aliases. This is why the documentation for the base <code>Matrix</code> type is so long. :-(</p>
+<h2 id="coalescing-impls">Coalescing <code>impl</code>s</h2>
+<p><strong>TIP: Reduce repetition by grouping methods with the same bounds into the a single bounded <code>impl</code>.</strong></p>
+<p>One of nalgebra’s cooler ergonomic shortcuts is <a href="https://en.wikipedia.org/wiki/Swizzling_(computer_graphics)"><em>vector swizzling</em></a>. A swizzle lets you build a new vector from some ordering and subset of the components of another vector. For instance, <code>vec.xyx()</code> constructs a new, three-dimensional vector comprised of the <code>x</code>, <code>y</code> and <code>x</code> components of <code>vec</code>.</p>
+<p>Supporting this shortcut requires generating a <em>lot</em> of methods. A couple years ago, the documentation of these methods looked like this:</p>
+<p><a style="display:block" href="https://docs.rs/nalgebra/0.16.11/nalgebra/base/type.Vector.html#impl-15"><iframe scrolling="no" style="pointer-events:none; height:90vh; width:100%" src="https://docs.rs/nalgebra/0.16.11/nalgebra/base/type.Vector.html#impl-15"></iframe></a></p>
+<p><strong>This documentation has a very poor signal-to-noise ratio.</strong> The preamble</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl</span><span>&lt;N: Scalar, D: DimName, S: Storage&lt;N, D&gt;&gt; Vector&lt;N, D, S&gt;
+</span></code></pre>
+<p>is repeated for <em>every</em> swizzling method, and each individual swizzling method has its <em>own</em> <code>where</code> bound documenting its dimensionality requirements.</p>
+<p>Nearly all of this repetition was eliminated with a <a href="https://github.com/dimforge/nalgebra/pull/485/files#diff-425bf3710eefe907a4f8369b92cd4966">minor change</a> to the macro generating these methods:</p>
+<p><a href="https://docs.rs/nalgebra/0.21.1/nalgebra/base/type.Vector.html#impl-9"><iframe scrolling="no" style="pointer-events:none;height:90vh; width:100%" src="https://docs.rs/nalgebra/0.21.1/nalgebra/base/type.Vector.html#impl-9"></iframe></a></p>
+<p><strong>What changed?</strong> The old macro generated an <code>impl</code> for each swizzling method:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl</span><span>&lt;N: Scalar, D: DimName, S: Storage&lt;N, D&gt;&gt; Vector&lt;N, D, S&gt; {
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">xx</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>) -&gt; Vector2&lt;N&gt;
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        </span><span style="color:#8e44be;">D::</span><span>Value: Cmp&lt;typenum::U0, Output=Greater&gt;
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">impl</span><span>&lt;N: Scalar, D: DimName, S: Storage&lt;N, D&gt;&gt; Vector&lt;N, D, S&gt; {
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">xxx</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>) -&gt; Vector3&lt;N&gt;
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        </span><span style="color:#8e44be;">D::</span><span>Value: Cmp&lt;typenum::U0, Output=Greater&gt;
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">impl</span><span>&lt;N: Scalar, D: DimName, S: Storage&lt;N, D&gt;&gt; Vector&lt;N, D, S&gt; {
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">xy</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>) -&gt; Vector2&lt;N&gt;
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        </span><span style="color:#8e44be;">D::</span><span>Value: Cmp&lt;typenum::U1, Output=Greater&gt;
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>}
+</span><span>
+</span><span style="color:#999999;">/* and so on */
+</span></code></pre>
+<p>The new macro groups the methods into one of just three <code>impl</code>s depending on their dimensionality requirements:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// Swizzling methods for Vectors of dimension &gt; 0
+</span><span style="color:#8e44be;">impl</span><span>&lt;N: Scalar, D: DimName, S: Storage&lt;N, D&gt;&gt; Vector&lt;N, D, S&gt;
+</span><span style="color:#8e44be;">where
+</span><span>    </span><span style="color:#8e44be;">D::</span><span>Value: Cmp&lt;typenum::U0, Output=Greater&gt;
+</span><span>{
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">xx</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>) -&gt; Vector2&lt;N&gt;
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        </span><span style="color:#8e44be;">D::</span><span>Value: Cmp&lt;typenum::U0, Output=Greater&gt;
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">xxx</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>) -&gt; Vector3&lt;N&gt;
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        </span><span style="color:#8e44be;">D::</span><span>Value: Cmp&lt;typenum::U0, Output=Greater&gt;
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>}
+</span><span>
+</span><span style="color:#999999;">// Swizzling methods for Vectors of dimension &gt; 1
+</span><span style="color:#8e44be;">impl</span><span>&lt;N: Scalar, D: DimName, S: Storage&lt;N, D&gt;&gt; Vector&lt;N, D, S&gt;
+</span><span style="color:#8e44be;">where
+</span><span>    </span><span style="color:#8e44be;">D::</span><span>Value: Cmp&lt;typenum::U1, Output=Greater&gt;
+</span><span>{
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">xy</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>) -&gt; Vector2&lt;N&gt;
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>
+</span><span>    </span><span style="color:#999999;">/* and so on */
+</span><span>}
+</span><span>
+</span><span style="color:#999999;">// Swizzling methods for Vectors of dimension &gt; 2
+</span><span style="color:#8e44be;">impl</span><span>&lt;N: Scalar, D: DimName, S: Storage&lt;N, D&gt;&gt; Vector&lt;N, D, S&gt;
+</span><span style="color:#8e44be;">where
+</span><span>    </span><span style="color:#8e44be;">D::</span><span>Value: Cmp&lt;typenum::U2, Output=Greater&gt;
+</span><span>{
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">xz</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>) -&gt; Vector2&lt;N&gt;
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>
+</span><span>    </span><span style="color:#999999;">/* and so on */
+</span><span>}
+</span></code></pre>
+<p>…and rustdoc faithfully adheres to this organization when generating nalgebra’s documentation!</p>
+<p><strong>If you are generating <code>impl</code>s via a macro, check if your macro could be tweaked to group similar methods into the same <code>impl</code>!</strong></p>
+<h2 id="documenting-impls">Documenting <code>impl</code>s</h2>
+<p><strong>TIP: You can write documentations on individual <code>impl</code>s!</strong></p>
+<p>Like Rust’s slices, nalgebra’s arrays allow for overloaded indexing; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">let</span><span> matrix </span><span style="color:#1aa7b0;">= </span><span>Matrix3::new(</span><span style="color:#6969ff;">0</span><span>, </span><span style="color:#6969ff;">3</span><span>, </span><span style="color:#6969ff;">6</span><span>,
+</span><span>                          </span><span style="color:#6969ff;">1</span><span>, </span><span style="color:#6969ff;">4</span><span>, </span><span style="color:#6969ff;">7</span><span>,
+</span><span>                          </span><span style="color:#6969ff;">2</span><span>, </span><span style="color:#6969ff;">5</span><span>, </span><span style="color:#6969ff;">8</span><span>);
+</span><span>
+</span><span style="color:#999999;">// index a particular element
+</span><span>assert_eq!(matrix.</span><span style="color:#3366cc;">index</span><span>((</span><span style="color:#6969ff;">0</span><span>, </span><span style="color:#6969ff;">0</span><span>)), </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">0</span><span>);
+</span><span>
+</span><span style="color:#999999;">// select a range of rows and all columns
+</span><span>assert!(matrix.</span><span style="color:#3366cc;">index</span><span>((</span><span style="color:#6969ff;">1</span><span style="color:#1aa7b0;">..</span><span style="color:#6969ff;">3</span><span>, </span><span style="color:#1aa7b0;">..</span><span>))
+</span><span>    .</span><span style="color:#3366cc;">eq</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span>Matrix2x3::new(</span><span style="color:#6969ff;">1</span><span>, </span><span style="color:#6969ff;">4</span><span>, </span><span style="color:#6969ff;">7</span><span>,
+</span><span>                        </span><span style="color:#6969ff;">2</span><span>, </span><span style="color:#6969ff;">5</span><span>, </span><span style="color:#6969ff;">8</span><span>)));
+</span></code></pre>
+<p>…and these overloaded index types are usable with a whole suite of associated methods: <code>index</code>, <code>index_mut</code>, <code>get</code>, <code>get_mut</code>, <code>get_unchecked</code> and <code>get_unchecked_mut</code>. The same indexing types can be used on each of these methods—they only differ in their fallibility, mutability, and safety.</p>
+<p>These six methods are grouped into the same <code>impl</code>. The documentation for the individual methods focuses just on their differences. Their similarities (namely, the different kinds of indexes which can be used) are documented <em>on this shared <code>impl</code></em>:</p>
+<p><a style="display:block" href="https://docs.rs/nalgebra/0.22.0/nalgebra/base/struct.Matrix.html#impl-105"><iframe scrolling="no" style="pointer-events:none; height:90vh; width:100%" src="https://docs.rs/nalgebra/0.22.0/nalgebra/base/struct.Matrix.html#impl-105"></iframe></a></p>
+<p><strong>If you have thematically similar methods, you can group them into their own <code>impl</code>, and write rustdoc on that <code>impl</code>!</strong></p>
+<p>Concretely:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// # Indexing Operations
+</span><span style="color:#999999;">/// [documentation about indexing as a whole]
+</span><span style="color:#8e44be;">impl</span><span>&lt;N: Scalar, R: Dim, C: Dim, S: Storage&lt;N, R, C&gt;&gt; Matrix&lt;N, R, C, S&gt; {
+</span><span>    </span><span style="color:#999999;">/// [documentation *just* for `get`]
+</span><span>    #[</span><span style="color:#f55800;">inline</span><span>]
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">get</span><span>&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, I&gt;(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;a </span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#6969ff;">index</span><span>: I) -&gt; </span><span style="color:#f0ae00;">Option</span><span>&lt;</span><span style="color:#8e44be;">I::</span><span>Output&gt;
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        I: MatrixIndex&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, N, R, C, S&gt;,
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>
+</span><span>    </span><span style="color:#999999;">/// [documentation *just* for `get_mut`]
+</span><span>    #[</span><span style="color:#f55800;">inline</span><span>]
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">get_mut</span><span>&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, I&gt;(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;a </span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#6969ff;">index</span><span>: I) -&gt; </span><span style="color:#f0ae00;">Option</span><span>&lt;</span><span style="color:#8e44be;">I::</span><span>Output&gt;
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        S: StorageMut&lt;N, R, C&gt;,
+</span><span>        I: MatrixIndexMut&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, N, R, C, S&gt;,
+</span><span>    { </span><span style="color:#1aa7b0;">... </span><span>}
+</span><span>
+</span><span>    </span><span style="color:#999999;">/* and so on */
+</span><span>}
+</span></code></pre>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

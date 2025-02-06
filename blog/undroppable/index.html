@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Undroppable Types</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Undroppable Types" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Undroppable Types</h1>
+    <time itemprop="datePublished" datetime="2024-11-25">
+      2024-11-25
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>In Rust, <code>ManuallyDrop</code> is the tool of choice for eliding the destructor of a value. Wrapped in <code>ManuallyDrop</code>, a value is simply forgotten when it goes out of scope. However, in some cases, it is useful to ensure that a value <em>cannot</em> be dropped — not because it is forgotten, but because the very act of dropping it is a compilation error.</p>
+<span id="continue-reading"></span>
+<p>To achieve this, we only need to panic in a <code>const</code> context in its destructor; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">/// A type that cannot be dropped.
+</span><span style="color:#8e44be;">pub struct </span><span>Undroppable&lt;T: ?Sized&gt;(mem::ManuallyDrop&lt;T&gt;);
+</span><span>
+</span><span style="color:#8e44be;">impl</span><span>&lt;T&gt; Undroppable&lt;T&gt; {
+</span><span>    </span><span style="color:#999999;">// Makes `val` undroppable.
+</span><span>    </span><span style="color:#999999;">//
+</span><span>    </span><span style="color:#999999;">// If `val` has a  non-trivial destructor, attempting
+</span><span>    </span><span style="color:#999999;">// to drop it will result in a compilation error.
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">new_unchecked</span><span>(</span><span style="color:#6969ff;">val</span><span>: T) -&gt; </span><span style="color:#8e44be;">Self </span><span>{
+</span><span>        </span><span style="color:#8e44be;">Self</span><span>(mem::ManuallyDrop::new(val))
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">impl</span><span>&lt;T:? Sized&gt; Drop for Undroppable&lt;T&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">drop</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">mut </span><span style="color:#6969ff;">self</span><span>) {
+</span><span>        </span><span style="color:#8e44be;">const </span><span>{
+</span><span>            assert!(</span><span style="color:#1aa7b0;">!</span><span>mem::needs_drop::&lt;T&gt;(), </span><span style="color:#699200;">&quot;This cannot be dropped.&quot;</span><span>);
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>Unless we <code>mem::forget</code> a val wrapped in <code>Undroppable</code> (or further wrap it in <code>ManuallyDrop</code>); e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">main</span><span>() {
+</span><span>    </span><span style="color:#8e44be;">let</span><span> undroppable </span><span style="color:#1aa7b0;">= </span><span>Undroppable::new_unchecked(vec![</span><span style="color:#6969ff;">1</span><span>, </span><span style="color:#6969ff;">2</span><span>, </span><span style="color:#6969ff;">3</span><span>]);
+</span><span>    </span><span style="color:#999999;">// commenting out this line results in a compilation error:
+</span><span>    core::mem::forget(undroppable);
+</span><span>}
+</span></code></pre>
+<p>…dropping it results in a compilation error:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>error[E0080]: evaluation of `&lt;Undroppable&lt;std::vec::Vec&lt;i32&gt;&gt; as std::ops::Drop&gt;::drop::{constant#0}` failed
+</span><span>  --&gt; src/main.rs:28:13
+</span><span>   |
+</span><span>28 |             assert!(!mem::needs_drop::&lt;T&gt;(), &quot;This cannot be dropped.&quot;);
+</span><span>   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the evaluated program panicked at &#39;This cannot be dropped.&#39;, src/main.rs:28:13
+</span><span>   |
+</span><span>   = note: this error originates in the macro `$crate::panic::panic_2021` which comes from the expansion of the macro `assert` (in Nightly builds, run with -Z macro-backtrace for more info)
+</span><span>
+</span><span>note: erroneous constant encountered
+</span><span>  --&gt; src/main.rs:27:9
+</span><span>   |
+</span><span>27 | /         const {
+</span><span>28 | |             assert!(!mem::needs_drop::&lt;T&gt;(), &quot;This cannot be dropped.&quot;);
+</span><span>29 | |         }
+</span><span>   | |_________^
+</span><span>
+</span><span>note: the above error was encountered while instantiating `fn &lt;Undroppable&lt;std::vec::Vec&lt;i32&gt;&gt; as std::ops::Drop&gt;::drop`
+</span><span>   --&gt; /playground/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:574:1
+</span><span>    |
+</span><span>574 | pub unsafe fn drop_in_place&lt;T: ?Sized&gt;(to_drop: *mut T) {
+</span><span>    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</span></code></pre>
+<p>This error message is poor as the ‘stack’ trace only extends one frame above our custom <code>drop</code> impl. However, in some scenarios, even a poor compilation error is preferable to a runtime panic. Hopefully, this diagnostic will be improved in future versions of rustc.</p>
+<p>In <a href="https://docs.rs/zerocopy/latest/zerocopy/">zerocopy</a>, we may soon be using this approach eliminate a stubborn <code>T: Sized</code> bound from our <code>Unalign&lt;T&gt;</code> layout gadget, while ensuring that <code>Unalign</code> does not silently forget DSTs with non-trivial <code>Drop</code> implementations.</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

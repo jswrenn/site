@@ -1,0 +1,219 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Announcing `scoped-trace`.</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Announcing `scoped-trace`." />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Announcing <code>scoped-trace</code>.</h1>
+    <time itemprop="datePublished" datetime="2023-03-28">
+      2023-03-28
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>Today, I’m announcing <code>scoped-trace</code>, a crate for capturing scoped, tree-like execution traces.</p>
+<p>Here are the crate’s important links:</p>
+<ul>
+<li><a href="https://crates.io/crates/scoped-trace">https://crates.io/crates/scoped-trace</a></li>
+<li><a href="https://docs.rs/scoped-trace">https://docs.rs/scoped-trace</a></li>
+<li><a href="https://github.com/jswrenn/scoped-trace">https://github.com/jswrenn/scoped-trace</a></li>
+</ul>
+<span id="continue-reading"></span>
+<p>For example, running this program:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">use </span><span>scoped_trace::Trace;
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">main</span><span>() {
+</span><span>    </span><span style="color:#999999;">// `Trace::root` establishes the upper unwinding bound of traces.
+</span><span>    </span><span style="color:#8e44be;">let </span><span>(</span><span style="color:#1aa7b0;">_</span><span>, trace) </span><span style="color:#1aa7b0;">= </span><span>Trace::root(|| </span><span style="color:#3366cc;">foo</span><span>());
+</span><span>    println!(</span><span style="color:#699200;">&quot;</span><span style="color:#666666;">{trace}</span><span style="color:#699200;">&quot;</span><span>);
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">foo</span><span>() {
+</span><span>    </span><span style="color:#3366cc;">bar</span><span>();
+</span><span>    </span><span style="color:#3366cc;">baz</span><span>();
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">bar</span><span>() {
+</span><span>    </span><span style="color:#999999;">// `Trace::leaf` establishes the lower bounds of traces.
+</span><span>    Trace::leaf();
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">baz</span><span>() {
+</span><span>    Trace::leaf();
+</span><span>}
+</span></code></pre>
+<p>…produces an output that looks like this:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>╼ inlining::main::{{closure}} at example.rs:5:38
+</span><span>  ├╼ inlining::foo at example.rs:10:5
+</span><span>  │  └╼ inlining::bar at example.rs:16:5
+</span><span>  └╼ inlining::foo at example.rs:11:5
+</span><span>     └╼ inlining::baz at example.rs:20:5
+</span></code></pre>
+<p>This trace stops at the upper unwinding bound established by <code>Trace::root</code>, and includes the callers of <code>Trace::leaf</code>. The trace also preserves the order of execution, showing that <code>bar()</code> was invoked before <code>baz()</code>.</p>
+<p>A quirk of this crate is that it inverts the usual directionality of <em>back</em>trace APIs. Calling <code>std::backtrace::Backtrace::capture()</code>, for instance, <em>gives</em> you a backtrace that starts at its callsite and unwinds to the top of the stack. By contrast, calling <code>Trace::leaf</code> gives you nothing at all; rather, it contributes itself to the trace produced by <code>Trace::root</code>. In a sense <code>Trace::root</code> doesn’t give up a <em>back</em>trace, it gives you a <em>down</em>trace — a view <em>down</em> the call stack starting at <code>Trace::root</code>.</p>
+<h2 id="backstory">Backstory</h2>
+<p>This crate is one of a several of crates I developed recently to explore the solution space of tracing the state of asynchronous tasks. You can read more about that work <a href="https://hackmd.io/@jswrenn/SkldX98Ci">here</a>; this crate is a proof-of-concept of the “Backtrace the Leaves” approach described there.</p>
+<p>In contrast to the <a href="https://tokio.rs/blog/2022-10-announcing-async-backtrace"><code>async-backtrace</code></a> crate, which requires onerous manual instrumentation and imposes a constant, modest runtime overhead, the <code>scoped-trace</code> approach will only require instrumenting <code>Future</code> leaves (i.e., futures without sub-futures, like timers or I/O), and does not impose any runtime overhead. I’ve begun experimenting integrating this approach into Tokio proper, where you’ll be able to use it to inspect the state of all tasks managed by a Tokio runtime. Stay tuned!</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

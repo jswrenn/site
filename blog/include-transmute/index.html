@@ -1,0 +1,246 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Fixing include_bytes!</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Fixing include_bytes!" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Fixing include_bytes!</h1>
+    <time itemprop="datePublished" datetime="2020-08-26">
+      2020-08-26
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>Rust’s <a href="https://doc.rust-lang.org/core/macro.include_bytes.html"><code>include_bytes!</code> macro</a> lets you statically include the contents of a file into your executable’s binary. The builtin is a quick-and-dirty solution for packaging data with your executable, and perhaps even helping the compiler optimize your code! <strong>Unfortunately, it’s difficult to use correctly.</strong></p>
+<span id="continue-reading"></span>
+<p>A few years ago, for coursework, I implemented a basic neural network for recognizing digits. Ever-obsessed with having the <em>fastest</em> implementation in the class, I statically included the learned network parameters:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">recognize</span><span>(</span><span style="color:#6969ff;">input</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>Matrix&lt;</span><span style="color:#8e44be;">f64</span><span>, U1, U784&gt;) -&gt; </span><span style="color:#8e44be;">usize
+</span><span>{
+</span><span>    </span><span style="color:#8e44be;">static </span><span style="color:#666666;">RAW_WEIGHT </span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static </span><span>[</span><span style="color:#8e44be;">u8</span><span>; </span><span style="color:#6969ff;">62_720</span><span>] </span><span style="color:#1aa7b0;">= </span><span>include_bytes!(</span><span style="color:#699200;">&quot;/weight.bin&quot;</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">static </span><span style="color:#666666;">RAW_BIAS </span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static </span><span>[</span><span style="color:#8e44be;">u8</span><span>; </span><span style="color:#6969ff;">80</span><span>] </span><span style="color:#1aa7b0;">= </span><span>include_bytes!(</span><span style="color:#699200;">&quot;/bias.bin&quot;</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">let </span><span style="color:#666666;">WEIGHT</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>Matrix&lt;</span><span style="color:#8e44be;">f64</span><span>, U784, U10&gt; </span><span style="color:#1aa7b0;">= </span><span style="color:#8e44be;">unsafe</span><span>{ mem::transmute(</span><span style="color:#666666;">RAW_WEIGHT</span><span>) };
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">let </span><span style="color:#666666;">BIAS</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>Matrix&lt;</span><span style="color:#8e44be;">f64</span><span>, U1, U10&gt; </span><span style="color:#1aa7b0;">= </span><span style="color:#8e44be;">unsafe</span><span>{ mem::transmute(</span><span style="color:#666666;">RAW_BIAS</span><span>) };
+</span><span>
+</span><span>    network::recognize(input, </span><span style="color:#666666;">WEIGHT</span><span>, </span><span style="color:#666666;">BIAS</span><span>)
+</span><span>}
+</span></code></pre>
+<p><strong>This is wrong, and I got lucky.</strong></p>
+<p>A <code>Matrix&lt;f64, U784, U10&gt;</code> has a minimum alignment of <code>8</code>, but <code>include_bytes!</code> merely produces a reference to a byte array—with no care for alignment.</p>
+<p><strong>How can we ensure the included bytes are properly aligned?</strong></p>
+<h2 id="prior-art-include-bytes-align-as">Prior Art: <code>include_bytes_align_as!</code></h2>
+<p>On the Rust Users Forum, user ExpHP <a href="https://users.rust-lang.org/t/can-i-conveniently-compile-bytes-into-a-rust-program-with-a-specific-alignment/24049/2">devised an <code>include_bytes_align_as</code> macro</a> that produces the included bytes, aligned a given type:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#3366cc;">macro_rules! </span><span>include_bytes_align_as {
+</span><span>    (</span><span style="color:#6969ff;">$align_ty</span><span>:</span><span style="color:#8e44be;">ty</span><span>, $path:literal) </span><span style="color:#1aa7b0;">=&gt; </span><span>{{
+</span><span>        #[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span>        </span><span style="color:#8e44be;">pub struct </span><span>AlignedAs&lt;Align, Bytes: ?Sized&gt; {
+</span><span>            </span><span style="color:#8e44be;">pub </span><span style="color:#f55800;">_align</span><span>: [Align; 0],
+</span><span>            </span><span style="color:#8e44be;">pub </span><span style="color:#f55800;">bytes</span><span>: Bytes,
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#8e44be;">static </span><span style="color:#666666;">ALIGNED</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>AlignedAs::&lt;</span><span style="color:#f55800;">$align_ty</span><span>, [</span><span style="color:#8e44be;">u8</span><span>]&gt; </span><span style="color:#1aa7b0;">= &amp;</span><span>AlignedAs {
+</span><span>            _align: [],
+</span><span>            bytes: </span><span style="color:#1aa7b0;">*</span><span>include_bytes!(</span><span style="color:#f55800;">$path</span><span>),
+</span><span>        };
+</span><span>
+</span><span>        </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#666666;">ALIGNED</span><span>.bytes
+</span><span>    }};
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#f55800;">repr</span><span>(</span><span style="color:#f55800;">align</span><span style="color:#3366cc;">(4096)</span><span>)]
+</span><span style="color:#8e44be;">struct </span><span>Align4096;
+</span><span>
+</span><span style="color:#8e44be;">static</span><span> A: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static </span><span>[</span><span style="color:#8e44be;">u8</span><span>] </span><span style="color:#1aa7b0;">= </span><span>include_bytes!(</span><span style="color:#699200;">&quot;boxed.rs&quot;</span><span>);
+</span><span style="color:#8e44be;">static</span><span> B: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static </span><span>[</span><span style="color:#8e44be;">u8</span><span>] </span><span style="color:#1aa7b0;">= </span><span>include_bytes_align_as!(</span><span style="color:#8e44be;">f64</span><span>, </span><span style="color:#699200;">&quot;boxed.rs&quot;</span><span>); </span><span style="color:#999999;">// alignment of 8
+</span><span style="color:#8e44be;">static</span><span> C: </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;static </span><span>[</span><span style="color:#8e44be;">u8</span><span>] </span><span style="color:#1aa7b0;">= </span><span>include_bytes_align_as!(Align4096, </span><span style="color:#699200;">&quot;boxed.rs&quot;</span><span>); </span><span style="color:#999999;">// alignment of 4096
+</span></code></pre>
+<p>The implementation of this macro exploits a really neat trick: the type <code>AlignedAs</code> will have the alignment characteristics of <code>Align</code>, but contain the bytes of <code>Bytes</code>.</p>
+<p>Unfortunately, Rust cannot infer the correct alignment for us—it’s entirely up to pass the macro a type that exemplifies our desired alignment. Can we improve on this?</p>
+<h2 id="an-alternative-include-transmute">An Alternative: <code>include_transmute!</code></h2>
+<p><strong>Yes!</strong> If we fuse the include and transmutation together, Rust will correctly-align its output <em>without</em> an extra macro argument; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">recognize</span><span>(</span><span style="color:#6969ff;">input</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>Matrix&lt;</span><span style="color:#8e44be;">f64</span><span>, U1, U784&gt;) -&gt; </span><span style="color:#8e44be;">usize
+</span><span>{
+</span><span>    </span><span style="color:#8e44be;">static </span><span style="color:#666666;">WEIGHT</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>Matrix&lt;</span><span style="color:#8e44be;">f64</span><span>, U784, U10&gt; </span><span style="color:#1aa7b0;">= </span><span style="color:#8e44be;">unsafe</span><span>{ include_transmute!(</span><span style="color:#699200;">&quot;/weight.bin&quot;</span><span>) };
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">static </span><span style="color:#666666;">BIAS</span><span>: </span><span style="color:#1aa7b0;">&amp;</span><span>Matrix&lt;</span><span style="color:#8e44be;">f64</span><span>, U1, U10&gt; </span><span style="color:#1aa7b0;">= </span><span style="color:#8e44be;">unsafe</span><span>{ include_transmute!(</span><span style="color:#699200;">&quot;/weight.bin&quot;</span><span>) };
+</span><span>
+</span><span>    network::recognize(input, </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#666666;">WEIGHT</span><span>, </span><span style="color:#1aa7b0;">&amp;</span><span style="color:#666666;">BIAS</span><span>)
+</span><span>}
+</span></code></pre>
+<p>Here’s how:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#3366cc;">macro_rules! </span><span>include_transmute {
+</span><span>    (</span><span style="color:#6969ff;">$file</span><span>:</span><span style="color:#8e44be;">expr</span><span>) </span><span style="color:#1aa7b0;">=&gt; </span><span>{
+</span><span>        </span><span style="color:#1aa7b0;">&amp;</span><span>core::mem::transmute(</span><span style="color:#1aa7b0;">*</span><span>include_bytes!(</span><span style="color:#f55800;">$file</span><span>))
+</span><span>    };
+</span><span>}
+</span></code></pre>
+<p>That’s really all there is to it!</p>
+<p>Why does this work? The <a href="https://doc.rust-lang.org/core/mem/fn.transmute.html"><code>mem::transmute</code></a> intrinsic consumes its argument, copies its bits to space reserved for a value of the destination type, then forgets the original value. That space reserved for the destination type is aligned according to the needs of the destination type, <em>not</em> the needs of the source type.</p>
+<p><strong>MSRV Note:</strong> <code>mem::transmute</code> is usable in static and const initializer contexts only <a href="https://github.com/rust-lang/rust/pull/72920">as of Rust 1.46.0</a>, which (at the time of writing) is in beta.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>Thanks to <a href="https://www.reddit.com/user/RustMeUp">/u/RustMeUP</a> for <a href="https://www.reddit.com/r/rust/comments/igi6p0/prerfc_safer_transmutation/g2wt27y/">finding the bug</a> in my motivating example!</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

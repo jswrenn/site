@@ -1,0 +1,349 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Private Methods on a Public Trait</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Private Methods on a Public Trait" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Private Methods on a Public Trait</h1>
+    <time itemprop="datePublished" datetime="2020-10-18">
+      2020-10-18
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>In Rust, the methods of a trait inherit the visibility of the trait itself:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub trait </span><span>Foo&lt;Arg&gt; {
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#f55800;">self</span><span>) </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">foo</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#6969ff;">arg</span><span>: Arg);
+</span><span>
+</span><span>    </span><span style="color:#999999;">/* other public methods */
+</span><span>
+</span><span>}
+</span></code></pre>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>error[E0449]: unnecessary visibility qualifier
+</span><span> --&gt; src/lib.rs:7:3
+</span><span>  |
+</span><span>7 |   pub(self) fn foo(&amp;self, arg: Arg);
+</span><span>  |   ^^^^^^^^^
+</span></code></pre>
+<p>At minimum, we should hide this method from our documentation:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub trait </span><span>Foo&lt;Arg&gt; {
+</span><span>
+</span><span>    #[</span><span style="color:#f55800;">doc</span><span>(hidden)]
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">foo</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#6969ff;">arg</span><span>: Arg);
+</span><span>
+</span><span>    </span><span style="color:#999999;">/* other public methods */
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>…but this doesn’t <em>actually</em> prevent outsiders from calling our method! <strong>Fortunately, there are at least three other patterns <code>#[doc(hidden)]</code> can be combined with to make <code>foo</code> externally unusable.</strong></p>
+<span id="continue-reading"></span>
+<p>The first two approaches are well-established in the Rust community, but the third might be relatively novel.</p>
+<h2 id="approach-1-private-super-trait">Approach 1: Private Super-Trait</h2>
+<p>Since the methods of a trait inherit the visibility of the trait itself, we can simply place our private methods in a private trait! We then make this private trait a super-trait of our public trait:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#8e44be;">crate</span><span>) </span><span style="color:#8e44be;">mod </span><span>private {
+</span><span>
+</span><span>    #[</span><span style="color:#f55800;">doc</span><span>(hidden)]
+</span><span>    </span><span style="color:#8e44be;">pub trait </span><span>FooPrivate&lt;Arg&gt; {
+</span><span>        </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">foo</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#6969ff;">arg</span><span>: Arg);
+</span><span>    }
+</span><span>
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">pub trait </span><span>Foo&lt;Arg&gt;: private::FooPrivate&lt;Arg&gt; {
+</span><span>
+</span><span>    </span><span style="color:#999999;">/* other public methods */
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>But wait: <code>FooPrivate</code> is marked <code>pub</code>! And what’s with this new <code>private</code> module? Well, Rust usually forbids embedding a private type in a public type signature:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#8e44be;">crate</span><span>) </span><span style="color:#8e44be;">trait </span><span>FooPrivate&lt;Arg&gt; {
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">foo</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#6969ff;">arg</span><span>: Arg);
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">pub trait </span><span>Foo&lt;Arg&gt;: FooPrivate&lt;Arg&gt; {
+</span><span>
+</span><span>}
+</span></code></pre>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>error[E0445]: crate-visible trait `FooPrivate&lt;Arg&gt;` in public interface
+</span><span> --&gt; src/lib.rs:5:1
+</span><span>  |
+</span><span>1 |   pub(crate) trait FooPrivate&lt;Arg&gt; {
+</span><span>  |   ---------- `FooPrivate&lt;Arg&gt;` declared as crate-visible
+</span><span>...
+</span><span>5 | / pub trait Foo&lt;Arg&gt;: FooPrivate&lt;Arg&gt; {
+</span><span>6 | |
+</span><span>7 | | }
+</span><span>  | |_^ can&#39;t leak crate-visible trait
+</span></code></pre>
+<p>This pattern of making a public type <em>effectively</em> private by embedding it in a private module is called the “pub-in-priv trick”. This trick is also the foundation of the <a href="https://rust-lang.github.io/api-guidelines/future-proofing.html#sealed-traits-protect-against-downstream-implementations-c-sealed">sealed traits</a> pattern for exposing public traits that are only privately implementable.</p>
+<p>This method is effective, albeit verbose. Of course, you must be careful to not publicly re-export <code>FooPrivate</code> from your crate. If <code>Foo</code> is a well-established trait and you intend for the addition of <code>foo</code> to be non-breaking, you may have a hard time convincing yourself that you can add a super-trait without breaking any downstream code.</p>
+<h2 id="approach-2-private-value-argument">Approach 2: Private Value Argument</h2>
+<p>Alternatively, we can add an effectively-private type as an argument to <code>foo</code>:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>pub(crate) mod private {
+</span><span>    pub struct Local;
+</span><span>}
+</span><span>
+</span><span>pub trait Foo&lt;Arg&gt; {
+</span><span>
+</span><span>    #[doc(hidden)]
+</span><span>    fn foo(&amp;self, arg: Arg, _: private::Local);
+</span><span>
+</span><span>    /* other public methods */
+</span><span>
+</span><span>}
+</span></code></pre>
+<p>Access to <code>Local</code> provides the <a href="https://en.wikipedia.org/wiki/Capability-based_security"><em>capability</em></a> to call <code>foo</code>. Consumers of our crate cannot call <code>foo</code>, because they cannot construct an instance of <code>Local</code>. <em>Or can they?</em></p>
+<p>Well, <em>yes, they can</em>. Again, if, you publicly leak a value to <code>private::Local</code>, e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub const </span><span style="color:#666666;">LOCAL</span><span>: private::Local </span><span style="color:#1aa7b0;">= </span><span>private::Local;
+</span></code></pre>
+<p>…then downstream users can simply re-use that value to call <code>foo</code>!</p>
+<p>And, regardless of how careful <em>you</em> are, a dash of <code>unsafe</code> renders <code>foo</code> callable:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>Foo::foo(some_arg, </span><span style="color:#8e44be;">unsafe </span><span>{ mem::zeroed</span><span style="color:#1aa7b0;">!</span><span>() })
+</span></code></pre>
+<h2 id="approach-3-private-type-argument">Approach 3: Private Type Argument</h2>
+<p>Fortunately, we can do better. Rather than exploiting the uninstantiability of <code>Local</code>, we exploit the <em>unnamability</em> of <code>Local</code> and make it a <em>type</em> argument of <code>foo</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#8e44be;">crate</span><span>) </span><span style="color:#8e44be;">mod </span><span>private {
+</span><span>    </span><span style="color:#999999;">// Once again, we introduce an effectively
+</span><span>    </span><span style="color:#999999;">// private type to encode locality.
+</span><span>    </span><span style="color:#999999;">// This time, we make it uninhabited so we
+</span><span>    </span><span style="color:#999999;">// *cannot* accidentally leak it.
+</span><span>    </span><span style="color:#8e44be;">pub enum </span><span>Local {}
+</span><span>
+</span><span>    </span><span style="color:#999999;">// However, we pair it with a &#39;sealed&#39; trait
+</span><span>    </span><span style="color:#999999;">// that is *only* implemented for `Local`.
+</span><span>    </span><span style="color:#8e44be;">pub trait </span><span>IsLocal {}
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">impl </span><span>IsLocal </span><span style="color:#8e44be;">for </span><span>Local {}
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">pub trait </span><span>Foo&lt;Arg&gt; {
+</span><span>
+</span><span>    </span><span style="color:#999999;">// The only `L` that renders `foo` callable is `Local`
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">foo</span><span>&lt;L: private::IsLocal&gt;(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>, </span><span style="color:#6969ff;">arg</span><span>: Arg);
+</span><span>
+</span><span>    </span><span style="color:#999999;">/* other public methods */
+</span><span>}
+</span></code></pre>
+<p>Now <em>we</em> can call <code>foo</code> from within our crate:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>Foo::foo::&lt;private::Local&gt;(some_arg)
+</span></code></pre>
+<p>…but <em>consumers</em> of our crate cannot! Not even unsafely — there is no type-level equivalent to <code>mem::zeroed()</code> by which consumers can summon the name of <code>Local</code>. <em>Or is there?</em></p>
+<h3 id="resilience">Resilience</h3>
+<p>This time, there isn’t! Type <em>inference</em>, in principal, provides such a mechanism, but Rust does not perform <em>full-program</em> type inference — inference is limited to the bodies of functions. With this in mind, let’s try to exploit inference within function bodies to call <code>CTF::ctf()</code> in <code>main</code>:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub mod </span><span>crate_a {
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#f55800;">self</span><span>) </span><span style="color:#8e44be;">mod </span><span>private {
+</span><span>        </span><span style="color:#8e44be;">pub enum </span><span>Local {}
+</span><span>
+</span><span>        </span><span style="color:#8e44be;">pub trait </span><span>IsLocal {}
+</span><span>
+</span><span>        </span><span style="color:#8e44be;">impl </span><span>IsLocal </span><span style="color:#8e44be;">for </span><span>Local {}
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">pub trait </span><span>CTF {
+</span><span>        </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">ctf</span><span>&lt;L: private::IsLocal&gt;() {
+</span><span>            println!(</span><span style="color:#699200;">&quot;You captured the flag!&quot;</span><span>)
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">impl </span><span>CTF </span><span style="color:#8e44be;">for </span><span>usize {}
+</span><span>
+</span><span>    </span><span style="color:#999999;">// for this to work, we&#39;ll need to leak `Local`
+</span><span>    </span><span style="color:#999999;">// by putting it into a public type signature.
+</span><span>    </span><span style="color:#8e44be;">pub fn </span><span style="color:#3366cc;">leak_local</span><span>() -&gt; private::Local {
+</span><span>        </span><span style="color:#8e44be;">loop </span><span>{}
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">main</span><span>() {
+</span><span>    </span><span style="color:#8e44be;">use </span><span>crate_a::{</span><span style="color:#666666;">CTF</span><span>, leak_local};
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">call_ctf</span><span>&lt;L, F: </span><span style="color:#f0ae00;">Fn</span><span>() -&gt; L&gt;(</span><span style="color:#6969ff;">f</span><span>: F) {
+</span><span>        </span><span style="color:#8e44be;">usize</span><span>::ctf::&lt;L&gt;()
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#3366cc;">call_ctf</span><span>(leak_local)
+</span><span>}
+</span></code></pre>
+<p>This produces an error:</p>
+<pre style="background-color:#ffffff;color:#4d4d4c;"><code><span>error[E0277]: the trait bound `L: crate_a::private::IsLocal` is not satisfied
+</span><span>  --&gt; src/main.rs:29:9
+</span><span>   |
+</span><span>12 |         fn ctf&lt;L: private::IsLocal&gt;() {
+</span><span>   |         ----------------------------- required by `crate_a::CTF::ctf`
+</span><span>...
+</span><span>29 |         usize::ctf::&lt;L&gt;()
+</span><span>   |         ^^^^^^^^^^^^^^^ the trait `crate_a::private::IsLocal` is not implemented for `L`
+</span><span>   |
+</span><span>help: consider restricting type parameter `L`
+</span><span>   |
+</span><span>28 |     fn call_ctf&lt;L: crate_a::private::IsLocal, F: Fn() -&gt; L&gt;(f: F) {
+</span><span>   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</span></code></pre>
+<p>We <em>cannot</em> apply this suggestion: <code>IsLocal</code> is effectively private! Of course, our use of the pub-in-priv trick means that its usual caveats apply: if we <em>directly</em> publicly re-export <code>Local</code> or <code>IsLocal</code> from <code>crate_a</code> (e.g., via <code>pub use</code>), <code>ctf</code> loses the guarantees it gained from relying on their privacy.</p>
+<h3 id="use-in-the-wild">Use in the Wild</h3>
+<p>I recently used this technique in a <a href="https://github.com/paholg/typenum/pull/142">PR removing <code>unsafe</code> from the typenum crate</a> to <a href="https://github.com/paholg/typenum/pull/142#discussion_r396152986">add a private method to a long-public trait</a>. I wanted my PR to preserve the public API surface of typenum (so no new public traits or methods!) and to be non-breaking. My caution about accidentally introducing any breaking changes dissuaded me from the first approach (i.e., a new private super-trait). The drawbacks of the second approach (cluttering of call-sites and that its protections can be bypassed with <code>unsafe</code> code) lead me to apply the third approach.</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>
