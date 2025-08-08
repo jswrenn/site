@@ -96,6 +96,10 @@
       h4    {font-size: 1.266rem;}
       h5    {font-size: 1.125rem;}
       small {font-size: 0.889rem;}
+      sup   {
+        font-size: 0.79rem;
+        vertical-align: super;
+      }
 
       h3 {
         margin-top: 1em;
@@ -166,6 +170,10 @@
         #page-1 {
           display: flex;
         }
+
+        #page-1 .column > section:not(:last-of-type) {
+          margin-bottom: 1em;
+        }
       
         #page-1 .column.left {
           display: flex;
@@ -181,11 +189,6 @@
       </style>
     
       <div class="column left">
-        <style>
-          #page-1 .column.left > section:not(:last-of-type) {
-            margin-bottom: 1em;
-          }
-        </style>
         <header class="area" id="resume-header">
           <style>
             #resume-header {
@@ -267,24 +270,24 @@
           <header><h2>Employment</h2></header>
           <section><header><h3 class="institution">Applied Scientist</h3></header>
             <span class="where">Amazon Web Services</span>
-            <span class="when">2021&ndash;</span>
+            <span class="when">2021&ndash;2025</span>
             <p class="description" style="hyphens: none;">
-              Interviewed Rust programmers to identify their productivity barriers, and developed a variety of interventions. Lead team initiative to improve the observability of asynchronous Rust applications. 
+              Interviewed Rust programmers to identify their productivity barriers, and developed a variety of interventions. Led initiative to improve the observability of asynchronous Rust applications. Led cross-industry initiative to improve safety tooling.
             </p>
+          </section>
+          <section><header><h3 class="institution">Adjunct Professor</h3></header>
+            <span class="where">University of San Francisco</span>
+            <span class="when">Spring 2024</span>
+            <span class="description">
+              Co-taught an intensive introduction to computer security that presented the fundamentals of cryptography and systems security through a mixture of theory and practice.
+            </span>
           </section>
           <section><header><h3 class="institution">Researcher</h3></header>
             <span class="where">Brown University</span>
             <span class="when">2015&ndash;2021</span>
             <span class="description">
-              Contributed to the development of the Pyret prog&shy;ramming language, and published <a href="https://jack.wrenn.fyi/publications">five research papers</a> on error reporting, software testing, tooling and human factors.
+              Contributed to the development of the Pyret prog&shy;ramming language. Published <a href="https://jack.wrenn.fyi/publications">five research papers</a> on error reporting, testing, tooling and human factors.
             </span>
-          </section>
-          <section><header><h3 class="institution">Course Staff</h3></header>
-            <span class="where">Brown University, URI</span>
-            <span class="when">2012&ndash;2020</span>
-            <p class="description">
-              Provided design, instructional, and infrastructure support to various courses in OOP, functional prog&shy;ramming, language design, and model-finding.
-            </p>
           </section>
         </section>
         <section class="bordered area awards">
@@ -308,7 +311,7 @@
             <span class="where">Mozilla</span>
             <span class="when">2019</span>
             <span class="description">
-              Discovered a security issue in Firefox’s XSLT engine that enabled attackers to indefinitely execute JavaScript and send network requests (even with JS disabled) <em>after</em> the exploited tab was closed. 
+              Discovered <a href="https://nvd.nist.gov/vuln/detail/cve-2022-22755">a security issue</a> in Firefox’s XSLT engine that enabled attackers to indefinitely execute JavaScript and send network requests (even with JS disabled) <em>after</em> the exploited tab was closed. 
             </span>
           </section>
         </section>
@@ -330,7 +333,7 @@
           }
 
           .projects {
-            height: 100%;
+            
           }
 
           hr {
@@ -348,22 +351,23 @@
         
         <header><h2>Selected Projects</h2></header>
         <section><header><h3>Rust Programming Language</h3></header>
-          <p>Passionate about expanding and leveraging Rust’s language features to improve the safety and ergonomics of programming.</p>
+          <p>An expert in leveraging and evolving Rust to improve the safety and ergonomics of complex programming tasks. Key projects include:</p>
 
-          <h4>Safe Transmute Working Group</h4>
-          <p>Co-lead the working group tasked with making bit-reinterpretation casts (e.g., <code>union</code>, <code>mem::transmute</code>) memory safe. Lead designer and author of the WG’s inaugural <a href="https://github.com/rust-lang/rfcs/pull/2981">RFC-2981</a>.</p>
+          <h4>Safe Transmutation</h4>
+          <p>Lead the working group to make bit-reinterpretation casts (e.g., <code>union</code>, <code>mem::transmute</code>) memory safe. Designed and implemented <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a>, a novel compiler analysis for proving the transmutability of arbitrary types. Maintain <a href="https://crates.io/crates/zerocopy">zerocopy</a>, a widely-used library providing a safe abstraction for many kinds of bit-reinterpretation casts.</p>
 
-          <h4>Compiler Development</h4>
-          <p>Implementor of <a href="https://github.com/rust-lang/rfcs/pull/2363">RFC-2363</a>, which permits fine-grained control over the memory layout of complex <code>enum</code> types; useful for C-interop and zero-copy parsing of network packets.</p>
+          <h4>Observability</h4>
+          <p>Led the AWS Rust Platform Team's observability initiative. Collaborated with the Rust Debugging Working Group to prototype and evaluate methods for in-process debugging of stuck asynchronous services. Authored a <a href="https://jack.wrenn.fyi/blog/2022-retrospective/">suite of novel crates</a> for program instrumentation. This work culminated in the design and development Tokio's task dump functionality.</p>
 
-          <h4>Open Source Libraries</h4>
-          <p>Author and contributor to <a href="https://jack.wrenn.fyi/#open-source">numerous</a> Rust libraries and utilities. Lead maintainer of <a href="https://crates.io/crates/itertools">itertools</a>, a popular (&gt;133M downloads) library for ergonomic transformations and summarization of streams of data.</p>
+          <h4>Other Open-Source Leadership</h4>
+          <p>Maintainer of <a href="https://crates.io/crates/itertools">itertools</a>, a popular (&gt;575m downloads) library for ergonomic transformations and summarization of streams of data.</p>
+          <!-- <p>Implementor of <a href="https://github.com/rust-lang/rfcs/pull/2363">RFC-2363</a>, which permits fine-grained control over the memory layout of complex <code>enum</code> types; useful for C-interop and zero-copy parsing of network packets.</p>-->
         </section>
 
         <hr />
         
         <section><header><h3>Computing Education</h3></header>
-          <p>Contributor to <a href="https://www.pyret.org/">Pyret</a>, a programming language designed by computer science educators, for computer science education.</p> 
+          <p>An expert in programming pedagogy and user experience. Contributed to <a href="https://www.pyret.org/">Pyret</a>, a programming language designed by computer science educators:</p> 
 
           <h4>Error Message Design</h4>
           <p>Developed Pyret’s unique <a href="https://github.com/brownplt/pyret-lang/wiki/Error-Reporting,-July-2016">hypertext error messages</a>, which leverage hyperlinks, highlights and in-line code snippets to guide novice programmers towards deeply understanding their errors.</p>
@@ -377,15 +381,33 @@
           <h4>Evaluation at Scale</h4>
           <p>Developed infrastructure for assessing the quality of students’ Pyret prog&shy;rams and test suites at massive scale on a distributed super-computing cluster, and <a href="http://jack.wrenn.fyi/publications/Wrenn,%20Krishnamurthi,%20Fisler%20-%20Who%20Tests%20the%20Testers.pdf">developed an analysis</a> to validate the robustness of these assessments.</p>
         </section>
+      </section>
+      <section class="bordered area talks">
+        <style>
+          .talks .where {
+            font-style: italic;
+          }
+        
+          .talks .when {
+            float: right;
+          }
 
-        <hr />
+          .talks .description {
+            display: block;
+            margin-left: 1em;
+            margin-top: 0.5em;
+          }
+        </style>
+        <header><h2>Selected Talks</h2></header>
+        <section><header><h3 class="institution">Safety Goggles for Alchemists
+          <sup>[<a href="https://jack.wrenn.fyi/blog/safety-goggles-for-alchemists/">Transcript</a>]</sup>
 
-        <section><header><h3>Digital Archival</h3></header>
-          <h4>Natural Language Processing</h4>
-          <p>Published a <a href="https://liber-brunoniana.github.io/">digital remix</a> of Brown University’s authoritative dead-tree encyclopedia, which leveraged natural language processing to extract timelines and insert hyperlinks.</p>
-
-          <h4>Digital Asset Management</h4>
-          <p>Currently developing a digital asset management system in Rust and Typescript to catalogue my archive of &gt;5,000 photographs, oral histories and written accounts of Brown University alumni.</p>
+        </h3></header>
+          <span class="where">RustConf</span>
+          <span class="when">2024</span>
+          <span class="description">
+            This talk charts Rust's path to becoming the first systems programming language with transmutation safety, and highlights how safe transmute is already being put to use to build next-gen systems.
+          </span>
         </section>
       </section>
     </div>
