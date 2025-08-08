@@ -1,0 +1,287 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Typesetting a Resume with HTML and CSS</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Typesetting a Resume with HTML and CSS" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Typesetting a Resume with HTML and CSS</h1>
+    <time itemprop="datePublished" datetime="2021-01-29">
+      2021-01-29
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>With my PhD drawing to a close, I’m on the job market! I’ll need a slick resume ASAP, but how to typeset it?</p>
+<dl>
+  <dt>Microsoft Word?</dt>
+  <dd>...don't have it.</dd>
+  <dt>LaTeX?</dt>
+  <dd>...don't have the patience for it.</dd>
+  <dt>HTML + CSS?</dt>
+  <dd>...now <em>that</em> could work!</dd>
+<dl>
+<span id="continue-reading"></span>
+<p>I figured I would merely whip up a document of the appropriate size:</p>
+<pre data-lang="html" style="background-color:#ffffff;color:#4d4d4c;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#f55800;">&lt;!</span><span style="color:#8e44be;">DOCTYPE </span><span style="color:#6969ff;">html</span><span style="color:#f55800;">&gt;
+</span><span style="color:#f55800;">&lt;html lang=</span><span style="color:#699200;">&quot;en&quot;</span><span style="color:#f55800;">&gt;
+</span><span>  </span><span style="color:#f55800;">&lt;head&gt;
+</span><span>    </span><span style="color:#f55800;">&lt;style&gt;
+</span><span>      </span><span style="color:#f55800;">html</span><span>, </span><span style="color:#f55800;">body </span><span>{
+</span><span>        </span><span style="color:#f0ae00;">margin</span><span>: </span><span style="color:#6969ff;">0</span><span>;
+</span><span>        </span><span style="color:#f0ae00;">padding</span><span>: </span><span style="color:#6969ff;">0</span><span>;
+</span><span>      }
+</span><span>
+</span><span>      </span><span style="color:#f55800;">.page </span><span>{
+</span><span>        </span><span style="color:#f0ae00;">width</span><span>: </span><span style="color:#6969ff;">8.5in</span><span>;
+</span><span>        </span><span style="color:#f0ae00;">height</span><span>: </span><span style="color:#6969ff;">11in</span><span>;
+</span><span>        </span><span style="color:#f0ae00;">padding</span><span>: </span><span style="color:#6969ff;">0.5in</span><span>;
+</span><span>        </span><span style="color:#f0ae00;">outline</span><span>: </span><span style="color:#6969ff;">1px black solid</span><span>;
+</span><span>      }
+</span><span>    </span><span style="color:#f55800;">&lt;/style&gt;
+</span><span>  </span><span style="color:#f55800;">&lt;/head&gt;
+</span><span>  </span><span style="color:#f55800;">&lt;body&gt;
+</span><span>    </span><span style="color:#f55800;">&lt;div class=</span><span style="color:#699200;">&quot;page&quot;</span><span style="color:#f55800;">&gt;
+</span><span>      Hire me, please!
+</span><span>    </span><span style="color:#f55800;">&lt;/div&gt;
+</span><span>  </span><span style="color:#f55800;">&lt;/body&gt;
+</span><span style="color:#f55800;">&lt;/html&gt;
+</span></code></pre>
+<p>…maybe grab some <a href="https://fonts.google.com/">Google Fonts</a> (<em>way</em> easier than managing system fonts, or fiddling with LaTeX!), open up DevTools, and bust out a sweet-looking resume. Then, I’d simply use the browser dialog to print to PDF (taking care to set the print margins to 0).</p>
+<p>Oh, if it were only that simple.</p>
+<h2 id="obstacles">Obstacles</h2>
+<h3 id="css-units-physical-units">CSS Units ≠ Physical Units</h3>
+<p>After hours of writing and styling, I produced what I thought was the <em>perfect</em> resume, tuned to fit into a single page. Then, I went to print-to-PDF. Disaster unfolded before my eyes: the fonts and spacing were all wrong, and my carefully-constructed columns of prose spilled awkwardly onto a second page. Why?</p>
+<p>A CSS inch (as will all “physical” CSS units) has no relation to a physical inch. Rather, it’s defined to be exactly 96 CSS pixels. (And, yes, that’s 96 <em>CSS</em> pixels, which aren’t necessarily equal to device pixels.)</p>
+<p>At first, I feared that I would need to figure out the mapping between CSS pixels, dots, and inches. <a href="https://hacks.mozilla.org/2013/09/css-length-explained/#footnote_ref4:~:text=As%20a%20side%20note%2C%20if%20the,CSS%20inch%20to%20the%20physical%20inch.">Fortunately, most web browsers <em>do</em> map CSS inches to physical inches when printing.</a> So, all I needed to do was design for what appeared in Chrome’s print preview, <em>not</em> what appeared in the browser tab.</p>
+<h3 id="no-devtools-quick-reload-with-print-preview">No DevTools, Quick Reload with Print Preview</h3>
+<p>It immediately become apparent that DevTools cannot be used while the print dialog is open. Instead, I needed to CTRL+R-and-CTRL+P after <em>every</em> edit-and-save of my resume. This got old <em>fast</em>.</p>
+<p><strong>I decided to grin and bear it.</strong> How much longer could this possibly take?</p>
+<h3 id="font-inconsistencies">Font Inconsistencies</h3>
+<p><em>“Huh, I could have sworn I had made that text bold.”</em></p>
+<p>I had.</p>
+<p>Chrome’s print-to-PDF respected the font-weights I had set for my <a href="https://fonts.google.com/specimen/Libre+Baskerville">Libre Baskerville</a> headings, but <em>not</em> the weights I had set on my <a href="https://fonts.google.com/specimen/Raleway">Raleway</a> prose. The issue wasn’t limited to bold spans; <em>all</em> of the body text was <em>far</em> too light!</p>
+<p>A quick Google search revealed no leads, and the looming specter of LaTeX drew nearer…</p>
+<h2 id="solution">Solution</h2>
+<p>I recalled that there’s <em>another</em> way to get PDFs out of Google Chrome: <a href="https://pptr.dev/#?product=Puppeteer&amp;version=v5.5.0&amp;show=api-pagepdfoptions">Puppeteer</a>, a library for programatically controlling the browser. I had recently used this API to generate vector screenshots of a browser-based IDE for <a href="/publications/Wrenn,%20Krishnamurthi%20-%20Will%20Students%20Write%20Tests%20Early%20Without%20Coercion.pdf">a research paper</a>, and I hadn’t noticed any font issues then.</p>
+<p><strong>It worked.</strong> No font issues on my resume!</p>
+<p>So, I decided to take another fifteen minutes to fix my other gripe: no live preview. I spent another fifteen minutes building a reusable utility that would:</p>
+<ul>
+<li>Consume two command-line arguments: the path to an HTML input file, and a path to save the outputted PDF to.</li>
+<li>Watch the input file for changes.</li>
+<li>Re-render the page as a PDF to the output path upon each change.</li>
+</ul>
+<p>The script is invoked like this:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#4d4d4c;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#f55800;">$</span><span style="color:#3366cc;"> node resume-screenshot.js </span><span style="color:#f55800;">~</span><span style="color:#3366cc;">/documents/resume.html /tmp/resume.pdf
+</span></code></pre>
+<p>I then opened <a href="https://pwmt.org/projects/zathura/">zathura</a>, a PDF viewer that reloads the viewed file each time it’s changed, and got back to hacking on my resume! I arranged my HTML editor and zathura side-by-side, and each edit-and-save I make to my resume is nearly-instantly reflected in the zathura.</p>
+<p>Here’s the utility, in all of its glory:</p>
+<pre data-lang="javascript" style="background-color:#ffffff;color:#4d4d4c;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#8e44be;">const </span><span style="color:#f55800;">chokidar </span><span style="color:#1aa7b0;">= </span><span style="color:#3366cc;">require</span><span>(</span><span style="color:#699200;">&#39;chokidar&#39;</span><span>); </span><span style="color:#999999;">// ^3.5.1
+</span><span style="color:#8e44be;">const </span><span style="color:#f55800;">puppeteer </span><span style="color:#1aa7b0;">= </span><span style="color:#3366cc;">require</span><span>(</span><span style="color:#699200;">&#39;puppeteer-core&#39;</span><span>); </span><span style="color:#999999;">// ^3.1.0
+</span><span>
+</span><span style="color:#8e44be;">let </span><span>[</span><span style="color:#f55800;">input</span><span>, </span><span style="color:#f55800;">output</span><span>] </span><span style="color:#1aa7b0;">= </span><span style="color:#3366cc;">process.argv.slice</span><span>(</span><span style="color:#6969ff;">2</span><span>);
+</span><span>
+</span><span>(</span><span style="color:#8e44be;">async </span><span>() </span><span style="color:#8e44be;">=&gt; </span><span>{ </span><span style="color:#8e44be;">try </span><span>{
+</span><span>  </span><span style="color:#8e44be;">let </span><span style="color:#f55800;">browser </span><span style="color:#1aa7b0;">= </span><span style="color:#8e44be;">await </span><span style="color:#f55800;">puppeteer</span><span style="color:#3366cc;">.launch</span><span>({
+</span><span>    headless: </span><span style="color:#6969ff;">true</span><span>,
+</span><span>    executablePath: </span><span style="color:#699200;">&#39;/opt/google/chrome/chrome&#39;</span><span>, </span><span style="color:#999999;">/* CHANGE ME */
+</span><span>  });
+</span><span>
+</span><span>  </span><span style="color:#8e44be;">const </span><span style="color:#f55800;">page </span><span style="color:#1aa7b0;">= </span><span style="color:#8e44be;">await </span><span style="color:#f55800;">browser</span><span style="color:#3366cc;">.newPage</span><span>();
+</span><span>
+</span><span>  </span><span style="color:#8e44be;">async function </span><span style="color:#3366cc;">render_pdf</span><span>(</span><span style="color:#6969ff;">input</span><span>) {
+</span><span>    </span><span style="color:#8e44be;">await </span><span style="color:#f55800;">page</span><span style="color:#3366cc;">.goto</span><span>(</span><span style="color:#699200;">`file://${</span><span style="color:#f55800;">input</span><span style="color:#699200;">}`</span><span>, { waitUntil: </span><span style="color:#699200;">&#39;networkidle0&#39; </span><span>});
+</span><span>    </span><span style="color:#8e44be;">await </span><span style="color:#f55800;">page</span><span style="color:#3366cc;">.pdf</span><span>({
+</span><span>      printBackground: </span><span style="color:#6969ff;">true</span><span>,
+</span><span>      width: </span><span style="color:#699200;">&#39;8.5in&#39;</span><span>,
+</span><span>      height: </span><span style="color:#699200;">&#39;11in&#39;</span><span>,
+</span><span>      path: </span><span style="color:#f55800;">output</span><span>,
+</span><span>    });
+</span><span>    </span><span style="color:#f0ae00;">console</span><span style="color:#3366cc;">.log</span><span>(</span><span style="color:#699200;">&quot;saved:&quot;</span><span>, </span><span style="color:#f55800;">output</span><span>);
+</span><span>  }
+</span><span>
+</span><span>  </span><span style="color:#f55800;">chokidar</span><span style="color:#3366cc;">.watch</span><span>(</span><span style="color:#f55800;">input</span><span>)
+</span><span>    </span><span style="color:#3366cc;">.on</span><span>(</span><span style="color:#699200;">&#39;ready&#39;</span><span>, () </span><span style="color:#8e44be;">=&gt; </span><span style="color:#f0ae00;">console</span><span style="color:#3366cc;">.log</span><span>(</span><span style="color:#699200;">&quot;watching&quot;</span><span>, </span><span style="color:#f55800;">input</span><span>))
+</span><span>    </span><span style="color:#3366cc;">.on</span><span>(</span><span style="color:#699200;">&#39;add&#39;</span><span>, </span><span style="color:#f55800;">render_pdf</span><span>)</span><span style="color:#3366cc;">.on</span><span>(</span><span style="color:#699200;">&#39;change&#39;</span><span>, </span><span style="color:#f55800;">render_pdf</span><span>)
+</span><span>    </span><span style="color:#3366cc;">.on</span><span>(</span><span style="color:#699200;">&#39;unlink&#39;</span><span>, (</span><span style="color:#6969ff;">path</span><span>) </span><span style="color:#8e44be;">=&gt; </span><span style="color:#3366cc;">process.exit</span><span>(</span><span style="color:#6969ff;">1</span><span>))
+</span><span>
+</span><span>} </span><span style="color:#8e44be;">catch</span><span>(</span><span style="color:#f55800;">e</span><span>) {
+</span><span>  </span><span style="color:#f0ae00;">console</span><span style="color:#3366cc;">.error</span><span>(</span><span style="color:#699200;">&quot;Error:&quot;</span><span>);
+</span><span>  </span><span style="color:#f0ae00;">console</span><span style="color:#3366cc;">.error</span><span>(</span><span style="color:#f55800;">e</span><span>);
+</span><span>  </span><span style="color:#3366cc;">process.exit</span><span>(</span><span style="color:#6969ff;">1</span><span>);
+</span><span>}})();
+</span></code></pre>
+<h2 id="other-tips">Other Tips</h2>
+<ul>
+<li>Use a <a href="https://meyerweb.com/eric/tools/css/reset/">CSS reset stylesheet</a>, so you start with a blank slate.</li>
+<li>Use a <a href="https://type-scale.com/">major second typescale</a>.</li>
+<li>Use fonts from <a href="https://fonts.google.com/">Google Fonts</a>, not system fonts, to ensure consistency across machines.</li>
+<li>Use the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/@page"><code>@page</code> rule</a> to set margins.</li>
+</ul>
+<h2 id="result">Result</h2>
+<p>I have no doubt that a LaTeX or InDesign expert could produce a nicer looking document. The line-breaking employed by web browsers is poorer than that of LaTeX, and advanced microtypography is not readily available. Nonetheless, I am <em>extremely</em> pleased with the overall design of my resume. The ease of using HTML and CSS allowed me to attempt a much more ambitious design than I would have attempted in LaTeX.</p>
+<p>I’ve uploaded the HTML of my (in-progress) resume <a href="/resume.html">here</a>, and the resulting PDF <a href="/resume.pdf">here</a>:
+<object height="500px" style="width:100%" type="application/pdf" data="/resume.pdf?#zoom=85&scrollbar=0&toolbar=0&navpanes=0">
+</object></p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>How Many First-Years Are Taking Their Free Course?</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="How Many First-Years Are Taking Their Free Course?" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">How Many First-Years Are Taking Their Free Course?</h1>
+    <time itemprop="datePublished" datetime="2020-10-20">
+      2020-10-20
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>To de-densify campus, Brown University <a href="https://www.brown.edu/news/2020-07-07/healthy">moved to a three-term model</a> in which students take courses for <em>two</em> of three possible terms. This third term will be carved out of the summer months of 2021, during which an unlucky subset of the student body will swiftly discover that Brown does <em>not</em> air-condition its dorms. So, who are these unenviable souls? Well, first-years, <em>obviously</em>, who will begin in the spring semester and continue through the summer.</p>
+<p>To compensate them for this inconvenience, Brown has extended all first-years the opportunity to remotely take one course this Fall, for free! <strong>How many took Brown up on this offer?</strong></p>
+<span id="continue-reading"></span>
+<p>To compute this, we’ll mine data from <a href="https://cab.brown.edu/">Courses@Brown</a> (Brown’s course-enrollment portal) focusing on the <code>regdemog_json</code> field:</p>
+<pre data-lang="json" style="background-color:#ffffff;color:#4d4d4c;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  ...
+</span><span>  </span><span style="color:#699200;">&quot;regdemog_json&quot;</span><span>: </span><span style="color:#699200;">&quot;{</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">So</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">:13,</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">Jr</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">:5,</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">Oth</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">:5,</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">F2</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">:93}&quot;</span><span>,
+</span><span>  ...
+</span><span>}
+</span></code></pre>
+<p>This field tells us that the enrollment of <a href="http://cs.brown.edu/courses/csci0190/2020/">CSCI0190</a> consists of 13 sophomores, 5 juniors, 5 non-undergraduate students, and 93 incoming first-year students.</p>
+<p>Since each first-year is permitted to take <em>at-most</em> one course, the total number of first-years taking this opportunity is equal to the sum of first-year enrollments across all courses.</p>
+<p>As with my <a href="../class-size-paradox">last blog post</a> analyzing C@B, we compute this with the help of <a href="https://stedolan.github.io/jq/"><code>jq</code></a>:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#4d4d4c;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#f55800;">$</span><span style="color:#3366cc;"> jq</span><span style="color:#6969ff;"> -s </span><span style="color:#699200;">&#39;
+</span><span style="color:#699200;">    map(if (.regdemog_json | length) &gt; 0
+</span><span style="color:#699200;">        then
+</span><span style="color:#699200;">            (.regdemog_json | fromjson | .F2)
+</span><span style="color:#699200;">        else
+</span><span style="color:#699200;">            0
+</span><span style="color:#699200;">        end) | add
+</span><span style="color:#699200;">    &#39;</span><span style="color:#3366cc;"> db/202010/</span><span style="color:#1aa7b0;">*</span><span style="color:#3366cc;">.json
+</span><span>
+</span><span style="color:#f55800;">2021
+</span></code></pre>
+<p><strong>2,021 first-years are taking a course remotely this semester!</strong> (Well, not exactly…)</p>
+<p>How does this compare with the <em>total</em> number of incoming first-year students? Well, uh, <em>I’m not sure</em>. I don’t think Brown has released its fall headcounts yet. <del>I’ll update this post once they do.</del> (<strong>Update 2020-10-21:</strong>) The total number of first-year students is in the ballpark of 1,600.</p>
+<p>However, according to a <a href="https://www.brown.edu/news/2020-03-26/admitted">March press-release</a> Brown anticipated that only 1,665 prospective students would accept their admissions offers (out of 2,533). <strong>Did Brown grossly underestimate its yield rate?</strong> (<strong>Update 2020-10-21:</strong>) No, given the total number of first-years, this is almost certainly an issue with double-counting students.</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

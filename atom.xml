@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title></title>
+    <link rel="self" type="application/atom+xml" href="https://jack.wrenn.fyi/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-02-06T00:00:00+00:00</updated>
+    <id>https://jack.wrenn.fyi/atom.xml</id>
+    <entry xml:lang="en">
+        <title>The Three Basic Rules of Safety Hygiene</title>
+        <published>2025-02-06T00:00:00+00:00</published>
+        <updated>2025-02-06T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/safety-hygiene/"/>
+        <id>https://jack.wrenn.fyi/blog/safety-hygiene/</id>
+        
+        <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;Ask not what you can do with &lt;code&gt;unsafe&lt;&#x2F;code&gt;; ask what &lt;code&gt;unsafe&lt;&#x2F;code&gt; can do for you.&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;On the Rust subreddit, I often see beginners get tripped up on &lt;code&gt;unsafe&lt;&#x2F;code&gt;, posing questions like &lt;em&gt;“What can I do in &lt;code&gt;unsafe&lt;&#x2F;code&gt;?”&lt;&#x2F;em&gt; and &lt;em&gt;“When do I need &lt;code&gt;unsafe&lt;&#x2F;code&gt;?”&lt;&#x2F;em&gt;. These are useful questions — but not enough to really understand (un)safety. The former defies a simple, evergreen answer — as Rust’s operational semantics are refined, so too are what you can and cannot achieve with &lt;code&gt;unsafe&lt;&#x2F;code&gt; code. The latter begets teleological answers; you &lt;em&gt;need&lt;&#x2F;em&gt; unsafe when the sum of Rust’s tooling requires you use &lt;code&gt;unsafe&lt;&#x2F;code&gt;. These answers are not particularly helpful for understanding how to write maintainable unsafe code, nor for informing how Rust’s safety tooling might be improved. They miss the forest for the trees; they mistake the implementation for the idiom.&lt;&#x2F;p&gt;
+&lt;p&gt;Let’s take a step back. Just as Rust’s borrow checker is the tooling that supports the idiom of ownership and &lt;em&gt;aliasing xor mutability&lt;&#x2F;em&gt;, the sum of Rust’s safety tooling — a basket of keywords, well-formedness checks, and lints — is, too, the expression of a deeper idiom. In this essay, I give this idiom a name — &lt;em&gt;safety hygiene&lt;&#x2F;em&gt; — and argue that it’s underpinned by three basic principles. In doing so, we gain a lens for understanding Rust’s myriad safety tools, opportunities for improvement, and its greatest flamewars.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Undroppable Types</title>
+        <published>2024-11-25T00:00:00+00:00</published>
+        <updated>2024-11-25T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/undroppable/"/>
+        <id>https://jack.wrenn.fyi/blog/undroppable/</id>
+        
+        <summary type="html">&lt;p&gt;In Rust, &lt;code&gt;ManuallyDrop&lt;&#x2F;code&gt; is the tool of choice for eliding the destructor of a value. Wrapped in &lt;code&gt;ManuallyDrop&lt;&#x2F;code&gt;, a value is simply forgotten when it goes out of scope. However, in some cases, it is useful to ensure that a value &lt;em&gt;cannot&lt;&#x2F;em&gt; be dropped — not because it is forgotten, but because the very act of dropping it is a compilation error.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Safety Goggles for Alchemists</title>
+        <published>2024-09-30T00:00:00+00:00</published>
+        <updated>2024-09-30T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/safety-goggles-for-alchemists/"/>
+        <id>https://jack.wrenn.fyi/blog/safety-goggles-for-alchemists/</id>
+        
+        <summary type="html">&lt;p&gt;&lt;em&gt;&lt;strong&gt;The Path Towards Safer Transmute&lt;&#x2F;strong&gt;&lt;&#x2F;em&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Since Rust’s inception, &lt;code&gt;mem::transmute&lt;&#x2F;code&gt; has been the poster-dragon of unsafe code, but its reign of error is coming to an end! In this &lt;del&gt;talk&lt;&#x2F;del&gt; blog post, you’ll learn how Rust is poised to become the first systems programming language with transmutation safety, and how safe transmute is already being put to use to build next-gen systems.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>`repr(C)`: Clear, Simple and (Sometimes) Wrong</title>
+        <published>2024-07-31T00:00:00+00:00</published>
+        <updated>2024-07-31T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/repr-c-limitations/"/>
+        <id>https://jack.wrenn.fyi/blog/repr-c-limitations/</id>
+        
+        <summary type="html">&lt;p&gt;Too often, &lt;code&gt;repr(C)&lt;&#x2F;code&gt; is thought of as a panacea to layout stability and portability problems; that values of a type marked &lt;code&gt;repr(C)&lt;&#x2F;code&gt; can be consistently reflected upon, across different platforms, different compiler versions, and even perhaps different minor library versions. That is not always the case!&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Announcing `scoped-trace`.</title>
+        <published>2023-03-28T00:00:00+00:00</published>
+        <updated>2023-03-28T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/scoped-trace/"/>
+        <id>https://jack.wrenn.fyi/blog/scoped-trace/</id>
+        
+        <summary type="html">&lt;p&gt;Today, I’m announcing &lt;code&gt;scoped-trace&lt;&#x2F;code&gt;, a crate for capturing scoped, tree-like execution traces.&lt;&#x2F;p&gt;
+&lt;p&gt;Here are the crate’s important links:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;crates.io&#x2F;crates&#x2F;scoped-trace&quot;&gt;https:&#x2F;&#x2F;crates.io&#x2F;crates&#x2F;scoped-trace&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;docs.rs&#x2F;scoped-trace&quot;&gt;https:&#x2F;&#x2F;docs.rs&#x2F;scoped-trace&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;jswrenn&#x2F;scoped-trace&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;jswrenn&#x2F;scoped-trace&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Oh the Crates You&#x27;ll Go! A 2022 Retrospective</title>
+        <published>2023-01-04T00:00:00+00:00</published>
+        <updated>2023-01-04T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/2022-retrospective/"/>
+        <id>https://jack.wrenn.fyi/blog/2022-retrospective/</id>
+        
+        <summary type="html">&lt;p&gt;As my first full calendar year in the Rust Platform Team at AWS draws to a close, I thought it might be illuminating to reflect on what I worked on. The breadth of crates I released or contributed to surprised me! Time really does fly when you’re having fun.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Native Reflection in Rust</title>
+        <published>2022-12-15T00:00:00+00:00</published>
+        <updated>2022-12-15T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/deflect/"/>
+        <id>https://jack.wrenn.fyi/blog/deflect/</id>
+        
+        <summary type="html">&lt;p&gt;Today, I’m releasing &lt;em&gt;&lt;strong&gt;deflect&lt;&#x2F;strong&gt;&lt;&#x2F;em&gt;, an implementation of &lt;a href=&quot;https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Reflection&quot;&gt;reflection&lt;&#x2F;a&gt; for Rust. Deflect can be used to recover the concrete types of trait objects, inspect the internal state of &lt;code&gt;async&lt;&#x2F;code&gt; generators, pretty-print arbitrary data, and much more.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Typesetting a Resume with HTML and CSS</title>
+        <published>2021-01-29T00:00:00+00:00</published>
+        <updated>2021-01-29T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/pdf-resume-from-html/"/>
+        <id>https://jack.wrenn.fyi/blog/pdf-resume-from-html/</id>
+        
+        <summary type="html">&lt;p&gt;With my PhD drawing to a close, I’m on the job market! I’ll need a slick resume ASAP, but how to typeset it?&lt;&#x2F;p&gt;
+&lt;dl&gt;
+  &lt;dt&gt;Microsoft Word?&lt;&#x2F;dt&gt;
+  &lt;dd&gt;...don&#x27;t have it.&lt;&#x2F;dd&gt;
+  &lt;dt&gt;LaTeX?&lt;&#x2F;dt&gt;
+  &lt;dd&gt;...don&#x27;t have the patience for it.&lt;&#x2F;dd&gt;
+  &lt;dt&gt;HTML + CSS?&lt;&#x2F;dt&gt;
+  &lt;dd&gt;...now &lt;em&gt;that&lt;&#x2F;em&gt; could work!&lt;&#x2F;dd&gt;
+&lt;dl&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Rust&#x27;s SemVer Snares: `repr(transparent)` Super-Cut</title>
+        <published>2021-01-09T00:00:00+00:00</published>
+        <updated>2021-01-09T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/semver-snares-transparent/"/>
+        <id>https://jack.wrenn.fyi/blog/semver-snares-transparent/</id>
+        
+        <summary type="html">&lt;p&gt;&lt;a href=&quot;&#x2F;blog&#x2F;semver-snares&quot;&gt;&lt;em&gt;(Part of an ongoing series!)&lt;&#x2F;em&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;In the last two posts, &lt;code&gt;repr(transparent)&lt;&#x2F;code&gt; provided an unusual mechanism by which safe, downstream code could inadvertently rely on the &lt;a href=&quot;&#x2F;blog&#x2F;semver-snares-size&#x2F;&quot;&gt;size&lt;&#x2F;a&gt; and &lt;a href=&quot;&#x2F;blog&#x2F;semver-snares-alignment&#x2F;&quot;&gt;alignment&lt;&#x2F;a&gt; of an upstream type. In this post, I’ll recap the issue and discuss why it is tricky to fix.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Rust&#x27;s SemVer Snares: Alignment</title>
+        <published>2021-01-06T00:00:00+00:00</published>
+        <updated>2021-01-06T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/semver-snares-alignment/"/>
+        <id>https://jack.wrenn.fyi/blog/semver-snares-alignment/</id>
+        
+        <summary type="html">&lt;p&gt;&lt;a href=&quot;&#x2F;blog&#x2F;semver-snares&quot;&gt;&lt;em&gt;(Part of an ongoing series!)&lt;&#x2F;em&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;In Rust, changes to a type’s alignment are not usually understood to be Breaking Changes™. Of course, that isn’t to say you &lt;em&gt;can’t&lt;&#x2F;em&gt; break safe, downstream code by changing the alignment of a type…&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Rust&#x27;s SemVer Snares: Sizedness and Size</title>
+        <published>2021-01-05T00:00:00+00:00</published>
+        <updated>2021-01-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/semver-snares-size/"/>
+        <id>https://jack.wrenn.fyi/blog/semver-snares-size/</id>
+        
+        <summary type="html">&lt;p&gt;&lt;a href=&quot;&#x2F;blog&#x2F;semver-snares&quot;&gt;&lt;em&gt;(Part of an ongoing series!)&lt;&#x2F;em&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;In Rust, changes to a type’s size are not usually understood to be Breaking Changes™. Of course, that isn’t to say you &lt;em&gt;can’t&lt;&#x2F;em&gt; break safe downstream code by changing the size of a type…&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Rust&#x27;s SemVer Snares: Introduction</title>
+        <published>2021-01-03T00:00:00+00:00</published>
+        <updated>2021-01-03T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/semver-snares/"/>
+        <id>https://jack.wrenn.fyi/blog/semver-snares/</id>
+        
+        <summary type="html">&lt;p&gt;At the heart of &lt;a href=&quot;https:&#x2F;&#x2F;semver.org&#x2F;&quot;&gt;Semantic Versioning&lt;&#x2F;a&gt; is a distinction between incompatible API changes (“breaking” changes) and backwards-compatible API changes (“non-breaking” changes). When you make a change that could break existing code, you must increment the &lt;code&gt;MAJOR&lt;&#x2F;code&gt; component of its version number. Since failing to do this correctly may cause builds or tests to fail seemingly-spontaneously, knowing what kinds of changes are breaking and which are not is crucial to good crate hygiene.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>How does Brown University know where you are?</title>
+        <published>2020-12-05T00:00:00+00:00</published>
+        <updated>2020-12-05T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/brown-location-surveillance/"/>
+        <id>https://jack.wrenn.fyi/blog/brown-location-surveillance/</id>
+        
+        <summary type="html">&lt;p&gt;In September 2020, Brown University &lt;a href=&quot;https:&#x2F;&#x2F;www.browndailyherald.com&#x2F;2020&#x2F;09&#x2F;28&#x2F;remote-students-receive-emails-brown-accusing-violating-code-student-conduct&quot;&gt;accused students&lt;&#x2F;a&gt; of lying about their location; e.g.:&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;&#x2F;blog&#x2F;brown-location-surveillance&#x2F;notice.png&quot; style=&quot;outline: 1px black solid&quot; height=&quot;auto&quot; width=&quot;100%&quot; alt=&quot;The University has learned that between September 14, 2020 and September 21, 2020 you were allegedly in the Providence area during which time your location of study was listed as remote. This alleged behavior is a violation of the Student Code of Conduct and the COVID-19 Campus Safety Policy. A copy of the Student Commitment to COVID-19 Community Health and Safety Requirements is attached for your review, along with this link to the COVID-19 Campus Safety Policy. failure to abide by these requirements is a violation of the Code of Student Conduct. 
+Based on the details of the incident and your student conduct history, the Office of Student Conduct &amp; Community Standards has decided to allow you the opportunity to accept responsibility for the following prohibited conduct without having a COVID-19 Dean&#x27;s Review Meeting:
+• D.8 Failure to Comply
+• D.13 Misrepresentation
+&quot;&gt;&lt;&#x2F;img&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;strong&gt;What was Brown’s basis for these accusations?&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Brown’s Most Expensive Books</title>
+        <published>2020-11-28T00:00:00+00:00</published>
+        <updated>2020-11-28T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/books-at-brown/"/>
+        <id>https://jack.wrenn.fyi/blog/books-at-brown/</id>
+        
+        <summary type="html">&lt;ul&gt;
+&lt;li&gt;What’s the most expensive required textbook at Brown?&lt;&#x2F;li&gt;
+&lt;li&gt;What’s the most expensive class?&lt;&#x2F;li&gt;
+&lt;li&gt;What’s the most expensive department?&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>How Many First-Years Are Taking Their Free Course?</title>
+        <published>2020-10-20T00:00:00+00:00</published>
+        <updated>2020-10-20T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/frosh-freebie/"/>
+        <id>https://jack.wrenn.fyi/blog/frosh-freebie/</id>
+        
+        <summary type="html">&lt;p&gt;To de-densify campus, Brown University &lt;a href=&quot;https:&#x2F;&#x2F;www.brown.edu&#x2F;news&#x2F;2020-07-07&#x2F;healthy&quot;&gt;moved to a three-term model&lt;&#x2F;a&gt; in which students take courses for &lt;em&gt;two&lt;&#x2F;em&gt; of three possible terms. This third term will be carved out of the summer months of 2021, during which an unlucky subset of the student body will swiftly discover that Brown does &lt;em&gt;not&lt;&#x2F;em&gt; air-condition its dorms. So, who are these unenviable souls? Well, first-years, &lt;em&gt;obviously&lt;&#x2F;em&gt;, who will begin in the spring semester and continue through the summer.&lt;&#x2F;p&gt;
+&lt;p&gt;To compensate them for this inconvenience, Brown has extended all first-years the opportunity to remotely take one course this Fall, for free! &lt;strong&gt;How many took Brown up on this offer?&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Brown’s Class Size Paradox</title>
+        <published>2020-10-19T00:00:00+00:00</published>
+        <updated>2020-10-19T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/class-size-paradox/"/>
+        <id>https://jack.wrenn.fyi/blog/class-size-paradox/</id>
+        
+        <summary type="html">&lt;p&gt;University Admissions departments love to brag about their schools’ small class sizes. Brown University, for instance, &lt;a href=&quot;https:&#x2F;&#x2F;admission.brown.edu&#x2F;explore&#x2F;admission-facts&quot;&gt;boasts&lt;&#x2F;a&gt; a 7:1 student–faculty ratio (so “you’ll have a lot of face-to-face time with some of the best researchers and teachers in academia”) and that “72 percent of our undergraduate classes have fewer than 20 students.” These claims invite prospective students to daydream of cozy, intimate classrooms, and personalized learning experiences — dreams quashed (or perhaps squished?) on one’s first day of classes.&lt;&#x2F;p&gt;
+&lt;p&gt;Nobody is lying, &lt;em&gt;per se&lt;&#x2F;em&gt; — this is merely an instance of the “class size paradox”: the size of the average class is relatively small, but the experience of the average student suggests otherwise.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Scoped Trait Implementations</title>
+        <published>2020-10-18T00:00:00+00:00</published>
+        <updated>2020-10-18T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/private-trait-impls/"/>
+        <id>https://jack.wrenn.fyi/blog/private-trait-impls/</id>
+        
+        <summary type="html">&lt;p&gt;In Rust, the &lt;code&gt;impl&lt;&#x2F;code&gt; keyword doesn’t have an associated visibility; there’s no such thing as &lt;code&gt;pub impl&lt;&#x2F;code&gt;. However, that isn’t to say that implementations don’t have visibility—they do! Enter: &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rfcs&#x2F;pull&#x2F;2145&quot;&gt;&lt;strong&gt;RFC2145 - Type Privacy&lt;&#x2F;strong&gt;&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Private Methods on a Public Trait</title>
+        <published>2020-10-18T00:00:00+00:00</published>
+        <updated>2020-10-18T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/private-trait-methods/"/>
+        <id>https://jack.wrenn.fyi/blog/private-trait-methods/</id>
+        
+        <summary type="html">&lt;p&gt;In Rust, the methods of a trait inherit the visibility of the trait itself:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#ffffff;color:#4d4d4c;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#8e44be;&quot;&gt;pub trait &lt;&#x2F;span&gt;&lt;span&gt;Foo&amp;lt;Arg&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8e44be;&quot;&gt;pub&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#f55800;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8e44be;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3366cc;&quot;&gt;foo&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#1aa7b0;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#6969ff;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#6969ff;&quot;&gt;arg&lt;&#x2F;span&gt;&lt;span&gt;: Arg);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#999999;&quot;&gt;&#x2F;* other public methods *&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre style=&quot;background-color:#ffffff;color:#4d4d4c;&quot;&gt;&lt;code&gt;&lt;span&gt;error[E0449]: unnecessary visibility qualifier
+&lt;&#x2F;span&gt;&lt;span&gt; --&amp;gt; src&#x2F;lib.rs:7:3
+&lt;&#x2F;span&gt;&lt;span&gt;  |
+&lt;&#x2F;span&gt;&lt;span&gt;7 |   pub(self) fn foo(&amp;amp;self, arg: Arg);
+&lt;&#x2F;span&gt;&lt;span&gt;  |   ^^^^^^^^^
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;At minimum, we should hide this method from our documentation:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#ffffff;color:#4d4d4c;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#8e44be;&quot;&gt;pub trait &lt;&#x2F;span&gt;&lt;span&gt;Foo&amp;lt;Arg&amp;gt; {
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    #[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#f55800;&quot;&gt;doc&lt;&#x2F;span&gt;&lt;span&gt;(hidden)]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8e44be;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#3366cc;&quot;&gt;foo&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#1aa7b0;&quot;&gt;&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#6969ff;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#6969ff;&quot;&gt;arg&lt;&#x2F;span&gt;&lt;span&gt;: Arg);
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#999999;&quot;&gt;&#x2F;* other public methods *&#x2F;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;…but this doesn’t &lt;em&gt;actually&lt;&#x2F;em&gt; prevent outsiders from calling our method! &lt;strong&gt;Fortunately, there are at least three other patterns &lt;code&gt;#[doc(hidden)]&lt;&#x2F;code&gt; can be combined with to make &lt;code&gt;foo&lt;&#x2F;code&gt; externally unusable.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Taming nalgebra&#x27;s Rustdoc</title>
+        <published>2020-09-10T00:00:00+00:00</published>
+        <updated>2020-09-10T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/rustdocing-nalgebra/"/>
+        <id>https://jack.wrenn.fyi/blog/rustdocing-nalgebra/</id>
+        
+        <summary type="html">&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;nalgebra.org&#x2F;&quot;&gt;Nalgebra&lt;&#x2F;a&gt; is a powerhouse of functionality, but its documentation can be overwhelming—the &lt;a href=&quot;https:&#x2F;&#x2F;nalgebra.org&#x2F;rustdoc&#x2F;nalgebra&#x2F;base&#x2F;struct.Matrix.html&quot;&gt;documentation for &lt;code&gt;Matrix&lt;&#x2F;code&gt;&lt;&#x2F;a&gt; lists over &lt;em&gt;600&lt;&#x2F;em&gt; methods. Your documentation endeavors might not be &lt;em&gt;quite&lt;&#x2F;em&gt; so overwhelming, but you still could benefit from these &lt;strong&gt;three tricks&lt;&#x2F;strong&gt; nalgebra uses to improve its docs.&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Fixing include_bytes!</title>
+        <published>2020-08-26T00:00:00+00:00</published>
+        <updated>2020-08-26T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/include-transmute/"/>
+        <id>https://jack.wrenn.fyi/blog/include-transmute/</id>
+        
+        <summary type="html">&lt;p&gt;Rust’s &lt;a href=&quot;https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;core&#x2F;macro.include_bytes.html&quot;&gt;&lt;code&gt;include_bytes!&lt;&#x2F;code&gt; macro&lt;&#x2F;a&gt; lets you statically include the contents of a file into your executable’s binary. The builtin is a quick-and-dirty solution for packaging data with your executable, and perhaps even helping the compiler optimize your code! &lt;strong&gt;Unfortunately, it’s difficult to use correctly.&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>Javascript Generators, Meet XPath</title>
+        <published>2020-08-22T00:00:00+00:00</published>
+        <updated>2020-08-22T00:00:00+00:00</updated>
+        
+        <author>
+          <name>
+            
+              Unknown
+            
+          </name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://jack.wrenn.fyi/blog/xpath-for-2020/"/>
+        <id>https://jack.wrenn.fyi/blog/xpath-for-2020/</id>
+        
+        <summary type="html">&lt;p&gt;Using Generators to Modernize a Geriatric Javascript API for &lt;code&gt;$CURRENT_YEAR&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;</summary>
+        
+    </entry>
+</feed>

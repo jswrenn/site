@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Rust's SemVer Snares: Sizedness and Size</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Rust's SemVer Snares: Sizedness and Size" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Rust’s SemVer Snares: Sizedness and Size</h1>
+    <time itemprop="datePublished" datetime="2021-01-05">
+      2021-01-05
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p><a href="/blog/semver-snares"><em>(Part of an ongoing series!)</em></a></p>
+<p>In Rust, changes to a type’s size are not usually understood to be Breaking Changes™. Of course, that isn’t to say you <em>can’t</em> break safe downstream code by changing the size of a type…</p>
+<span id="continue-reading"></span><h2 id="sizedness">Sizedness</h2>
+<p>For one, you can change the <em>sizedness</em> of a type, by adding an unsized field:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub mod </span><span>upstream {
+</span><span>  #[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span>  </span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: </span><span style="color:#8e44be;">u8</span><span>,
+</span><span>    </span><span style="color:#999999;">// uncommenting this field is a breaking change:
+</span><span>    </span><span style="color:#999999;">/* baz: [u8] */
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">pub mod </span><span>downstream {
+</span><span>  </span><span style="color:#8e44be;">use super</span><span>::upstream::</span><span style="color:#1aa7b0;">*</span><span>;
+</span><span>
+</span><span>  </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">example</span><span>(</span><span style="color:#6969ff;">foo</span><span>: Foo) {
+</span><span>    todo!()
+</span><span>  }
+</span><span>}
+</span></code></pre>
+<pre class="language-rust_errors"><code class="language-rust_errors"><span class="token error">error<a class="token error-explanation" href="https://doc.rust-lang.org/stable/error-index.html#E0277" target="_blank">[E0277]</a>: the size for values of type `[u8]` cannot be known at compilation time</span>
+  <a class="token error-location" href="#" data-line="11" data-col="14">--&gt; src/lib.rs:11:14
+</a>   |
+11 |   fn example(foo: Foo) {
+   |              ^^^ doesn't have a size known at compile-time
+   |
+   = <span class="token rust-errors-help">help: within `upstream::Foo`, the trait `Sized` is not implemented for `[u8]`
+</span><span class="token note">   = note: required because it appears within the type `upstream::Foo`</span>
+<span class="token rust-errors-help">help: function arguments must have a statically known size, borrowed types always have a known size
+</span>   |
+11 |   fn example(&amp;foo: Foo) {
+   |              ^
+</code></pre>
+<h2 id="size">Size</h2>
+<p>Changing the size of a <code>Sized</code> type can also break (poorly-behaving) downstream code. The <a href="https://doc.rust-lang.org/core/mem/fn.size_of.html"><code>mem::size_of</code></a> intrinsic is a safe function that provides the size (in bytes) of any <a href="https://doc.rust-lang.org/core/marker/trait.Sized.html"><code>Sized</code></a> type. By convention, downstream code should not rely on <code>mem::size_of</code> producing a SemVer stable result, but that’s only a convention. Consider:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub mod </span><span>upstream {
+</span><span>  #[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span>  </span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: </span><span style="color:#8e44be;">u8</span><span>,
+</span><span>    </span><span style="color:#999999;">// uncommenting this field is a breaking change for `downstream`:
+</span><span>    </span><span style="color:#999999;">/* baz: u8 */
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">pub mod </span><span>downstream {
+</span><span>  </span><span style="color:#8e44be;">use super</span><span>::upstream::</span><span style="color:#1aa7b0;">*</span><span>;
+</span><span>  
+</span><span>  </span><span style="color:#8e44be;">const </span><span style="color:#1aa7b0;">_</span><span>: [(); </span><span style="color:#6969ff;">1</span><span>] </span><span style="color:#1aa7b0;">= </span><span>[(); std::mem::size_of::&lt;Foo&gt;()];
+</span><span>}
+</span></code></pre>
+<pre class="language-rust_errors"><code class="language-rust_errors"><span class="token error">error<a class="token error-explanation" href="https://doc.rust-lang.org/stable/error-index.html#E0308" target="_blank">[E0308]</a>: mismatched types</span>
+  <a class="token error-location" href="#" data-line="12" data-col="22">--&gt; src/lib.rs:12:22
+</a>   |
+12 |   const _: [(); 1] = [(); std::mem::size_of::&lt;Foo&gt;()];
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected an array with a fixed size of 1 element, found one with 2 elements
+</code></pre>
+<h2 id="zero-sizedness"><em>Zero</em> Sizedness</h2>
+<p>A downstream crate author doesn’t <em>only</em> need to worry that they aren’t using <code>mem::size_of</code> in a manner that breaks the stability contract of upstream code. As of 2018, there’s another mechanism that observes the size of a type: <a href="https://doc.rust-lang.org/1.26.2/unstable-book/language-features/repr-transparent.html"><code>#[repr(transparent)]</code></a>.</p>
+<p>The <code>repr(transparent)</code> attribute can be applied to types with at most one non-zero-sized field to specify that the annotated type’s layout is identical to that of the field. Applying <code>repr(transparent)</code> to a type with more than one non-zero-sized field is a compiler error:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: </span><span style="color:#8e44be;">u8</span><span>,
+</span><span>    </span><span style="color:#f55800;">baz</span><span>: </span><span style="color:#8e44be;">u8
+</span><span>}
+</span></code></pre>
+<pre class="  language-rust_errors"><code class="  language-rust_errors"><span class="token error">error<a class="token error-explanation" href="https://doc.rust-lang.org/stable/error-index.html#E0690" target="_blank">[E0690]</a>: transparent struct needs exactly one non-zero-sized field, but has 2</span>
+ <a class="token error-location" href="#" data-line="2" data-col="1">--&gt; src/lib.rs:2:1
+</a>  |
+2 | pub struct Foo {
+  | ^^^^^^^^^^^^^^ needs exactly one non-zero-sized field, but has 2
+3 |     bar: u8,
+  |     ------- this field is non-zero-sized
+4 |     baz: u8
+  |     ------- this field is non-zero-sized
+</code></pre>
+<p>Consequently, upstream changes that turn ZSTs into non-ZSTs can break downstream code.</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub mod </span><span>upstream {
+</span><span>  #[</span><span style="color:#f55800;">repr</span><span>(C)]
+</span><span>  </span><span style="color:#8e44be;">pub struct </span><span>Foo {
+</span><span>    </span><span style="color:#f55800;">bar</span><span>: (),
+</span><span>    </span><span style="color:#999999;">// uncommenting this field is a breaking change for `downstream`:
+</span><span>    </span><span style="color:#999999;">/* baz: u8, */
+</span><span>  }
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">pub mod </span><span>downstream {
+</span><span>  </span><span style="color:#8e44be;">use super</span><span>::upstream::</span><span style="color:#1aa7b0;">*</span><span>;
+</span><span>
+</span><span>  #[</span><span style="color:#f55800;">repr</span><span>(transparent)]
+</span><span>  </span><span style="color:#8e44be;">struct </span><span>Bar(</span><span style="color:#8e44be;">u8</span><span>, Foo);
+</span><span>}
+</span></code></pre>
+<pre class="language-rust_errors"><code class="language-rust_errors"><span class="token error">error<a class="token error-explanation" href="https://doc.rust-lang.org/stable/error-index.html#E0690" target="_blank">[E0690]</a>: transparent struct needs exactly one non-zero-sized field, but has 2</span>
+  <a class="token error-location" href="#" data-line="12" data-col="3">--&gt; src/lib.rs:12:3
+</a>   |
+12 |   struct Bar(u8, Foo);
+   |   ^^^^^^^^^^^--^^---^^
+   |   |          |   |
+   |   |          |   this field is non-zero-sized
+   |   |          this field is non-zero-sized
+   |   needs exactly one non-zero-sized field, but has 2
+</code></pre>
+<p>You should therefore avoid <code>#[repr(transparent)]</code> unless the ZST field types are <em>documented</em> to remain ZSTs.</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

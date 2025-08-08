@@ -1,0 +1,367 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>The Three Basic Rules of Safety Hygiene</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="The Three Basic Rules of Safety Hygiene" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">The Three Basic Rules of Safety Hygiene</h1>
+    <time itemprop="datePublished" datetime="2025-02-06">
+      2025-02-06
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <blockquote>
+<p><em>Ask not what you can do with <code>unsafe</code>; ask what <code>unsafe</code> can do for you.</em></p>
+</blockquote>
+<p>On the Rust subreddit, I often see beginners get tripped up on <code>unsafe</code>, posing questions like <em>“What can I do in <code>unsafe</code>?”</em> and <em>“When do I need <code>unsafe</code>?”</em>. These are useful questions — but not enough to really understand (un)safety. The former defies a simple, evergreen answer — as Rust’s operational semantics are refined, so too are what you can and cannot achieve with <code>unsafe</code> code. The latter begets teleological answers; you <em>need</em> unsafe when the sum of Rust’s tooling requires you use <code>unsafe</code>. These answers are not particularly helpful for understanding how to write maintainable unsafe code, nor for informing how Rust’s safety tooling might be improved. They miss the forest for the trees; they mistake the implementation for the idiom.</p>
+<p>Let’s take a step back. Just as Rust’s borrow checker is the tooling that supports the idiom of ownership and <em>aliasing xor mutability</em>, the sum of Rust’s safety tooling — a basket of keywords, well-formedness checks, and lints — is, too, the expression of a deeper idiom. In this essay, I give this idiom a name — <em>safety hygiene</em> — and argue that it’s underpinned by three basic principles. In doing so, we gain a lens for understanding Rust’s myriad safety tools, opportunities for improvement, and its greatest flamewars.</p>
+<span id="continue-reading"></span><h2 id="an-introduction-to-health-and-safety">An Introduction to Health and Safety</h2>
+<p><em>Safety hygiene</em> is the practice of denoting and documenting where memory safety obligations arise and where they are discharged. The practice is underpinned by three principles:</p>
+<ol>
+<li>Safety obligations are introduced with a key word and an explanation of the obligation.</li>
+<li>Safety obligations are discharged with a key word and an explanation of why the obligation is discharged.</li>
+<li>The key word and safety comments are avoided when no safety obligations are involved.</li>
+</ol>
+<p>In Rust, that key word is <code>unsafe</code>, and the explanations of introduction and discharge are, conventionally, denoted with <code># Safety</code> and <code>// SAFETY</code>. Its associated tooling is, basically, an implementation of these three rules.</p>
+<h3 id="function-safety-hygiene">Function Safety Hygiene</h3>
+<p>For example, <em>function safety hygiene</em> is the practice of denoting and documenting when functions have safety conditions and when invocations discharge those conditions. A crate practicing good function safety hygiene will:</p>
+<ol>
+<li>Denote such functions with the <code>unsafe</code> keyword and provide accompanying safety documentation.</li>
+<li>Invoke such functions with the <code>unsafe</code> keyword and provide an accompanying safety comment.</li>
+<li>Use <code>unsafe</code> narrowly in both cases. A function without safety preconditions shouldn’t be marked <code>unsafe</code>, and <code>unsafe</code> should not be used to invoke safe functions.</li>
+</ol>
+<p>Once the programmer makes the decision to mark a function <code>unsafe</code>, Rust’s tooling provides support for each of the other elements of safety hygiene; respectively:</p>
+<ol>
+<li>Clippy’s <a href="https://rust-lang.github.io/rust-clippy/master/index.html#missing_safety_doc"><code>missing_safety_doc</code></a> lint ensures that <code>unsafe</code> functions have accompanying safety documentation.</li>
+<li>Rust’s well-formedness checker ensures (via <a href="https://doc.rust-lang.org/stable/error_codes/E0133.html"><code>E0133</code></a>) that unsafe functions are invoked with the <code>unsafe</code> keyword. Clippy’s <a href="https://rust-lang.github.io/rust-clippy/stable/index.html#undocumented_unsafe_blocks"><code>undocumented_unsafe_blocks</code></a> lint ensures that the invocation has accompanying safety documentation.</li>
+<li>Rust’s <code>unused_unsafe</code> lint ensures that <code>unsafe</code> is not used for completely safe operations.</li>
+</ol>
+<h3 id="trait-safety-hygiene">Trait Safety Hygiene</h3>
+<p>Similarly, <em>trait safety hygiene</em> is the practice of denoting and documenting when traits carry safety invariants, and when implementations satisfy those invariants. A crate practicing good trait safety hygiene will:</p>
+<ol>
+<li>Denote such traits with the <code>unsafe</code> keyword and provide accompanying safety documentation.</li>
+<li>Implement such traits with the <code>unsafe</code> keyword and provide an accompanying safety comment.</li>
+<li>Use <code>unsafe</code> narrowly in both cases. A trait without safety conditions shouldn’t be marked <code>unsafe</code>, and <code>unsafe</code> should not be used to implement safe traits.</li>
+</ol>
+<p>Again, once the programmer makes the decision to mark a trait <code>unsafe</code>, Rust’s tooling provides support for each of the other elements of safety hygiene; respectively:</p>
+<ol>
+<li>Clippy’s <a href="https://rust-lang.github.io/rust-clippy/master/index.html#missing_safety_doc"><code>missing_safety_doc</code></a> lint ensures that <code>unsafe</code> traits have accompanying safety documentation.</li>
+<li>Rust’s well-formedness checker ensures (via <a href="https://doc.rust-lang.org/stable/error_codes/E0200.html"><code>E0200</code></a>) that unsafe functions are invoked with the <code>unsafe</code> keyword. Clippy’s <a href="https://rust-lang.github.io/rust-clippy/stable/index.html#undocumented_unsafe_blocks"><code>undocumented_unsafe_blocks</code></a> lint ensures that the implementation has accompanying safety documentation.</li>
+<li>Rust’s well-formedness checker ensures (via <a href="https://doc.rust-lang.org/stable/error_codes/E0199.html"><code>E0199</code></a>) that safe traits are not implemented with <code>unsafe</code>.</li>
+</ol>
+<h2 id="the-implementation-is-not-the-idiom">The Implementation is Not the Idiom</h2>
+<p>Not only can these three principles be used to make sense of the idiom encouraged by Rust’s tooling, but they also can inform how we can practice safety hygiene <em>beyond</em> the present limits of Rust’s tooling.</p>
+<h3 id="field-safety-hygiene">Field Safety Hygiene</h3>
+<p>In the <a href="https://crates.io/crates/zerocopy"><code>zerocopy</code></a> and <a href="https://crates.io/crates/itertools"><code>itertools</code></a> crates, we practice <em>field safety hygiene</em> — i.e., we denote and comment when fields carry safety invariants, and how uses of those field discharge those invariants.</p>
+<p>For example, <code>zerocopy</code> defines a <code>Ptr&lt;T, I&gt;</code> type that wraps <code>NonNull&lt;T&gt;</code> with associated invariants <code>I</code>; e.g., whether reference is shared or exclusive, whether the referent is well-aligned, or a bit-valid instance of <code>T</code>. We enumerate each of these field invariants at the field definition site:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">pub struct </span><span>Ptr&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T, I&gt;
+</span><span>where
+</span><span>    T: &#39;a + ?Sized,
+</span><span>    I: Invariants,
+</span><span>{
+</span><span>    </span><span style="color:#999999;">/// # Invariants
+</span><span>    </span><span style="color:#999999;">///
+</span><span>    </span><span style="color:#999999;">/// 0. If `ptr`&#39;s referent is not zero sized, then `ptr` is derived from
+</span><span>    </span><span style="color:#999999;">///    some valid Rust allocation, `A`.
+</span><span>    </span><span style="color:#999999;">/// 1. If `ptr`&#39;s referent is not zero sized, then `ptr` has valid
+</span><span>    </span><span style="color:#999999;">///    provenance for `A`.
+</span><span>    </span><span style="color:#999999;">/// 2. If `ptr`&#39;s referent is not zero sized, then `ptr` addresses a
+</span><span>    </span><span style="color:#999999;">///    byte range which is entirely contained in `A`.
+</span><span>    </span><span style="color:#999999;">/// 3. `ptr` addresses a byte range whose length fits in an `isize`.
+</span><span>    </span><span style="color:#999999;">/// 4. `ptr` addresses a byte range which does not wrap around the
+</span><span>    </span><span style="color:#999999;">///     address space.
+</span><span>    </span><span style="color:#999999;">/// 5. If `ptr`&#39;s referent is not zero sized,`A` is guaranteed to live
+</span><span>    </span><span style="color:#999999;">///    for at least `&#39;a`.
+</span><span>    </span><span style="color:#999999;">/// 6. `T: &#39;a`.
+</span><span>    </span><span style="color:#999999;">/// 7. `ptr` conforms to the aliasing invariant of
+</span><span>    </span><span style="color:#999999;">///    [`I::Aliasing`](invariant::Aliasing).
+</span><span>    </span><span style="color:#999999;">/// 8. `ptr` conforms to the alignment invariant of
+</span><span>    </span><span style="color:#999999;">///    [`I::Alignment`](invariant::Alignment).
+</span><span>    </span><span style="color:#999999;">/// 9. `ptr` conforms to the validity invariant of
+</span><span>    </span><span style="color:#999999;">///    [`I::Validity`](invariant::Validity).
+</span><span>    </span><span style="color:#999999;">// SAFETY: `NonNull&lt;T&gt;` is covariant over `T` [1].
+</span><span>    </span><span style="color:#999999;">//
+</span><span>    </span><span style="color:#999999;">// [1]: https://doc.rust-lang.org/std/ptr/struct.NonNull.html
+</span><span>    </span><span style="color:#f55800;">ptr</span><span>: NonNull&lt;T&gt;,
+</span><span>    </span><span style="color:#999999;">// SAFETY: `&amp;&#39;a ()` is covariant over `&#39;a` [1].
+</span><span>    </span><span style="color:#999999;">//
+</span><span>    </span><span style="color:#999999;">// [1]: https://doc.rust-lang.org/reference/subtyping.html#variance
+</span><span>    </span><span style="color:#f55800;">_invariants</span><span>: PhantomData&lt;</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;a</span><span> I&gt;,
+</span><span>}
+</span></code></pre>
+<p>…and write <code>SAFETY</code> comments whenever <code>ptr</code> is initialized; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#8e44be;">impl</span><span>&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T, I&gt; Ptr&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T, I&gt;
+</span><span style="color:#8e44be;">where
+</span><span>    T: </span><span style="color:#8e44be;">&#39;a</span><span> + ?Sized,
+</span><span>    I: Invariants,
+</span><span>{
+</span><span>    </span><span style="color:#999999;">/// Constructs a `Ptr` from a [`NonNull`].
+</span><span>    </span><span style="color:#999999;">///
+</span><span>    </span><span style="color:#999999;">/// # Safety
+</span><span>    </span><span style="color:#999999;">///
+</span><span>    </span><span style="color:#999999;">/// The caller promises that:
+</span><span>    </span><span style="color:#999999;">///
+</span><span>    </span><span style="color:#999999;">/// 0. If `ptr`&#39;s referent is not zero sized, then `ptr` is derived from
+</span><span>    </span><span style="color:#999999;">///    some valid Rust allocation, `A`.
+</span><span>    </span><span style="color:#999999;">/// 1. If `ptr`&#39;s referent is not zero sized, then `ptr` has valid
+</span><span>    </span><span style="color:#999999;">///    provenance for `A`.
+</span><span>    </span><span style="color:#999999;">/// 2. If `ptr`&#39;s referent is not zero sized, then `ptr` addresses a
+</span><span>    </span><span style="color:#999999;">///    byte range which is entirely contained in `A`.
+</span><span>    </span><span style="color:#999999;">/// 3. `ptr` addresses a byte range whose length fits in an `isize`.
+</span><span>    </span><span style="color:#999999;">/// 4. `ptr` addresses a byte range which does not wrap around the
+</span><span>    </span><span style="color:#999999;">///    address space.
+</span><span>    </span><span style="color:#999999;">/// 5. If `ptr`&#39;s referent is not zero sized, then `A` is guaranteed to
+</span><span>    </span><span style="color:#999999;">///    live for at least `&#39;a`.
+</span><span>    </span><span style="color:#999999;">/// 6. `ptr` conforms to the aliasing invariant of
+</span><span>    </span><span style="color:#999999;">///    [`I::Aliasing`](invariant::Aliasing).
+</span><span>    </span><span style="color:#999999;">/// 7. `ptr` conforms to the alignment invariant of
+</span><span>    </span><span style="color:#999999;">///    [`I::Alignment`](invariant::Alignment).
+</span><span>    </span><span style="color:#999999;">/// 8. `ptr` conforms to the validity invariant of
+</span><span>    </span><span style="color:#999999;">///    [`I::Validity`](invariant::Validity).
+</span><span>    </span><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#8e44be;">super</span><span>) </span><span style="color:#8e44be;">unsafe fn </span><span style="color:#3366cc;">new</span><span>(</span><span style="color:#6969ff;">ptr</span><span>: NonNull&lt;T&gt;) -&gt; Ptr&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T, I&gt; {
+</span><span>        </span><span style="color:#999999;">// SAFETY: The caller has promised to satisfy all safety invariants
+</span><span>        </span><span style="color:#999999;">// of `Ptr`.
+</span><span>        </span><span style="color:#8e44be;">Self </span><span>{ ptr, _invariants: PhantomData }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>By adhering strictly to this pattern throughout our codebase, we’ve been able to sustainably increase <code>zerocopy</code>’s scope without adding undue maintenance burden. It continues to be easy for us to extend unsafe abstractions weeks, months, or years after we last thought about them.</p>
+<p>However, you might have noticed we have not <em>quite</em> adhered completely to the field safety principles in this example. Not only does Rust <em>not</em> provide tooling support for field safety hygiene, it actively works against us:</p>
+<ol>
+<li>It is a parse error to apply the <code>unsafe</code> keyword to fields. Consequently, Clippy cannot prompt us to write a safety comment (but we remember to do so).</li>
+<li>Rust’s <code>unused_unsafe</code> lint discourages wrapping a ‘safe’ operation like <code>Self { ptr, _invariants: PhantomData }</code> in an <code>unsafe</code> block (and so we don’t do so). Consequently, Clippy cannot prompt us to write a safety comment (but we remember to do so).</li>
+</ol>
+<p>To a point, we can accommodate for these shortcomings by leveraging Rust’s tooling for function safety hygiene. For example, if we are diligent about using <code>Ptr::new</code> instead of <code>Ptr { ... }</code>, Rust’s function safety tooling <em>will</em> enforce the use of <code>unsafe</code> for construction. We can even nudge ourselves towards compliance by quarantining <code>Ptr</code>’s definition in its own module:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#999999;">// Used to gate access to `Ptr`&#39;s implicit constructor and fields.
+</span><span style="color:#8e44be;">mod </span><span>def {
+</span><span>    </span><span style="color:#8e44be;">pub struct </span><span>Ptr&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T, I&gt;
+</span><span>    where
+</span><span>        T: &#39;a + ?Sized,
+</span><span>        I: Invariants,
+</span><span>    {
+</span><span>        </span><span style="color:#999999;">/// [Documentation elided.]
+</span><span>        </span><span style="color:#f55800;">ptr</span><span>: NonNull&lt;T&gt;,
+</span><span>        </span><span style="color:#999999;">// [Documentation elided.]
+</span><span>        </span><span style="color:#f55800;">_invariants</span><span>: PhantomData&lt;</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#8e44be;">&#39;a</span><span> I&gt;,
+</span><span>    }
+</span><span>    
+</span><span>    </span><span style="color:#8e44be;">impl</span><span>&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T, I&gt; Ptr&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T, I&gt;
+</span><span>    </span><span style="color:#8e44be;">where
+</span><span>        T: </span><span style="color:#8e44be;">&#39;a</span><span> + ?Sized,
+</span><span>        I: Invariants,
+</span><span>    {
+</span><span>        </span><span style="color:#999999;">/// [Documentation elided.]
+</span><span>        </span><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#8e44be;">super</span><span>) </span><span style="color:#8e44be;">unsafe fn </span><span style="color:#3366cc;">new</span><span>(</span><span style="color:#6969ff;">ptr</span><span>: NonNull&lt;T&gt;) -&gt; Ptr&lt;</span><span style="color:#8e44be;">&#39;a</span><span>, T, I&gt; { … }
+</span><span>        
+</span><span>        </span><span style="color:#999999;">/// [Documentation elided.]
+</span><span>        </span><span style="color:#8e44be;">pub</span><span>(</span><span style="color:#8e44be;">crate</span><span>) </span><span style="color:#8e44be;">fn </span><span style="color:#3366cc;">as_non_null</span><span>(</span><span style="color:#1aa7b0;">&amp;</span><span style="color:#6969ff;">self</span><span>) -&gt; NonNull&lt;T&gt; { … }
+</span><span>    }
+</span><span>}
+</span></code></pre>
+<p>In doing so, <code>Ptr</code>’s implicit constructors and fields are inaccessible outside of <code>def</code>; all construction and access is mediated through <code>Ptr::new</code> and <code>Ptr::as_non_null</code>.</p>
+<h3 id="but-the-implementation-defines-the-convention">…But the Implementation Defines the Convention</h3>
+<p>As these examples illustrate, going beyond Rust’s safety hygiene tooling is fraught with linguistic friction. The implementation might not be the idiom, but it does set convention. I have not seen the <code>def</code> module pattern elsewhere — even within the standard library — and the practice of documenting field safety invariants is <em>much</em> rarer than the practice of documenting function safety invariants.</p>
+<h2 id="the-implementation-is-unfinished">The Implementation is Unfinished</h2>
+<p>Since 1.0, there have been countless proposals for improving Rust’s safety tooling. Safety hygiene and its three rules gives us a framework for making sense of how these proposals refine tooling support for the idiom.</p>
+<h3 id="distinguishing-definition-and-discharge">Distinguishing Definition and Discharge</h3>
+<p>One class of proposals refines (un)safety by distinguishing the definition of safety conditions from the discharge of safety conditions. Presently, the same keyword is used for both case — <code>unsafe</code> — but some have argued that this overloads the keyword in a confusing way. <a href="https://internals.rust-lang.org/t/split-keyword-unsafe-into-unsafe-checked/20334">This 2024 pre-RFC</a> proposes using <code>unsafe</code> to declare obligations, and <code>checked</code> to discharge them.</p>
+<h3 id="distinguishing-pre-conditions-and-post-conditions">Distinguishing Pre-Conditions and Post-Conditions</h3>
+<p>Another class of proposals refines (un)safety by distinguishing pre-conditions from post-conditions. Presently the <code>unsafe</code> keyword and Safety documentation does double-duty in both being used to denote and document when uses must uphold safety preconditions, and denoting and documenting when uses can rely on safety-critical postconditions. <a href="https://internals.rust-lang.org/t/pre-rfc-another-take-at-clarifying-unsafe-semantics/7041">This pre-RFC from 2018</a>, for example, proposes using <code>unsafe(pre)</code> for the former case and <code>unsafe(post)</code> to denote the latter.</p>
+<h3 id="structured-safety-documentation">Structured Safety Documentation</h3>
+<p>The last class of proposals we’ll consider refines (un)safety by adding tooling for checking that the correspondence between definition and discharge is (correctly) documented. This <a href="https://github.com/rust-lang/rfcs/pull/1910">2017 RFC</a> proposed an attribute alternative to the status quo of unstructured safety comments. This <a href="https://internals.rust-lang.org/t/pre-rfc-unsafe-reasons/22093">2024 pre-RFC</a> proposes an extension to <code>unsafe</code> where definition-site uses of <code>unsafe</code> enumerate labeled safety conditions, and use-site <code>unsafe</code> must discharge those obligations by enumerating the same labels.</p>
+<h2 id="next-steps">Next Steps</h2>
+<p>Besides the aforementioned proposals to extend the sophistication of Rust’s safety hygiene tooling, there are also more basic steps we can to improve the consistency and utility of the present safety tooling.</p>
+<h3 id="opinionated-linting-defaults">Opinionated Linting Defaults</h3>
+<p>A funky identifier, or undocumented unsafe code — what’s worse? Presently, Rust does more to discourage the former than the latter. Whereas the <code>non_upper_case_globals</code> and <code>non_camel_case_types</code> live in rustc and are executed, by default, on every build, the <code>missing_safety_doc</code> and <code>undocumented_unsafe_blocks</code> lints are relegated to Clippy. The <code>undocumented_unsafe_blocks</code> lint is even allow-by-default!</p>
+<p>If we believe that good safety hygiene is a core Rust idiom — just as its naming conventions are — then these safety hygiene lints should be migrated to rustc and warn-by-default.</p>
+<h3 id="tooling-for-field-safety-hygiene">Tooling for Field Safety Hygiene</h3>
+<p><a href="https://github.com/rust-lang/rfcs/pull/3458">RFC3458</a> (of which I am a co-author) proposes extending Rust’s safety hygiene tooling to fields. In brief, it would encourage the use of <code>unsafe</code> to denote fields with safety invariants, and require the use of <code>unsafe</code> to discharge those safety invariants. The proposal uses the three principles of safety hygiene as its starting design tenets, and follows them to their conclusion to inform the design.</p>
+<h3 id="safe-unions">Safe Unions</h3>
+<p>We can also use this framework to make sense of a language design corner we have seemingly painted ourselves into: safer unions. Unions, in Rust, may presently be safely defined, constructed and mutated — but require <code>unsafe</code> to read. Consequently, it is possible to place an union into a state where its fields cannot be soundly read, using only safe code:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#f55800;">derive</span><span>(Copy, Clone)] #[</span><span style="color:#f55800;">repr</span><span>(u8)] </span><span style="color:#8e44be;">enum </span><span>Zero { V </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">0 </span><span>}
+</span><span>#[</span><span style="color:#f55800;">derive</span><span>(Copy, Clone)] #[</span><span style="color:#f55800;">repr</span><span>(u8)] </span><span style="color:#8e44be;">enum </span><span>One  { V </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">1 </span><span>}
+</span><span>
+</span><span>union Tricky {
+</span><span>    a: (Zero, One),
+</span><span>    b: (One, Zero),
+</span><span>}
+</span><span>
+</span><span style="color:#8e44be;">let mut</span><span> tricky </span><span style="color:#1aa7b0;">=</span><span> Tricky { a: (Zero::V, One::V) };
+</span><span>tricky.b.</span><span style="color:#6969ff;">0 </span><span style="color:#1aa7b0;">= </span><span>One::V;
+</span><span>
+</span><span style="color:#999999;">// Now, neither `tricky.a` nor `tricky.b` is in a valid state!
+</span></code></pre>
+<p>The possibility of such unions makes it tricky to retrofit a mechanism for safe access. Because <code>unsafe</code> was not required to define or mutate this <code>union</code>, the invariant that makes reading sound is entirely implicit. The Rust compiler has no way of knowing if or how a union’s user intends to uphold this invariant, and thus its safety tooling can only assume that unions are <em>never</em> in a valid state.</p>
+<p>Unsafe unions are undeniably useful, but the fact that all unions are <em>implicitly</em> unsafe breaks from Rust’s usual convention that items are safe-by-default and takes up valuable syntactic space that could instead be occupied by <em>safe</em> unions.</p>
+<p>Rust could free up this syntactic space by migrating its implicitly unsafe unions to be explicitly unsafe, across an edition boundary; e.g.:</p>
+<pre data-lang="rust" style="background-color:#ffffff;color:#4d4d4c;" class="language-rust "><code class="language-rust" data-lang="rust"><span>union MaybeUninit&lt;T&gt; {
+</span><span>    uninit: (),
+</span><span>    </span><span style="color:#8e44be;">unsafe</span><span> value: ManuallyDrop&lt;T&gt;,
+</span><span>}
+</span></code></pre>
+<h2 id="parting-thoughts">Parting Thoughts</h2>
+<p>I have more to say on this. I believe the lens of safety hygiene can help make sense of the 2018 Actix drama, but with so many links rotted, explaining this requires more archeology than would flow neatly in this essay. The implementation might not be the idiom, but the gaps in Rust’s implementation of safety tooling fuel disagreements over what, exactly, the idiom is. By filling these gaps, we can work towards a future where Rust’s safety story <em>really</em> is just these three rules, and its safety tooling can be explained orthogonally from Rust’s other abstraction mechanisms. Stay tuned!</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

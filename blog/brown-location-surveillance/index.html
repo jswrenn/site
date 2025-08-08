@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>How does Brown University know where you are?</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="How does Brown University know where you are?" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">How does Brown University know where you are?</h1>
+    <time itemprop="datePublished" datetime="2020-12-05">
+      2020-12-05
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>In September 2020, Brown University <a href="https://www.browndailyherald.com/2020/09/28/remote-students-receive-emails-brown-accusing-violating-code-student-conduct">accused students</a> of lying about their location; e.g.:</p>
+<p><img src="/blog/brown-location-surveillance/notice.png" style="outline: 1px black solid" height="auto" width="100%" alt="The University has learned that between September 14, 2020 and September 21, 2020 you were allegedly in the Providence area during which time your location of study was listed as remote. This alleged behavior is a violation of the Student Code of Conduct and the COVID-19 Campus Safety Policy. A copy of the Student Commitment to COVID-19 Community Health and Safety Requirements is attached for your review, along with this link to the COVID-19 Campus Safety Policy. failure to abide by these requirements is a violation of the Code of Student Conduct. 
+Based on the details of the incident and your student conduct history, the Office of Student Conduct & Community Standards has decided to allow you the opportunity to accept responsibility for the following prohibited conduct without having a COVID-19 Dean's Review Meeting:
+• D.8 Failure to Comply
+• D.13 Misrepresentation
+"></img></p>
+<p><strong>What was Brown’s basis for these accusations?</strong></p>
+<span id="continue-reading"></span>
+<p>In an <a href="https://www.browndailyherald.com/2020/09/28/remote-students-receive-emails-brown-accusing-violating-code-student-conduct">interview with The Brown Daily Herald</a>, University Spokesperson Brian Clark said the University evaluated a variety of indicators, including:</p>
+<ol>
+<li>indications of building access,</li>
+<li>indications of accessing private electronic services,</li>
+<li>indications of accessing secure networks, and</li>
+<li>reports from community members.</li>
+</ol>
+<p>The mechanics of that last indicator are pretty self-explanatory, but what about the others? <a href="https://it.brown.edu/services/type/canvas-learning-management-system">Canvas</a> <em>doesn’t</em> <a href="https://knowyourmeme.com/memes/google-wants-to-know-your-location">Want To Know Your Location</a>. <strong>In this post, I’m going to break down the technical mechanisms behind each of these indicators.</strong></p>
+<p>For the most part, I do not have insider knowledge on how Brown reached its decisions. Rather, I’m going to consider each of the indicators Brian Clark named, and describe the technical mechanisms to which Brown <em>could</em> have availed itself to generating location data.</p>
+<h2 id="indications-of-building-access">Indications of Building Access</h2>
+<p>This is an easy one. Brown’s buildings are located on Brown’s campus. Brown’s campus is in Providence. If you are in Brown’s buildings, you are on Brown’s campus, in Providence. QED.</p>
+<p>At Brown, building access is primarily regulated with electronic control systems (namely Software House’s <a href="https://www.swhouse.com/products/software_CCURE9000.aspx"><strong>C•CURE 9000</strong></a> system), not mechanical keys.</p>
+<p>Encoded on <a href="https://en.wikipedia.org/wiki/Magnetic_stripe_card#Track_2">track 2</a> of the magnetic stripe on every University ID card is a sixteen digit number that uniquely identifies the card:</p>
+<p><img src="/blog/brown-location-surveillance/brown-id-card-back.jpg" height="auto" width="100%" alt="Image of back of Brown ID card. A tall magnetic stripe runs across the entire width of the card."></img></p>
+<p>Well, that’s underwhelming — of <em>course</em> you can’t <em>see</em> it! However, up until 2017 or 2018, this number was also <em>printed</em> on the front of ID cards, just above the card-holder’s name:</p>
+<p><img src="/blog/brown-location-surveillance/brown-id-card-front.jpg" height="auto" width="100%" alt="Image fo the front of a Brown ID card, displaying the building access code: 6009553660926201"></img></p>
+<p>This pseudo-random identifier (well, its last ten digits) are what uniquely identify you whenever you swipe your Brown ID card <em>anywhere</em>. And, if you lose your Brown ID card, this is the <em>only</em> thing that’s changed when you’re issued a replacement. Convenient! In contrast, when you lose your dorm room’s mechanical key, Brown must replace (or rather, <a href="https://en.wikipedia.org/wiki/Rekeying">rekey</a>) the locks.</p>
+<p>But, <em>also</em> unlike a mechanical key, <em>every</em> swipe of a Brown ID card is logged in a central database. <strong>The C•CURE 9000 lets administrators view the complete historical building access history of a person.</strong> Last Spring, Brown used this mechanism to identify and prod students who were slow to evacuate Providence.</p>
+<h2 id="indicators-from-electronic-services">Indicators from Electronic Services</h2>
+<p>University web services like Canvas <em>don’t</em> directly ask you for your location. Nonetheless, accessing these services leaves a location finger print: your IP address.</p>
+<p>Your <a href="https://en.wikipedia.org/wiki/IP_address">IP address</a> is a number that identifies your device (computer, phone, etc.) for the purposes of network routing. In principle, nobody but you and your internet provider know the <em>exact</em> mapping of your IP address to your physical address.</p>
+<p>In practice, IP addresses can be used to <em>roughly</em> geolocate a device. Batches of IP addresses are associated <em>loosely</em> with geographic areas. Since every web service access leaves an IP address as a trace, there are tremendous incentives for advertisers to be able accurately identify what city or town an IP address is probably associated with.</p>
+<p>Brown probably <em>isn’t</em> analyzing the access logs of its <em>individual</em> web services (like Canvas). Rather, they need only to audit the access logs of its three identity access management (IAM) systems:</p>
+<ul>
+<li>The <a href="https://workspace.google.com/">Google Workplace</a> IAM system is used to control access to your @brown.edu email, and to the various Google Drive services. <a href="https://support.google.com/a/answer/4580120?hl=en"><strong>Google Workplace</strong> provides administrators with login audit logs that include users’ IP addresses.</a></li>
+<li>The <a href="https://www.shibboleth.net">Shibboleth</a> IAM system controls access to all <em>other</em> Brown web services, such as Canvas. It’s what you think of as your “Brown account”. Shibboleth is <em>very</em> flexible, and can be <a href="https://wiki.shibboleth.net/confluence/display/IDP30/AuditLoggingConfiguration#AuditLoggingConfiguration-GenericFields">configured to log IP addresses</a>.</li>
+<li><a href="https://duo.com/">DUO</a> is used to provide two-factor authentication for Shibboleth logins. <a href="https://help.duo.com/s/article/1023?language=en_US#docs-internal-guid-0aa3b4ce-c686-7559-8814-1377592fce4a:~:text=Access%20Device">It too provides administrators with detailed access logs</a>.</li>
+</ul>
+<p>You can partly view your Google Workplace login history for yourself by opening your Brown email and clicking “Details” in the bottom right-hand corner of the page; e.g.:</p>
+<p><img src="/blog/brown-location-surveillance/gmail-account-activity.png" height="auto" width="100%"></img></p>
+<p>With <em>either</em> of these access logs in hand, Brown could then turn to any number of geolocation services (<a href="https://tools.keycdn.com/geo">like this one</a>) to guess your physical location.</p>
+<h2 id="indicators-from-secure-networks">Indicators from Secure Networks</h2>
+<p>This is another easy one. Brown’s WiFI network <a href="https://jack.wrenn.fyi/blog/brown-location-surveillance/blog/brown-location-surveillance/Campus_Wireless_Coverage_Map_24x36_1.pdf">blankets Brown’s campus</a>. Brown’s campus is in Providence. If you are on Brown’s WiFi network, you are on Brown’s campus. QED.</p>
+<p>What might surprise you is the sheer depth of surveillance that’s capable with WiFi alone. This section will <em>barely</em> scratch the surface.</p>
+<h3 id="identification">Identification</h3>
+<p>Brown’s WiFi routers each broadcast three <a href="https://en.wikipedia.org/wiki/Service_set_(802.11_network)">service sets</a>:</p>
+<ol>
+<li><a href="https://it.brown.edu/services/type/wireless-network-brown">Brown</a></li>
+<li><a href="https://it.brown.edu/services/type/wireless-network-eduroam">eduroam</a></li>
+<li><a href="https://it.brown.edu/services/type/wireless-access-brown-guest">Brown Guest</a></li>
+</ol>
+<p>The Brown and eduroam networks require that you authenticate with your Brown account credentials. Brown University is thus able to identify the owner of any device connected to these networks.</p>
+<p>While Brown Guest does <em>not</em> require authentication, it still provides mechanisms of identification. Your network devices broadcast a unique identifier called a <a href="https://en.wikipedia.org/wiki/MAC_address"><strong>MAC address</strong></a>.</p>
+<p><a href="https://drawings.jvns.ca/mac-address/"><img type="image/svg+xml" src="https://drawings.jvns.ca/drawings/mac-address.svg" height="auto" width="100%" alt="Comic by Julia Evans. Text: Every computer on the internet has a network card. When you make HTTP requests with Ethernet/WiFi, every packet gets sent to a MAC address. (&#34;Wait, how do I know someone else on the same network isn't reading all my packets?&#34; &#34;You don't! That's one reason we use HTTPS & secure WiFi networks.&#34;) Your router has a table that maps IP addresses to MAC addresses.  (Read about ARP for more.)
+"></img></a></p>
+<p>Brown <a href="https://it.brown.edu/computing-policies/network-connection-policy#32:~:text=CIS%20maintains%20a%20database%20of%20unique,a%20computer%20when%20it%20is%20necessary.">maintains databases of the MAC addresses of all connected devices</a>.</p>
+<p>If you have ever connected to an authenticated network, Brown will be able to de-anonymize your connections to Brown Guest — <em>unless</em> your device implements <a href="https://en.wikipedia.org/wiki/MAC_address#Randomization">MAC address randomization</a>, which (as the name suggests) randomizes your device’s MAC address on a per-network basis.</p>
+<h3 id="localization">Localization</h3>
+<p>Brown’s access points log the MAC addresses of the devices that have connected to them. As of 2015, Brown retained these logs for at least several years — possibly indefinitely. Since there are so many access points on campus, which access point you are connected to can narrow your location down to a particular room. <strong>Combined, these logs paint a <em>very</em> accurate picture of your location on campus at any time.</strong></p>
+<p>You do not need to be <em>actively</em> browsing the internet for Brown to know where you are via this mechanism. As you walk through campus, your phone likely <em>automatically</em> reconnects to the nearest available access point. If you are within a literal stone’s throw of campus, you should assume that Brown can (roughly) identify your location.</p>
+<p>A 2016 <a href="/blog/brown-location-surveillance/poster.pdf">class project</a> did precisely this, with three million (anonymized) connection records collected over a year from just 49 access points across campus:
+<a href="/blog/brown-location-surveillance/poster.pdf" style="display:block">
+<object type="image/svg+xml" width="100%" data="/blog/brown-location-surveillance/poster.svg" style="pointer-events:none; outline: 1px black solid">
+Download
+</object>
+</a></p>
+<p>Furthermore, if you are in range of three or more of Brown’s ARUBA access points, Brown can, in principle, <em>precisely</em> triangulate your location. This functionality is <a href="https://www.arubanetworks.com/pdf/technology/whitepapers/wp_Hybrid_WIDS.pdf">common</a> in enterprise-grade WiFi infrastructure. (If you’ve ever tried to run a “rogue” WiFi router in your dorm room and receive an angry knock on your door — this is the mechanism by which you were located.)</p>
+<h2 id="how-do-i-find-out-more">How do I find out more?</h2>
+<p>The <a href="https://en.wikipedia.org/wiki/Family_Educational_Rights_and_Privacy_Act"><em>Family Educational Rights and Privacy Act</em></a> empowers students to request their education records from their University.</p>
+<div style='position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;'><iframe src='https://www.youtube.com/embed/jWzBrC8dVnw' style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder='0' allowfullscreen></iframe></div>
+<p>If you are a current Brown student and would like to go beyond my blog post and learn <em>exactly</em> how Brown University knows your location, <a href="https://www.brown.edu/about/administration/registrar/student-information-rightsferpa">file a FERPA request</a>. Brown University is obligated to respond within 45 days. You’ll need to be specific with your request. I suggest requesting:</p>
+<ul>
+<li>the timestamps, MAC addresses and BSSIDs associated with your devices’ connections to Brown University’s wireless access points</li>
+<li>the timestamps and locations associated with all building accesses conducted with your ID card</li>
+<li>the login audit data associated with all Google Workplace, Shibboleth, and DUO authentications conducted by your accounts</li>
+</ul>
+<p>Additionally, the <a href="https://en.wikipedia.org/wiki/General_Data_Protection_Regulation"><em>General Data Protection Regulation</em></a> gives EU citizens and residents expansive control over how their personally identifiable information (PII) is used, and the right to request a copy of or the destruction of collected data. I believe these requests should be directed to <a href="https://compliance.brown.edu/">Brown’s compliance office</a>. You might be able to do this even if you’re a Brown alumni.</p>
+<p><strong>If you attempt either of these steps, <a href="mailto:jack@wrenn.fyi">please get in touch</a>!</strong> I’m very curious as to what Brown is <em>actually</em> doing.</p>
+<h2 id="bonus-surveillance-cameras">Bonus: Surveillance Cameras</h2>
+<p>As of February 2020, <a href="https://www.browndailyherald.com/2020/02/21/cameras-installed-hegeman-hall/#post-2838338:~:text=The%20University%20uses%20approximately%20800%20cameras,with%20high%20crime%20activity%2C%20Porter%20said."><em>eight hundred</em> surveillance cameras monitor campus 24/7</a>. Brown has as about as many surveillance cameras as it has full-time faculty! This map documents a <em>mere seven percent</em> of Brown University’s total camera surveillance capacity:</p>
+<iframe width="100%" style="height:40em" src="https://overpass-turbo.eu/map.html?Q=%2F*%0AThis%20query%20looks%20for%20nodes%2C%20ways%20and%20relations%20%0Awith%20the%20given%20key%2Fvalue%20combination.%0AChoose%20your%20region%20and%20hit%20the%20Run%20button%20above!%0A*%2F%0A%5Bout%3Ajson%5D%5Btimeout%3A25%5D%3B%0A%2F%2F%20gather%20results%0A(%0A%20%20%2F%2F%20query%20part%20for%3A%20%E2%80%9Cman_made%3Dsurveillance%E2%80%9D%0A%20%20node%5B%22man_made%22%3D%22surveillance%22%5D(41.82261385454296%2C-71.40611171722412%2C41.83260715798001%2C-71.39570474624634)%3B%0A)%3B%0A%2F%2F%20print%20results%0Aout%20body%3B%0A%3E%3B%0Aout%20skel%20qt%3B%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%0A%7B%7Bstyle%3A%20%0Anode%0A%7B%0A%20%20icon-image%3A%20url(%22http%3A%2F%2Fjack.wrenn.fyi%2Fblog%2Fbrown-location-surveillance%2Fnoun_Surveillance_63907.svg%22)%3B%0A%20%20icon-width%3A%2020%3B%0A%20%20icon-height%3A%2020%3B%0A%20%20symbol-size%3A%205%3B%0A%20%20color%3Ablack%3B%0A%20%20fill-color%3Ablack%3B%20%7D%0A%20%7D%7D"></iframe>
+<small>This map displays data from <a href="https://www.openstreetmap.org/about">OpenStreetMap</a>. <a href="https://pietervdvn.github.io/Staging/surveillance.html?z=17&lat=41.82681&lon=-71.4016" style="font-weight:bold">Help improve its accuracy!</a></small>
+<p>Brown University has a longstanding policy governing the appropriate uses of its surveillance cameras. <strong>Unfortunately, <a href="https://www.browndailyherald.com/2008/01/10/surveillance-cameras-on-campus-triple/#post-1679525:~:text=DPS%20would%20not%20release%20the%20University%E2%80%99s%20full%20policy%20on%20the%20surveillance%20camera%20system">this policy is secret</a>.</strong></p>
+<p>While Brown probably does not <em>currently</em> have the capacity to both broadly and deeply inspect the firehose of data produced by these cameras, this may change in the near future. Axis Communications, Brown’s primary supplier of surveillance cameras, <a href="https://www.axis.com/customer-story/3767">now touts cameras that can perform <em>on-board</em> facial recognition</a>. And Software House, the provider of the C•CURE 9000 access control system, has begun marketing the integration of facial recognition with its access control systems:</p>
+<div style='position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;'><iframe src='https://www.youtube.com/embed/bk395D0tPRA' style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder='0' allowfullscreen></iframe></div>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Javascript Generators, Meet XPath</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Javascript Generators, Meet XPath" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Javascript Generators, Meet XPath</h1>
+    <time itemprop="datePublished" datetime="2020-08-22">
+      2020-08-22
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>Using Generators to Modernize a Geriatric Javascript API for <code>$CURRENT_YEAR</code></p>
+<span id="continue-reading"></span>
+<hr />
+<p>How do you find-and-replace text on an HTML page?</p>
+<pre data-lang="html" style="background-color:#ffffff;color:#4d4d4c;" class="language-html "><code class="language-html" data-lang="html"><span style="color:#f55800;">&lt;div&gt;</span><span>Hello, </span><span style="color:#f55800;">&lt;span&gt;</span><span>human</span><span style="color:#f55800;">&lt;/span&gt;</span><span>!</span><span style="color:#f55800;">&lt;/div&gt;
+</span></code></pre>
+<p>If the text is neatly neatly isolated inside an HTML element, it’s easy; this will do:</p>
+<pre data-lang="javascript" style="background-color:#ffffff;color:#4d4d4c;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#3366cc;">document.querySelector</span><span>(</span><span style="color:#699200;">&quot;span&quot;</span><span>).</span><span style="color:#f55800;">textContent </span><span style="color:#1aa7b0;">= </span><span style="color:#699200;">&quot;evolved ape&quot;</span><span>;
+</span></code></pre>
+<p><strong>But here’s a puzzle</strong>: how do you you change text that <em>isn’t</em> neatly isolated in an HTML element?</p>
+<p>You <em>could</em> use <code>innerHTML</code>:</p>
+<pre data-lang="javascript" style="background-color:#ffffff;color:#4d4d4c;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#8e44be;">let </span><span style="color:#f55800;">elt </span><span style="color:#1aa7b0;">= </span><span style="color:#3366cc;">document.querySelector</span><span>(</span><span style="color:#699200;">&quot;div&quot;</span><span>);
+</span><span style="color:#f55800;">elt</span><span>.</span><span style="color:#f55800;">innerHTML </span><span style="color:#1aa7b0;">= </span><span style="color:#f55800;">elt</span><span style="color:#3366cc;">.</span><span style="color:#f55800;">innerHTML</span><span style="color:#3366cc;">.replace</span><span>(</span><span style="color:#699200;">&quot;Hello&quot;</span><span>, </span><span style="color:#699200;">&quot;Greetings&quot;</span><span>);
+</span></code></pre>
+<p>…but this will hose any event listeners registered on <code>elt</code>’s children.</p>
+<p>You <em>could</em> grapple onto the nearest selectable element:</p>
+<pre data-lang="javascript" style="background-color:#ffffff;color:#4d4d4c;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#8e44be;">let </span><span style="color:#f55800;">node </span><span style="color:#1aa7b0;">= </span><span style="color:#3366cc;">document.querySelector</span><span>(</span><span style="color:#699200;">&quot;div&quot;</span><span>).childNodes[</span><span style="color:#6969ff;">0</span><span>];
+</span><span style="color:#f55800;">node</span><span>.</span><span style="color:#f55800;">textContent </span><span style="color:#1aa7b0;">= </span><span style="color:#f55800;">node</span><span style="color:#3366cc;">.</span><span style="color:#f55800;">textContent</span><span style="color:#3366cc;">.replace</span><span>(</span><span style="color:#699200;">&quot;Hello&quot;</span><span>, </span><span style="color:#699200;">&quot;Greetings&quot;</span><span>);
+</span></code></pre>
+<p>Yuck; this sort of child-node indexing feels <em>really</em> brittle.</p>
+<p><strong>Why can’t we just <em>directly</em> select the text nodes containing <code>Hello</code>?</strong></p>
+<h2 id="xpath">XPath</h2>
+<p><strong>We can!</strong> Enter: <a href="https://en.wikipedia.org/wiki/XPath">XPath</a>, the <em>excessively</em> powerful language for querying XML documents. It’s usable in web-browsers with the, uh, <em>descriptively</em>-named method <a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate"><code>document.evaluate</code></a>.</p>
+<p>It’s a <em>bit</em> of a production to use:</p>
+<pre data-lang="javascript" style="background-color:#ffffff;color:#4d4d4c;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#8e44be;">let </span><span style="color:#f55800;">xpath </span><span style="color:#1aa7b0;">= </span><span style="color:#699200;">&quot;//text()[contains(., &#39;Hello&#39;)]&quot;</span><span>; </span><span style="color:#999999;">// find text nodes containing &#39;Hello&#39;
+</span><span style="color:#8e44be;">let </span><span style="color:#f55800;">context </span><span style="color:#1aa7b0;">= </span><span>document.body; </span><span style="color:#999999;">// look in the body element
+</span><span style="color:#8e44be;">let </span><span style="color:#f55800;">namespace_resolver </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">null</span><span>; </span><span style="color:#999999;">// some sorta xml voodoo
+</span><span style="color:#8e44be;">let </span><span style="color:#f55800;">result_type </span><span style="color:#1aa7b0;">= </span><span style="color:#f0ae00;">XPathResult</span><span>.</span><span style="color:#f55800;">ORDERED_NODE_SNAPSHOT_TYPE</span><span>; </span><span style="color:#999999;">// DEFINITELY MAKE SURE YOU USE THIS
+</span><span>
+</span><span style="color:#8e44be;">let </span><span style="color:#f55800;">results </span><span style="color:#1aa7b0;">= </span><span style="color:#3366cc;">document.evaluate</span><span>(</span><span style="color:#f55800;">xpath</span><span>, </span><span style="color:#f55800;">context</span><span>, </span><span style="color:#6969ff;">null</span><span>, </span><span style="color:#f55800;">result_type</span><span>);
+</span><span>
+</span><span style="color:#8e44be;">for </span><span>(</span><span style="color:#8e44be;">let </span><span style="color:#f55800;">i </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">0</span><span>; </span><span style="color:#f55800;">i </span><span style="color:#1aa7b0;">&lt; </span><span style="color:#f55800;">results</span><span>.</span><span style="color:#f55800;">snapshotLength</span><span>; </span><span style="color:#f55800;">i</span><span style="color:#1aa7b0;">++</span><span>) {
+</span><span>  </span><span style="color:#8e44be;">let </span><span style="color:#f55800;">node </span><span style="color:#1aa7b0;">= </span><span style="color:#f55800;">results</span><span style="color:#3366cc;">.snapshotItem</span><span>(</span><span style="color:#f55800;">i</span><span>);
+</span><span>  </span><span style="color:#f55800;">node</span><span>.</span><span style="color:#f55800;">textContent </span><span style="color:#1aa7b0;">= </span><span style="color:#f55800;">node</span><span style="color:#3366cc;">.</span><span style="color:#f55800;">textContent</span><span style="color:#3366cc;">.replace</span><span>(</span><span style="color:#699200;">&quot;Hello&quot;</span><span>, </span><span style="color:#699200;">&quot;Greetings&quot;</span><span>);
+</span><span>}
+</span></code></pre>
+<p>Yes, you really need to write <em>all</em> of that. The <code>result_type</code> argument is technically optional, but omit it at your own peril: without it, you must instead stream results via <code>iterateNext</code>, and this will crash with an exception if you dare <em>modify</em> the queried elements!</p>
+<p>It’s no wonder <code>document.evaluate</code> is seldom used. <strong>Can we improve on it?</strong></p>
+<h2 id="iterizing-xpath-queries">Iterizing XPath Queries</h2>
+<p>Yes, with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators"><strong>generators</strong></a>! We can exploit the implicit iterability of generators to modernize this unwieldy API:</p>
+<pre data-lang="javascript" style="background-color:#ffffff;color:#4d4d4c;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span style="color:#f0ae00;">Document</span><span>.prototype.</span><span style="color:#f55800;">xpath </span><span style="color:#1aa7b0;">= </span><span style="color:#f0ae00;">Element</span><span>.prototype.</span><span style="color:#f55800;">xpath </span><span style="color:#1aa7b0;">=
+</span><span>  </span><span style="color:#8e44be;">function* </span><span style="color:#3366cc;">xpath</span><span>(</span><span style="color:#6969ff;">xpath</span><span>) {
+</span><span>    </span><span style="color:#8e44be;">let </span><span style="color:#f55800;">context </span><span style="color:#1aa7b0;">= </span><span style="color:#f55800;">this </span><span style="color:#1aa7b0;">instanceof </span><span>Document </span><span style="color:#1aa7b0;">? </span><span>document.documentElement </span><span style="color:#1aa7b0;">: </span><span style="color:#f55800;">this</span><span>;
+</span><span>    </span><span style="color:#8e44be;">let </span><span style="color:#f55800;">namespace_resolver </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">null</span><span>;
+</span><span>    </span><span style="color:#8e44be;">let </span><span style="color:#f55800;">result_type </span><span style="color:#1aa7b0;">= </span><span style="color:#f0ae00;">XPathResult</span><span>.</span><span style="color:#f55800;">ORDERED_NODE_SNAPSHOT_TYPE</span><span>;
+</span><span>    </span><span style="color:#8e44be;">let </span><span style="color:#f55800;">results </span><span style="color:#1aa7b0;">= </span><span style="color:#3366cc;">document.evaluate</span><span>(</span><span style="color:#f55800;">xpath</span><span>, </span><span style="color:#f55800;">context</span><span>, </span><span style="color:#6969ff;">null</span><span>, </span><span style="color:#f55800;">result_type</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#8e44be;">for </span><span>(</span><span style="color:#8e44be;">let </span><span style="color:#f55800;">i </span><span style="color:#1aa7b0;">= </span><span style="color:#6969ff;">0</span><span>; </span><span style="color:#f55800;">i </span><span style="color:#1aa7b0;">&lt; </span><span style="color:#f55800;">results</span><span>.</span><span style="color:#f55800;">snapshotLength</span><span>; </span><span style="color:#f55800;">i</span><span style="color:#1aa7b0;">++</span><span>)
+</span><span>      </span><span style="color:#8e44be;">yield </span><span style="color:#f55800;">results</span><span style="color:#3366cc;">.snapshotItem</span><span>(</span><span style="color:#f55800;">i</span><span>);
+</span><span>  };
+</span></code></pre>
+<p>And because the result of this function is iterable, we can use it with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax">spread syntax</a>:</p>
+<pre data-lang="javascript" style="background-color:#ffffff;color:#4d4d4c;" class="language-javascript "><code class="language-javascript" data-lang="javascript"><span>[</span><span style="color:#1aa7b0;">...</span><span style="color:#3366cc;">document.xpath</span><span>(</span><span style="color:#699200;">&quot;//text()[contains(., &#39;Hello&#39;)]&quot;</span><span>)].
+</span><span>  </span><span style="color:#3366cc;">forEach</span><span>(</span><span style="color:#6969ff;">node </span><span style="color:#8e44be;">=&gt; </span><span style="color:#f55800;">node</span><span>.</span><span style="color:#f55800;">textContent </span><span style="color:#1aa7b0;">= </span><span style="color:#f55800;">node</span><span style="color:#3366cc;">.</span><span style="color:#f55800;">textContent</span><span style="color:#3366cc;">.replace</span><span>(</span><span style="color:#699200;">&quot;Hello&quot;</span><span>, </span><span style="color:#699200;">&quot;Greetings&quot;</span><span>));
+</span></code></pre>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>

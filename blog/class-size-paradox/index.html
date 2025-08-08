@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Brown’s Class Size Paradox</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Brown’s Class Size Paradox" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Brown’s Class Size Paradox</h1>
+    <time itemprop="datePublished" datetime="2020-10-19">
+      2020-10-19
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p>University Admissions departments love to brag about their schools’ small class sizes. Brown University, for instance, <a href="https://admission.brown.edu/explore/admission-facts">boasts</a> a 7:1 student–faculty ratio (so “you’ll have a lot of face-to-face time with some of the best researchers and teachers in academia”) and that “72 percent of our undergraduate classes have fewer than 20 students.” These claims invite prospective students to daydream of cozy, intimate classrooms, and personalized learning experiences — dreams quashed (or perhaps squished?) on one’s first day of classes.</p>
+<p>Nobody is lying, <em>per se</em> — this is merely an instance of the “class size paradox”: the size of the average class is relatively small, but the experience of the average student suggests otherwise.</p>
+<span id="continue-reading"></span>
+<p>To see this in action, we’ll mine data from <a href="https://cab.brown.edu/">Courses@Brown</a>, Brown’s course-enrollment portal. The portal’s internal API reports up to three potential indicators of class size:</p>
+<pre data-lang="json" style="background-color:#ffffff;color:#4d4d4c;" class="language-json "><code class="language-json" data-lang="json"><span>{
+</span><span>  </span><span style="color:#999999;">/* other fields */
+</span><span>
+</span><span>  </span><span style="color:#999999;">/* 30 - 14 = 16 seats taken  */
+</span><span>  </span><span style="color:#699200;">&quot;seats&quot;</span><span>: </span><span style="color:#699200;">&quot;&lt;strong&gt;Maximum Enrollment:&lt;/strong&gt; &lt;span class=</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">seats_max</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">&gt;30&lt;/span&gt; / &lt;strong&gt;Seats Avail:&lt;/strong&gt; &lt;span class=</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">seats_avail</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">&gt;14&lt;/span&gt;&quot;</span><span>,
+</span><span>  </span><span style="color:#999999;">/* 10 + 5 + 1 = 16 seats taken */
+</span><span>  </span><span style="color:#699200;">&quot;regdemog_json&quot;</span><span>: </span><span style="color:#699200;">&quot;{</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">FY</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">:10,</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">So</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">:5,</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">Oth</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">:1}&quot;</span><span>,
+</span><span>  </span><span style="color:#999999;">/* 16 seats taken */
+</span><span>  </span><span style="color:#699200;">&quot;regdemog_html&quot;</span><span>: </span><span style="color:#699200;">&quot;&lt;p class=</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">enroll_demog</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">&gt;Current enrollment: 16&lt;/p&gt;&lt;div class=</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">demogchart</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">&gt;&lt;/div&gt;&lt;div class=</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">demogchartlegend</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">&gt;&lt;ul&gt;&lt;li class=</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">pieitem item_fy</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">&gt;62.50% - First Year&lt;/li&gt;&lt;li class=</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">pieitem item_so</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">&gt;31.25% - Sophomore&lt;/li&gt;&lt;li class=</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">pieitem item_oth</span><span style="color:#6969ff;">\&quot;</span><span style="color:#699200;">&gt;6.25% - Other&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&quot;
+</span><span>
+</span><span>  </span><span style="color:#999999;">/* other fields */
+</span><span>}
+</span></code></pre>
+<p>Since some of these indicators may be missing or disagree for a small subset of courses, we’ll simply take the maximum of these three indicators as our authoritative class size count.</p>
+<h2 id="the-average-class">The Average Class</h2>
+<p>The average class size is merely the total enrollment (across all courses), divided by the number of offered courses. Applied to our dataset:</p>
+<table><thead><tr><th style="text-align: right">Semester</th><th style="text-align: right">Size of Average Class</th></tr></thead><tbody>
+<tr><td style="text-align: right">Fall 2016</td><td style="text-align: right">23.98</td></tr>
+<tr><td style="text-align: right">Spring 2017</td><td style="text-align: right">22.75</td></tr>
+<tr><td style="text-align: right">Fall 2017</td><td style="text-align: right">25.52</td></tr>
+<tr><td style="text-align: right">Spring 2018</td><td style="text-align: right">23.31</td></tr>
+<tr><td style="text-align: right">Fall 2018</td><td style="text-align: right">23.81</td></tr>
+<tr><td style="text-align: right">Spring 2019</td><td style="text-align: right">22.95</td></tr>
+<tr><td style="text-align: right">Fall 2019</td><td style="text-align: right">24.50</td></tr>
+<tr><td style="text-align: right">Spring 2020</td><td style="text-align: right">23.41</td></tr>
+</tbody></table>
+<p>The average class at Brown is, indeed, small! However, “average class size” reflects the number of students the average <em>professor</em> can expect to teach per course — <em>not</em> the average number of peers a student should expect to have. Imagine a hypothetical university offering only two courses: one with an enrollment of 100, and another with an enrollment of 0. The average class size is 50, but this is nonsense: 100% of students are in a class of 100!</p>
+<h2 id="the-average-student">The Average Student</h2>
+<p>If you’re an average student and you pick a course with respect to the distribution of course popularity, how many people (including yourself) can expect to be in that course? To compute this, we square the enrollment of each course in our dataset, reflecting the fact that in a class of size <em>N</em>, <em>N</em> students will experience a class of that size. Applying this to our dataset we find:</p>
+<table><thead><tr><th style="text-align: right">Semester</th><th style="text-align: right">Expected Class Size</th></tr></thead><tbody>
+<tr><td style="text-align: right">Fall 2016</td><td style="text-align: right">75.43</td></tr>
+<tr><td style="text-align: right">Spring 2017</td><td style="text-align: right">73.53</td></tr>
+<tr><td style="text-align: right">Fall 2017</td><td style="text-align: right">80.11</td></tr>
+<tr><td style="text-align: right">Spring 2018</td><td style="text-align: right">73.25</td></tr>
+<tr><td style="text-align: right">Fall 2018</td><td style="text-align: right">76.90</td></tr>
+<tr><td style="text-align: right">Spring 2019</td><td style="text-align: right">72.94</td></tr>
+<tr><td style="text-align: right">Fall 2019</td><td style="text-align: right">84.02</td></tr>
+<tr><td style="text-align: right">Spring 2020</td><td style="text-align: right">81.08</td></tr>
+</tbody></table>
+<p>So, while the size of the average class is relatively small (≈24 students), this “average class” is hardly representative of the experience of the average student.</p>
+<p>In light of this, Brown’s claim that “72 percent of our undergraduate classes have fewer than 20 students” fares poorly. Brown’s ample supply of small classes services only a small minority (≈25%) of all enrollments in undergraduate courses:</p>
+<table><thead><tr><th style="text-align: right">Semester</th><th style="text-align: right">% of Enrollments in Small (<em>n&lt;20</em>) Classes</th></tr></thead><tbody>
+<tr><td style="text-align: right">Fall 2016</td><td style="text-align: right">25.58</td></tr>
+<tr><td style="text-align: right">Spring 2017</td><td style="text-align: right">27.53</td></tr>
+<tr><td style="text-align: right">Fall 2017</td><td style="text-align: right">23.85</td></tr>
+<tr><td style="text-align: right">Spring 2018</td><td style="text-align: right">26.49</td></tr>
+<tr><td style="text-align: right">Fall 2018</td><td style="text-align: right">26.05</td></tr>
+<tr><td style="text-align: right">Spring 2019</td><td style="text-align: right">27.20</td></tr>
+<tr><td style="text-align: right">Fall 2019</td><td style="text-align: right">25.03</td></tr>
+<tr><td style="text-align: right">Spring 2020</td><td style="text-align: right">22.81</td></tr>
+</tbody></table>
+<p>Among undergraduate computer science courses — where demand has long outpaced the supply of educators — fewer than <em>four percent</em> of enrollments are into classes with less than 20 students!</p>
+<h2 id="other-shenanigans">Other Shenanigans</h2>
+<p>This class size paradox is not the only discrepancy between Admissions and reality. The claim that “72 percent of our undergraduate classes have fewer than 20 students” is misleading, even at face value. Such small classes are not quite as prevalent as claimed:</p>
+<table><thead><tr><th style="text-align: right">Semester</th><th style="text-align: right">% (<em>size</em>&lt;20)</th></tr></thead><tbody>
+<tr><td style="text-align: right">Fall 2016</td><td style="text-align: right">62.09</td></tr>
+<tr><td style="text-align: right">Spring 2017</td><td style="text-align: right">65.11</td></tr>
+<tr><td style="text-align: right">Fall 2017</td><td style="text-align: right">59.98</td></tr>
+<tr><td style="text-align: right">Spring 2018</td><td style="text-align: right">64.04</td></tr>
+<tr><td style="text-align: right">Fall 2018</td><td style="text-align: right">63.11</td></tr>
+<tr><td style="text-align: right">Spring 2019</td><td style="text-align: right">65.90</td></tr>
+<tr><td style="text-align: right">Fall 2019</td><td style="text-align: right">63.20</td></tr>
+<tr><td style="text-align: right">Spring 2020</td><td style="text-align: right">62.13</td></tr>
+</tbody></table>
+<p>Brown misses its advertised mark of 72% by a substantial margin in all years for which data is available. I suspect they reach that figure by including graduate and independent study courses.</p>
+<p>Similarly, the claim that Brown’s student-faculty ratio is 7:1 (and that “100 percent of our faculty teach undergraduates”, as Admissions asserts in the same sentence) gives the misleading impression that each educator needs only mind seven students. It is flatly incorrect that 100% of faculty members teach undergrads: One does not need to strain hard to find adjunct faculty with no teaching load, and Brown’s clinical faculty are entirely excused from undergraduate teaching. Among the faculty who do teach, not all teach every semester: professors may take leaves, sabbaticals, and “buy out” some of their required course load.</p>
+<h2 id="technical-addendum">Technical Addendum</h2>
+<p>The Courses@Brown API produces JSON, whose fields are often either HTML or JSON-as-a-string. Whenever I am faced with this sort of hard-to-parse mixed-representation data, I reach for two composable utilities: <a href="https://stedolan.github.io/jq/"><code>jq</code></a> and <a href="http://www.videlibri.de/xidel.html"><code>xidel</code></a>. For instance, to produce the enrollment count from <code>.seats</code>, I pipe the API’s JSON for a course into this bash function:</p>
+<pre data-lang="bash" style="background-color:#ffffff;color:#4d4d4c;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#8e44be;">function </span><span style="color:#3366cc;">enrollment_from_seats_html</span><span>() {
+</span><span>  </span><span style="color:#f55800;">jq</span><span style="color:#6969ff;"> -rc </span><span style="color:#699200;">&#39;&quot;&lt;parent&gt;&quot; + .seats + &quot;&lt;/parent&gt;&quot;&#39; </span><span style="color:#3366cc;">\
+</span><span>    </span><span style="color:#1aa7b0;">| </span><span style="color:#f55800;">xidel</span><span style="color:#3366cc;"> -</span><span style="color:#6969ff;"> -s --xpath</span><span style="color:#1aa7b0;">=</span><span style="color:#699200;">&#39;
+</span><span style="color:#699200;">        [
+</span><span style="color:#699200;">          //span[@class=&quot;seats_max&quot;]/text(),
+</span><span style="color:#699200;">          //span[@class=&quot;seats_avail&quot;]/text()
+</span><span style="color:#699200;">        ]&#39; </span><span style="color:#3366cc;">\
+</span><span>    </span><span style="color:#1aa7b0;">| </span><span style="color:#f55800;">jq</span><span style="color:#6969ff;"> -c </span><span style="color:#699200;">&#39;
+</span><span style="color:#699200;">        if (. | length == 2) then
+</span><span style="color:#699200;">          (.[0] | tonumber) - (.[1] | tonumber)
+</span><span style="color:#699200;">        else
+</span><span style="color:#699200;">          null
+</span><span style="color:#699200;">        end&#39;
+</span><span>}
+</span></code></pre>
+<p>Perhaps I’ll go into in more depth about the technical approach behind this blog post in a future entry!</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>
