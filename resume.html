@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Resume - Jack Wrenn</title>
+    <meta name="description" content="Software Engineer">
+    <meta name="author" content="John Wrenn">
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+
+    <style>
+      * {
+      }
+    
+      @media not print {
+        html {
+          background: black;
+        }
+        body {
+          position: absolute;
+          background: white;
+          height: 11in;
+          width: 8.5in;
+        }
+      }
+
+      /*.bordered {
+        background-image: url("data:image/svg+xml;utf8,<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><rect x='0.5pt' y='0.5pt' width='100%' height='100%' style='width:calc(100% - 1pt);height:calc(100% - 1pt);' stroke='%23000' stroke-width='1pt' stroke-dasharray='0 2' stroke-linecap='round' fill='transparent' /></svg>");
+        background-color:red;
+        background-size: 100% 100%;
+        background-position: center center;
+        background-repeat: no-repeat;
+      }*/
+    
+      * {
+        hyphens: auto;
+        font-variant-ligatures: none!important;
+      }
+
+
+      html {
+        font-size: 8pt;
+        line-height: 1.75;
+      }
+
+      @page {
+        margin: 0;
+      }
+
+      .page {
+        margin: 0.5in;
+      }
+
+      body {
+        line-height: 1.4;
+        font-family: 'Raleway', sans-serif;
+      }
+
+      em {
+        font-style: italic;
+      }
+
+      a {
+        color: blue;
+        text-decoration: none; /* no underline */
+      }
+
+      code {
+        font-family: 'Inconsolata', monospace;
+      }
+
+      ul {
+        line-height: 1.75;
+      }
+
+      .education {
+        margin-bottom: 0em;
+        padding-bottom: 0em;
+      }
+
+      p {
+        margin-bottom: 0.2em;
+      }
+
+      h1, h2, h3, h4, h5 {
+        font-family: 'Libre Baskerville', serif;
+        margin: 1em 0 0.3em;
+        font-weight: 400;
+      }
+
+      h1    {font-size: 1.802rem;}
+      h2    {font-size: 1.602rem;}
+      h3    {font-size: 1.424rem;}
+      h4    {font-size: 1.266rem;}
+      h5    {font-size: 1.125rem;}
+      small {font-size: 0.889rem;}
+      sup   {
+        font-size: 0.79rem;
+        vertical-align: super;
+      }
+
+      h3 {
+        margin-top: 1em;
+      }
+
+      h4 {
+        margin-top: 1.1em;
+      }
+
+      p {
+        margin-top: 1pt;
+      }
+
+      h1,
+      h2 {
+        margin-top: 0em;
+        font-weight: 700;
+      }
+
+      .area > header {
+        border-bottom: 1pt black dotted;
+        margin-bottom: -0.6em;
+      }
+
+      body {
+      }
+
+      .page {
+        /*outline: 1px rgba(0,0,0,0.1) solid;*/
+      }
+
+      .area {
+        padding: 1em;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .area.bordered {
+        border: 1pt black dotted;
+        box-shadow: 1em 1em rgba(0,0,0,0.1);
+      }
+
+      .institution {
+        margin-bottom: 0.4em;
+      }
+
+      .education .topic {
+        font-style: italic;
+      }
+
+      .education .degrees {
+        margin-top: 0.5rem;
+        margin-left: 1rem;
+      }
+
+      .education .degree {
+        font-weight: 700;
+      }
+
+      .education .when {
+        float: right;
+      }
+    </style>
+  </head>
+  <body itemscope itemtype="http://schema.org/Person">
+    <div class="page" id="page-1">
+      <style>
+        #page-1 {
+          display: flex;
+        }
+
+        #page-1 .column > section:not(:last-of-type) {
+          margin-bottom: 1em;
+        }
+      
+        #page-1 .column.left {
+          display: flex;
+          flex-direction: column;
+          
+          flex: 0 2.9555625in;
+          flex: 0 3.1in;
+          margin-right: 1em;
+        }
+        #page-1 .column.right {
+          flex: 1;
+        }
+      </style>
+    
+      <div class="column left">
+        <header class="area" id="resume-header">
+          <style>
+            #resume-header {
+              flex: 1;
+              border: 1pt transparent dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0);
+            }
+          
+            #resume-header .name {
+              margin-bottom: 0.3em;
+            }
+
+            .contact-info {
+              margin-top: 1.13em;
+              display: flex;
+              flex-wrap: wrap;
+              width: 100%;
+            }
+            .contact-info dt, dd {
+              width: 50%;
+            }
+            .contact-info dt { text-align: left }
+            .contact-info dd { text-align: right }
+          </style>
+          <header><h2 class="name">Jack Wrenn</h2></header>
+          <dl class="contact-info">
+            <dt class="phone">Phone</dt>
+            <dd><a rel=noopener href="tel:401-793-6774">401-793-6774</a></dd>
+            <dt class="email">Email</dt>
+            <dd><a rel=noopener href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a></dd>
+            <dt class="email">Website</dt>
+            <dd><a rel=noopener href="https://jack.wrenn.fyi/">jack.wrenn.fyi</a></dd>
+            <dt class="github">Github</dt>
+            <dd><a rel=noopener href="https://github.com/jswrenn">jswrenn</a></dd>
+          </dl>
+        </header>
+
+        <section class="bordered area education">
+          <header><h2>Education</h2></header>
+          <section><header><h3 class="institution">Brown University</h3></header>
+            <span class="topic">Computer Science</span>
+            <ul class="degrees">
+              <li>
+                <span class="degree">Ph.D.</span>
+                <span class="when">2022</span>
+              </li>
+              <li>
+                <span class="degree">Sc.M.</span>
+                <span class="when">2018</span>
+              </li>
+            </ul>
+          </section>
+          <section><header><h3 class="institution">University of Rhode Island</h3></header>
+            <span class="topic">Computer Science, History</span>
+            <ul class="degrees">
+              <li>
+                <span class="degree">B.A.</span>
+                <span class="when">2015</span>
+              </li>
+            </ul>
+          </section>
+        </section>
+        <section class="bordered area employment">
+          <style>
+            .employment .where {
+              font-style: italic;
+            }
+          
+            .employment .when {
+              float: right;
+            }
+
+            .employment .description {
+              display: block;
+              margin-left: 1em;
+              margin-top: 0.5em;
+            }
+          </style>
+          <header><h2>Employment</h2></header>
+          <section><header><h3 class="institution">Applied Scientist</h3></header>
+            <span class="where">Amazon Web Services</span>
+            <span class="when">2021&ndash;2025</span>
+            <p class="description" style="hyphens: none;">
+              Interviewed Rust programmers to identify their productivity barriers, and developed a variety of interventions. Led initiative to improve the observability of asynchronous Rust applications. Led cross-industry initiative to improve safety tooling.
+            </p>
+          </section>
+          <section><header><h3 class="institution">Adjunct Professor</h3></header>
+            <span class="where">University of San Francisco</span>
+            <span class="when">Spring 2024</span>
+            <span class="description">
+              Co-taught an intensive introduction to computer security that presented the fundamentals of cryptography and systems security through a mixture of theory and practice.
+            </span>
+          </section>
+          <section><header><h3 class="institution">Researcher</h3></header>
+            <span class="where">Brown University</span>
+            <span class="when">2015&ndash;2021</span>
+            <span class="description">
+              Contributed to the development of the Pyret prog&shy;ramming language. Published <a href="https://jack.wrenn.fyi/publications">five research papers</a> on error reporting, testing, tooling and human factors.
+            </span>
+          </section>
+        </section>
+        <section class="bordered area awards">
+          <style>
+            .awards .where {
+              font-style: italic;
+            }
+          
+            .awards .when {
+              float: right;
+            }
+
+            .awards .description {
+              display: block;
+              margin-left: 1em;
+              margin-top: 0.5em;
+            }
+          </style>
+          <header><h2>Selected Awards</h2></header>
+          <section><header><h3 class="institution">Client Bug Bounty</h3></header>
+            <span class="where">Mozilla</span>
+            <span class="when">2019</span>
+            <span class="description">
+              Discovered <a href="https://nvd.nist.gov/vuln/detail/cve-2022-22755">a security issue</a> in Firefox’s XSLT engine that enabled attackers to indefinitely execute JavaScript and send network requests (even with JS disabled) <em>after</em> the exploited tab was closed. 
+            </span>
+          </section>
+        </section>
+    </div>
+    <div class="column right">
+      <section class="bordered area projects">
+        <style>
+          .projects .area h3 {
+            margin-bottom: 0.4em;
+          }
+
+          .projects h4 {
+            font-size: 1rem;
+            font-weight: 700;
+          }
+
+          .projects > section > h4 ~ p {
+            margin-left: 1em;
+          }
+
+          .projects {
+            
+          }
+
+          hr {
+            border: none;
+            border-top: 1pt dotted #000;
+          }
+
+          .projects > section:not(:first-of-type) {
+            margin-top: 1.5em;
+          }
+          .projects > section:not(:last-of-type) {
+            margin-bottom: 1.5em;
+          }
+        </style>
+        
+        <header><h2>Selected Projects</h2></header>
+        <section><header><h3>Rust Programming Language</h3></header>
+          <p>An expert in leveraging and evolving Rust to improve the safety and ergonomics of complex programming tasks. Key projects include:</p>
+
+          <h4>Safe Transmutation</h4>
+          <p>Lead the working group to make bit-reinterpretation casts (e.g., <code>union</code>, <code>mem::transmute</code>) memory safe. Designed and implemented <a href="https://doc.rust-lang.org/nightly/std/mem/trait.TransmuteFrom.html"><code>TransmuteFrom</code></a>, a novel compiler analysis for proving the transmutability of arbitrary types. Maintain <a href="https://crates.io/crates/zerocopy">zerocopy</a>, a widely-used library providing a safe abstraction for many kinds of bit-reinterpretation casts.</p>
+
+          <h4>Observability</h4>
+          <p>Led the AWS Rust Platform Team's observability initiative. Collaborated with the Rust Debugging Working Group to prototype and evaluate methods for in-process debugging of stuck asynchronous services. Authored a <a href="https://jack.wrenn.fyi/blog/2022-retrospective/">suite of novel crates</a> for program instrumentation. This work culminated in the design and development Tokio's task dump functionality.</p>
+
+          <h4>Other Open-Source Leadership</h4>
+          <p>Maintainer of <a href="https://crates.io/crates/itertools">itertools</a>, a popular (&gt;575m downloads) library for ergonomic transformations and summarization of streams of data.</p>
+          <!-- <p>Implementor of <a href="https://github.com/rust-lang/rfcs/pull/2363">RFC-2363</a>, which permits fine-grained control over the memory layout of complex <code>enum</code> types; useful for C-interop and zero-copy parsing of network packets.</p>-->
+        </section>
+
+        <hr />
+        
+        <section><header><h3>Computing Education</h3></header>
+          <p>An expert in programming pedagogy and user experience. Contributed to <a href="https://www.pyret.org/">Pyret</a>, a programming language designed by computer science educators:</p> 
+
+          <h4>Error Message Design</h4>
+          <p>Developed Pyret’s unique <a href="https://github.com/brownplt/pyret-lang/wiki/Error-Reporting,-July-2016">hypertext error messages</a>, which leverage hyperlinks, highlights and in-line code snippets to guide novice programmers towards deeply understanding their errors.</p>
+
+          <h4>Data Science Support</h4>
+          <p>Developed Pyret’s language-level support for manipulat&shy;ing tabular data, used by the <a href="https://www.bootstrapworld.org/materials/data-science/">data science module</a> of the Bootstrap curriculum, a research-based computer science curriculum for grades 6&ndash;12.</p>
+          
+          <h4>Example-Driven Development</h4>
+          <p>Developed a cloud-hosted IDE for Pyret that <a href="https://jack.wrenn.fyi/publications/Wrenn,%20Krishnamurthi%20-%20Executable%20Examples%20for%20Programming%20Problem%20Comprehension%20(Paper).pdf">encourages</a> students to write input&ndash;output examples <em><a href="https://jack.wrenn.fyi/publications/Wrenn,%20Krishnamurthi%20-%20Will%20Students%20Write%20Tests%20Early%20Without%20Coercion.pdf">before</a></em> they begin programming, and conducted research to assess its impact.</p>
+
+          <h4>Evaluation at Scale</h4>
+          <p>Developed infrastructure for assessing the quality of students’ Pyret prog&shy;rams and test suites at massive scale on a distributed super-computing cluster, and <a href="http://jack.wrenn.fyi/publications/Wrenn,%20Krishnamurthi,%20Fisler%20-%20Who%20Tests%20the%20Testers.pdf">developed an analysis</a> to validate the robustness of these assessments.</p>
+        </section>
+      </section>
+      <section class="bordered area talks">
+        <style>
+          .talks .where {
+            font-style: italic;
+          }
+        
+          .talks .when {
+            float: right;
+          }
+
+          .talks .description {
+            display: block;
+            margin-left: 1em;
+            margin-top: 0.5em;
+          }
+        </style>
+        <header><h2>Selected Talks</h2></header>
+        <section><header><h3 class="institution">Safety Goggles for Alchemists
+          <sup>[<a href="https://jack.wrenn.fyi/blog/safety-goggles-for-alchemists/">Transcript</a>]</sup>
+
+        </h3></header>
+          <span class="where">RustConf</span>
+          <span class="when">2024</span>
+          <span class="description">
+            This talk charts Rust's path to becoming the first systems programming language with transmutation safety, and highlights how safe transmute is already being put to use to build next-gen systems.
+          </span>
+        </section>
+      </section>
+    </div>
+  </body>
+</html>

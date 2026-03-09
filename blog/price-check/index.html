@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Price-Checking Zerocopy's Zero Cost Abstractions</title>
+        <meta name="author" content="Jack Wrenn" />
+        <link rel="author" href="https://jack.wrenn.fyi/">
+
+        
+<meta name="twitter:title" content="Price-Checking Zerocopy's Zero Cost Abstractions" />
+<meta name="twitter:description" content="" />
+
+
+        
+          <link rel="alternate" type="application/atom+xml" title="Atom" href="https://jack.wrenn.fyi/atom.xml">
+        
+
+        <meta property='og:type' content='article' />
+        <meta property='article:author' content='https://jack.wrenn.fyi/' />
+        <meta property='article:publisher' content='https://jack.wrenn.fyi/' />
+        <meta property='og:site_name' content='Jack Sometimes Writes' />
+        
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:site" content="@tenellous" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style>
+            html {
+              margin: 0em;
+              font-size: 16px;
+              font-size: min(max(1rem, 4vw), 16px);
+              font-family: serif;
+              line-height: 1.45;
+            }
+            
+            body {
+              margin: 0 auto;
+              padding-right: 1em;
+              padding-bottom: 1em;
+              max-width: 50em;
+              overflow-x: hidden;
+            }
+
+            main {
+              margin: 0 0.5em;
+            }
+
+            section {
+              border: .2em black dotted;
+            }
+
+            article {
+              padding: 1em;
+            }
+
+            article.preview {
+              padding: 0 1em;
+              margin-bottom: 1em;
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            code {
+              font-size: 80%;
+              background-color: rgb(0 0 0 / 10%)
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              border: .2em black dotted;
+              box-shadow: 1em 1em rgba(0,0,0,0.1);
+            }
+
+            pre {
+              display: flex;
+              max-width: calc(100vw - 2em);
+              font-size: 0.9em;
+              position: relative;
+              left: 50%;
+              right: 50%;
+              margin-left: calc(-50vw + 1em);
+              margin-right: calc(-50vw - 1em);
+              background-color: transparent!important;
+            }
+
+            .twitter-tweet:not(.twitter-tweet-rendered),
+            pre > code {
+              margin: 0 auto;
+              padding: 1em;
+              max-width: 100vw;
+              overflow: auto;
+              background-color: white;
+            }
+
+            header > h1 {
+              margin-bottom: 0;
+            }
+            
+            main > section {
+              border: .2em black dotted;
+              padding: 1em;
+              padding-top: 0;
+            }
+
+            h1 > a, h2 > a, h3 > a {
+              color:black!important;
+              text-decoration:none;
+            }
+
+            h1 > a:hover, h2 > a:hover, h3 > a:hover {
+              text-decoration:underline;
+            }
+
+            table {
+              width: 100%;
+            }
+
+            th {
+              border-bottom: 4px black solid;
+            }
+
+            .language-rust_errors .warning {
+              color: #f79a06
+            }
+
+            .language-rust_errors .error {
+              color: #bf1b1b
+            }
+
+            .twitter-tweet {
+              margin: 0 auto;
+            }
+
+            img {
+              display: block;
+              margin: 0 auto;
+              max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body itemtype="http://schema.org/WebPage">
+        <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+        <header>
+          <h1 itemprop="name">
+            <span itemid="#author" itemscope itemprop="author publisher" itemtype="http://schema.org/Person">
+              <meta itemProp='name' content='Jack Wrenn' />
+              <a itemprop="url" href="/">Jack</a>
+            </span> <a id="masthead" itemprop="url" href="/blog">Sometimes Writes</a></h1>
+        </header>
+        <main itemscope itemtype="http://schema.org/Blog">
+          <link itemprop="mainEntityOfPage" href="https://jack.wrenn.fyi/blog">
+          
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="headline">Price-Checking Zerocopy’s Zero Cost Abstractions</h1>
+    <time itemprop="datePublished" datetime="2026-03-09">
+      2026-03-09
+    </time>
+    <link itemprop="author publisher" itemtype="http://schema.org/Person" href="#author"/>
+  </header>
+  <div itemprop="articleBody">
+    <p><a rel="external" href="https://docs.rs/zerocopy/0.8.42/zerocopy/">Zerocopy</a> is toolkit that promises safe and efficient abstractions for low-level memory manipulation and casting. While we’ve long done the usual (e.g., testing, documentation, abstraction, miri) and unusual (e.g., proofs, formal verification) to prove to ourselves and our users that we’ve kept our promise of safety, we’ve kept our other promise of efficiency with a less convincing combination of <code>#[inline(always)]</code> and faith in LLVM.</p>
+<span id="continue-reading"></span>
+<p>These two promises have increasingly been at odds. As the types and transformations supported by zerocopy have grown more complex, so too have our internal abstractions. Click through our docs into the source code of most of our methods and you will rarely see any <em>immediate</em> occurances of <code>unsafe</code>; we keep the dangerous stuff sequestered away a few function calls down in tightly-scoped “zero cost” abstractions. But <em>are</em> these abstractions actually zero cost?</p>
+<p>Well, as of <a rel="external" href="https://docs.rs/zerocopy/0.8.42/zerocopy">zerocopy 0.8.42</a> trusting the optimizer requires a little less blind faith. We’ve begun documenting the codegen you can expect from each of zerocopy’s routines in a representative range of circumstances; e.g., for <a rel="external" href="https://docs.rs/zerocopy/latest/zerocopy/trait.FromBytes.html#method.ref_from_prefix.codegen"><code>FromBytes::ref_from_prefix</code></a>:</p>
+<p><a href="https://docs.rs/zerocopy/latest/zerocopy/trait.FromBytes.html#method.ref_from_prefix.codegen"><img src="/blog/price-check/ref_from_prefix_docs.png" style="outline: 1px black solid" height="auto" width="100%" alt="Screenshot of codegen documentation for ref_from_prefix."></img></a></p>
+<p>This documentation surfaces the latest addition to our CI pipeline: code generation <em>testing</em>. We’ve populated the <a rel="external" href="https://github.com/google/zerocopy/tree/main/benches"><code>benches</code> directory</a> our our repo with a comprehensive set of microbenchmarks. Rather than actually executing these benchmarks on hardware, we use <a rel="external" href="https://crates.io/crates/cargo-show-asm"><code>cargo-show-asm</code></a> to assert that their machine code and analysis matches model outputs checked into our repo. Consequently, we’re able to verify our assumptions about how Rust and LLVM optimize our abstractions, and easily observe how our changes impact codegen.</p>
+
+  </div>
+
+  <hr/>
+  Email comments and corrections to <a href="mailto:jack@wrenn.fyi">jack@wrenn.fyi</a>.
+</article>
+
+<footer>
+  <a href="https://twitter.com/tenellous">Follow me on Twitter!</a>
+</footer>
+
+
+        </main>
+    </body>
+</html>
